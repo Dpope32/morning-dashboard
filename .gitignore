@@ -1,0 +1,12 @@
+# Logs
+*.log
+morning-report.txt
+
+# Environment variables
+.env
+
+# Personal data
+crypto-data.json
+
+# PowerShell scripts with sensitive data
+PPNF.ps1

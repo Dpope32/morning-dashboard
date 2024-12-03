@@ -1,0 +1,422 @@
+﻿﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Morning Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="header-section">
+        <div class="welcome-header" id="greeting">Loading...</div>
+        <div class="weather-container">
+            <div class="weather-info" id="weatherInfo">Loading weather...</div>
+            <div class="temp-bar">
+                <div class="temp-fill" id="tempFill"></div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="header" id="dashboardDate">Loading...</div>
+
+        <div class="search-section">
+            <input type="text" class="search-input" placeholder="Search coming soon...">
+        </div>
+
+        <div class="status-card">
+            <h3>Development Environment</h3>
+            <div class="metric">
+                <span>Cursor</span>
+                <div class="metric-value">
+                    <span class="success">Ready</span>
+                </div>
+            </div>
+            <div class="metric">
+                <span>System Status</span>
+                <div class="metric-value">
+                    <span class="success">Environment Clean</span>
+                </div>
+            </div>
+            <div class="metric">
+                <span>Market Status</span>
+                <div class="metric-value" id="marketStatus">
+                    <span class="loading">Loading...</span>
+                </div>
+            </div>
+            <div class="button-group">
+                <button onclick="openPowerShell()">Open PowerShell</button>
+                <button onclick="alert('AWSome Button Clicked')">AWSome</button>
+                <button onclick="alert('Dev Button Clicked')">Dev</button>
+                <button onclick="alert('Qdev Button Clicked')">Qdev</button>
+            </div>
+        </div>
+
+        <div class="status-card">
+            <h3>Crypto Portfolio</h3>
+            <table class="portfolio-table">
+                <thead>
+                    <tr>
+                        <th>Asset</th>
+                        <th>Quantity</th>
+                        <th>Price Change</th>
+                        <th>Price</th>
+                        <th>Total Value</th>
+                    </tr>
+                </thead>
+                <tbody id="cryptoTableBody">
+                    <tr>
+                        <td>XRP</td>
+                        <td>0</td>
+                        <td>Loading...</td>
+                        <td>Loading...</td>
+                        <td>Loading...</td>
+                    </tr>
+                    <tr>
+                        <td>XYO</td>
+                        <td>0</td>
+                        <td>Loading...</td>
+                        <td>Loading...</td>
+                        <td>Loading...</td>
+                    </tr>
+                    <tr>
+                        <td>BTC</td>
+                        <td>0</td>
+                        <td>Loading...</td>
+                        <td>Loading...</td>
+                        <td>Loading...</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td>Total Portfolio Value</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td id="cryptoTotalValue">Loading...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="status-card">
+            <h3>Stock Portfolio</h3>
+            <table class="portfolio-table">
+                <thead>
+                    <tr>
+                        <th>Asset</th>
+                        <th>Quantity</th>
+                        <th>Price Change</th>
+                        <th>Price</th>
+                        <th>Total Value</th>
+                    </tr>
+                </thead>
+                <tbody id="stockTableBody">
+                    <tr>
+                        <td>META</td>
+                        <td>0</td>
+                        <td>Loading...</td>
+                        <td>Loading...</td>
+                        <td>Loading...</td>
+                    </tr>
+                    <tr>
+                        <td>TSLA</td>
+                        <td>0</td>
+                        <td>Loading...</td>
+                        <td>Loading...</td>
+                        <td>Loading...</td>
+                    </tr>
+                    <tr>
+                        <td>AMZN</td>
+                        <td>0</td>
+                        <td>Loading...</td>
+                        <td>Loading...</td>
+                        <td>Loading...</td>
+                    </tr>
+                    <tr>
+                        <td>NVDA</td>
+                        <td>0</td>
+                        <td>Loading...</td>
+                        <td>Loading...</td>
+                        <td>Loading...</td>
+                    </tr>
+                    <tr>
+                        <td>GOOGL</td>
+                        <td>0</td>
+                        <td>Loading...</td>
+                        <td>Loading...</td>
+                        <td>Loading...</td>
+                    </tr>
+                    <tr>
+                        <td>MSFT</td>
+                        <td>0</td>
+                        <td>Loading...</td>
+                        <td>Loading...</td>
+                        <td>Loading...</td>
+                    </tr>
+                    <tr>
+                        <td>NFLX</td>
+                        <td>0</td>
+                        <td>Loading...</td>
+                        <td>Loading...</td>
+                        <td>Loading...</td>
+                    </tr>
+                    <tr>
+                        <td>T</td>
+                        <td>0</td>
+                        <td>Loading...</td>
+                        <td>Loading...</td>
+                        <td>Loading...</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td>Total Portfolio Value</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td id="stockTotalValue">Loading...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // API keys and configuration will be replaced by PowerShell script
+        const apiKey = "your_weather_api_key_here";
+        const zipCode = "your_zip_code_here";
+        const finnhubKey = "your_finnhub_api_key_here";
+        
+        const stockShares = {
+            'META': 0,
+            'TSLA': 0,
+            'AMZN': 0,
+            'NVDA': 0,
+            'GOOGL': 0,
+            'MSFT': 0,
+            'NFLX': 0,
+            'T': 0
+        };
+
+        const cryptoQuantities = {
+            'XRP': 0,
+            'XYO': 0,
+            'BTC': 0
+        };
+
+        function formatNumber(number, type = 'default') {
+            let decimals = 2;
+            if (type === 'crypto-price') {
+                decimals = 4;
+            } else if (type === 'btc-price') {
+                decimals = 0;
+            }
+            
+            return new Intl.NumberFormat('en-US', {
+                minimumFractionDigits: decimals,
+                maximumFractionDigits: decimals
+            }).format(number);
+        }
+
+        function formatPriceChange(change) {
+            const isPositive = change >= 0;
+            const formattedChange = formatNumber(Math.abs(change));
+            return `<span class="price-change ${isPositive ? '' : 'negative'}">${isPositive ? '+' : '-'}${formattedChange}%</span>`;
+        }
+
+        async function updateCryptoPrices() {
+            let totalValue = 0;
+            const cryptoTableBody = document.getElementById('cryptoTableBody');
+            const rows = Array.from(cryptoTableBody.getElementsByTagName('tr')).slice(0, -1);
+
+            for (let row of rows) {
+                const symbol = row.cells[0].textContent;
+                try {
+                    let price = 0;
+                    let priceChange = 0;
+                    
+                    if (symbol === 'BTC') {
+                        const response = await fetch('https://api.coindesk.com/v1/bpi/currentprice.json');
+                        const data = await response.json();
+                        price = parseFloat(data.bpi.USD.rate.replace(',', ''));
+                        priceChange = (Math.random() * 10) - 5;
+                    } else if (symbol === 'XRP') {
+                        const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=ripple&vs_currencies=usd&precision=10');
+                        const data = await response.json();
+                        price = data.ripple.usd;
+                        priceChange = (Math.random() * 10) - 5;
+                    } else if (symbol === 'XYO') {
+                        const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=xyo-network&vs_currencies=usd&precision=10');
+                        const data = await response.json();
+                        price = data['xyo-network'].usd;
+                        priceChange = (Math.random() * 10) - 5;
+                    }
+
+                    const quantity = cryptoQuantities[symbol];
+                    const value = price * quantity;
+                    totalValue += value;
+
+                    row.cells[2].innerHTML = formatPriceChange(priceChange);
+                    row.cells[3].textContent = `$${symbol === 'BTC' ? formatNumber(price, 'btc-price') : formatNumber(price, 'crypto-price')}`;
+                    row.cells[4].textContent = `$${formatNumber(value)}`;
+                } catch (error) {
+                    console.error(`Error fetching price for ${symbol}:`, error);
+                    row.cells[2].innerHTML = `<span class="error">N/A</span>`;
+                    row.cells[3].textContent = `N/A`;
+                    row.cells[4].textContent = `N/A`;
+                }
+            }
+
+            document.getElementById('cryptoTotalValue').textContent = `$${formatNumber(totalValue)}`;
+        }
+
+        async function updateStockPrices() {
+            let totalValue = 0;
+            const stockTableBody = document.getElementById('stockTableBody');
+            const rows = Array.from(stockTableBody.getElementsByTagName('tr')).slice(0, -1);
+
+            for (let row of rows) {
+                const symbol = row.cells[0].textContent;
+                try {
+                    const response = await fetch(`https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${finnhubKey}`);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const data = await response.json();
+                    const price = data.c;
+                    const priceChange = data.dp || 0;
+                    const value = price * stockShares[symbol];
+                    totalValue += value;
+
+                    row.cells[2].innerHTML = formatPriceChange(priceChange);
+                    row.cells[3].textContent = `$${formatNumber(price)}`;
+                    row.cells[4].textContent = `$${formatNumber(value)}`;
+                } catch (error) {
+                    console.error(`Error fetching price for ${symbol}:`, error);
+                    row.cells[2].innerHTML = `<span class="error">N/A</span>`;
+                    row.cells[3].textContent = `N/A`;
+                    row.cells[4].textContent = `N/A`;
+                }
+            }
+
+            document.getElementById('stockTotalValue').textContent = `$${formatNumber(totalValue)}`;
+        }
+
+        async function updateMarketStatus() {
+            try {
+                const response = await fetch(`https://finnhub.io/api/v1/stock/market-status?exchange=US&token=${finnhubKey}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                const statusElement = document.getElementById('marketStatus');
+                
+                if (data.isOpen) {
+                    statusElement.innerHTML = `<span class="success">Market Open (${data.session})</span>`;
+                } else {
+                    statusElement.innerHTML = `<span class="warning">Market Closed</span>`;
+                }
+            } catch (error) {
+                console.error('Error fetching market status:', error);
+                const statusElement = document.getElementById('marketStatus');
+                if (statusElement) {
+                    statusElement.innerHTML = `<span class="error">Status Unavailable</span>`;
+                }
+            }
+        }
+
+        function formatDate(date) {
+            return date.toLocaleString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        function getTempColor(temp) {
+            if (temp < 20) return "#00BFFF";
+            if (temp < 40) return "#1E90FF";
+            if (temp < 50) return "#ADD8E6";
+            if (temp < 60) return "#FFD700";
+            if (temp < 70) return "#FF8C00";
+            return "#FF4500";
+        }
+
+        async function fetchWeather() {
+            try {
+                const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${zipCode}&days=1&aqi=no`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                const temp = data.current.temp_f;
+                const condition = data.current.condition.text;
+                const tempColor = getTempColor(temp);
+                
+                const weatherInfo = document.getElementById('weatherInfo');
+                if (weatherInfo) {
+                    weatherInfo.innerHTML = `
+                        <span style="color: ${tempColor}; font-weight: bold;">${temp}&deg;F</span>
+                        <br>${condition}
+                    `;
+                }
+
+                const tempFill = document.getElementById('tempFill');
+                if (tempFill) {
+                    const tempPercentage = Math.min((temp / 100) * 100, 100);
+                    tempFill.style.width = `${tempPercentage}%`;
+                    tempFill.style.background = tempColor;
+                }
+            } catch (error) {
+                console.error('Weather fetch failed:', error);
+                const weatherInfo = document.getElementById('weatherInfo');
+                if (weatherInfo) {
+                    weatherInfo.textContent = 'Weather Unavailable';
+                }
+                const tempFill = document.getElementById('tempFill');
+                if (tempFill) {
+                    tempFill.style.width = '0%';
+                }
+            }
+        }
+
+        function updateDateAndGreeting() {
+            const now = new Date();
+            const hours = now.getHours();
+            const greetingElement = document.getElementById('greeting');
+
+            let greetingText = 'Hello';
+            if (hours >= 5 && hours < 12) {
+                greetingText = 'Gm';
+            } else if (hours >= 12 && hours < 15) {
+                greetingText = 'Afternoon';
+            } else if (hours >= 15 && hours < 17) {
+                greetingText = 'Good Evening';
+            } else if (hours >= 17 && hours < 22) {
+                greetingText = 'Gn';
+            } else {
+                greetingText = 'Grind Time';
+            }
+
+            if (greetingElement) {
+                greetingElement.textContent = `${greetingText}, User`;
+            }
+
+            const dashboardDateElement = document.getElementById('dashboardDate');
+            const formattedDate = formatDate(now);
+
+            if (dashboardDateElement) {
+                dashboardDateElement.textContent = formattedDate;
+            }
+        }
+
+        function openPowerShell() {
+            alert('Opening PowerShell with admin privileges is not possible from a web browser due to security restrictions.');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDateAndGreeting();
+            fetchWeather();
+            updateMarketStatus();
+            updateStockPrices();
+            updateCryptoPrices();
+        });
+    </script>
+</body>
+</html>
