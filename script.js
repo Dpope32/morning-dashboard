@@ -8,7 +8,8 @@ const userName = window.ENV.USER_NAME;
 const cryptoQuantities = {
     "XRP": parseFloat(window.ENV.XRP_HOLDINGS) || 0,
     "XYO": parseFloat(window.ENV.XYO_HOLDINGS) || 0,
-    "BTC": parseFloat(window.ENV.BTC_HOLDINGS) || 0
+    "BTC": parseFloat(window.ENV.BTC_HOLDINGS) || 0,
+    "SOL": parseFloat(window.ENV.SOL_HOLDINGS) || 0
 };
 
 const stockShares = {
@@ -82,6 +83,11 @@ async function updateCryptoPrices() {
                 const data = await response.json();
                 price = data['xyo-network'].usd;
                 priceChange = (Math.random() * 10) - 5;
+            } else if (symbol === 'SOL') {
+                const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd&precision=10');
+                const data = await response.json();
+                price = data.solana.usd;
+                priceChange = (Math.random() * 10) - 5;
             }
 
             const value = price * quantity;
@@ -140,6 +146,7 @@ async function updateStockPrices() {
             row.cells[2].innerHTML = formatPriceChange(priceChange);
             row.cells[3].textContent = '$' + formatNumber(price);
             row.cells[4].textContent = '$' + formatNumber(value);
+                
         } catch (error) {
             console.error('Error fetching price for ' + symbol + ':', error);
             row.cells[2].innerHTML = '<span class="error">N/A</span>';

@@ -3,7 +3,7 @@ class Sidebar {
         this.sidebar = document.getElementById('sidebar');
         this.todoList = document.getElementById('todoList');
         this.newTodoInput = document.getElementById('newTodo');
-        this.isOpen = true; // Track sidebar state
+        this.isOpen = true; 
         this.setupCloseButton();
         this.setupToggleButton();
         this.loadTodos();
@@ -12,7 +12,7 @@ class Sidebar {
 
     setupCloseButton() {
         const closeBtn = document.createElement('button');
-        closeBtn.innerHTML = '→';
+        closeBtn.innerHTML = '←';
         closeBtn.className = 'sidebar-close';
         this.sidebar.insertBefore(closeBtn, this.sidebar.firstChild);
         
@@ -22,7 +22,6 @@ class Sidebar {
     }
 
     setupToggleButton() {
-        // Remove any existing toggle button first
         const existingToggle = document.querySelector('.sidebar-toggle');
         if (existingToggle) {
             existingToggle.remove();
@@ -33,14 +32,13 @@ class Sidebar {
         toggleBtn.className = 'sidebar-toggle';
         document.body.appendChild(toggleBtn);
         
-        // Initially hide the toggle button since sidebar is open by default
         toggleBtn.style.display = 'none';
         
         toggleBtn.addEventListener('click', () => {
             this.toggleSidebar();
         });
 
-        this.toggleBtn = toggleBtn; // Store reference to toggle button
+        this.toggleBtn = toggleBtn; 
     }
 
     closeSidebar() {
@@ -64,15 +62,12 @@ class Sidebar {
     }
 
     setupEventListeners() {
-        // Add todo on enter
         this.newTodoInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && this.newTodoInput.value.trim() !== '') {
                 this.addTodoItem(this.newTodoInput.value.trim());
                 this.newTodoInput.value = '';
             }
         });
-
-        // Handle responsive behavior
         const mediaQuery = window.matchMedia('(max-width: 1200px)');
         const handleMediaChange = (e) => {
             if (e.matches) {
@@ -82,7 +77,7 @@ class Sidebar {
             }
         };
         mediaQuery.addListener(handleMediaChange);
-        handleMediaChange(mediaQuery); // Initial check
+        handleMediaChange(mediaQuery); 
     }
 
     addTodoItem(text) {

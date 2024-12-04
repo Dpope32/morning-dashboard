@@ -9,7 +9,7 @@ class RightSidebar {
 
     setupCloseButton() {
         const closeBtn = document.createElement('button');
-        closeBtn.innerHTML = '←';
+        closeBtn.innerHTML = '→';
         closeBtn.className = 'right-sidebar-close';
         this.sidebar.insertBefore(closeBtn, this.sidebar.firstChild);
         

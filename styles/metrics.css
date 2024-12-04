@@ -28,7 +28,6 @@
 /* Market Status specific styles */
 #marketStatus .warning {
     color: #fbbf24;
-    background: rgba(251, 191, 36, 0.1);
     padding: 4px 8px;
     border-radius: 4px;
     font-size: 0.9em;

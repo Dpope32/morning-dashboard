@@ -13,22 +13,10 @@ param([switch]$Elevated)
     ╚══════════════════════════════════════════════════════════════════════════════╝
 #>
 
-
-# Function to check admin privileges
-function Test-Admin {
-    $currentUser = New-Object Security.Principal.WindowsPrincipal $([Security.Principal.WindowsIdentity]::GetCurrent())
-    return $currentUser.IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
+# Ensure the script can run by modifying the execution policy
+if ((Get-ExecutionPolicy -Scope CurrentUser) -ne 'RemoteSigned') {
+    Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force
 }
-
-# Ensure script is running with admin privileges unless $Elevated is specified
-if (-not $Elevated -and -not (Test-Admin)) {
-    Write-Host "Restarting script with admin privileges..."
-    Start-Process PowerShell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File '$PSCommandPath' -Elevated" -Verb RunAs
-    exit
-}
-
-Write-Host "Script running with administrative privileges"
-
 
 # Function to kill processes by name
 function Kill-Processes {
@@ -63,7 +51,6 @@ function Load-EnvFile {
         }
     }
 }
-
 
 function Write-Log {
     param([string]$Message)
@@ -177,11 +164,11 @@ $envVariables = @{
 $envJson = ConvertTo-Json $envVariables -Compress
 
 $envJsContent = "window.ENV = $envJson;`n`n" + @"
-// Log environment variables for debugging
-console.log('Environment variables loaded:', window.ENV);
-
-// Notify that env variables are ready
-window.dispatchEvent(new Event('envLoaded'));
+    // Log environment variables for debugging
+    console.log('Environment variables loaded:', window.ENV);
+    
+    // Notify that env variables are ready
+    window.dispatchEvent(new Event('envLoaded'));
 "@
 
 $envJsContent | Out-File $envJsPath -Encoding UTF8
@@ -238,47 +225,88 @@ $rightMonitorSecondHalf = @{
 # Launch applications with retries
 Write-Log "Launching applications..."
 
-# Launch Cursor on left monitor
-$cursorPath = "C:\Users\$env:USERNAME\AppData\Local\Programs\Cursor\Cursor.exe"
-Write-Log "Launching Cursor from: $cursorPath"
-Start-Process $cursorPath
-Start-Sleep -Seconds 5
-Set-WindowPosition -ProcessName "Cursor" @leftMonitor
+# Function to launch an application if the path exists
+function Launch-Application {
+    param (
+        [string]$AppName,
+        [string]$AppPath,
+        [array]$Args,
+        [hashtable]$PositionParams
+    )
 
-# Find Brave browser path
-$bravePath = "${env:LOCALAPPDATA}\BraveSoftware\Brave-Browser\Application\brave.exe"
-if (-not (Test-Path $bravePath)) {
-    $bravePath = "C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe"
-}
-Write-Log "Using Brave browser from: $bravePath"
-
-# Launch dashboard in Brave split across right monitor
-$templatePath = Join-Path $scriptDir "current-status.html"
-$templateUri = "file:///" + $templatePath.Replace("\", "/")
-Write-Log "Opening dashboard at: $templateUri"
-Start-Process $bravePath -ArgumentList "--new-window", $templateUri
-Start-Sleep -Seconds 5
-
-# Try both process names for Brave
-$braveProcessNames = @("brave", "BraveBrowser")
-$bravePositioned = $false
-
-foreach ($procName in $braveProcessNames) {
-    Write-Log "Attempting to position $procName..."
-    if (Set-WindowPosition -ProcessName $procName @rightMonitor) {
-        $bravePositioned = $true
-        break
+    if (Test-Path $AppPath) {
+        try {
+            Write-Log "Launching $AppName from: $AppPath"
+            Start-Process $AppPath -ArgumentList $Args
+            Start-Sleep -Seconds 5
+            Set-WindowPosition -ProcessName $AppName @PositionParams
+        } catch {
+            Write-Log "Failed to launch ${AppName}: $_"
+        }
+    } else {
+        Write-Log "$AppName executable not found at: $AppPath"
     }
 }
 
-if (-not $bravePositioned) {
-    Write-Warning "Failed to position Brave browser window. You may need to position it manually."
+# Launch Cursor on left monitor
+$cursorPath = "C:\Users\$env:USERNAME\AppData\Local\Programs\Cursor\Cursor.exe"
+Launch-Application -AppName "Cursor" -AppPath $cursorPath -Args @() -PositionParams $leftMonitor
+
+# Find Brave browser path
+$bravePath1 = "${env:LOCALAPPDATA}\BraveSoftware\Brave-Browser\Application\brave.exe"
+$bravePath2 = "C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe"
+
+if (Test-Path $bravePath1) {
+    $bravePath = $bravePath1
+} elseif (Test-Path $bravePath2) {
+    $bravePath = $bravePath2
+} else {
+    $bravePath = $null
+    Write-Log "Brave browser not found in default locations."
 }
 
-foreach ($procName in $braveProcessNames) {
-    Write-Log "Attempting to position second $procName window..."
-    if (Set-WindowPosition -ProcessName $procName @rightMonitorSecondHalf) {
-        break
+$templatePath = Join-Path $scriptDir "current-status.html"
+$templateUri = "file:///" + $templatePath.Replace("\", "/")
+
+if ($bravePath) {
+    # Launch dashboard in Brave split across right monitor
+    try {
+        Write-Log "Opening dashboard at: $templateUri with Brave"
+        Start-Process $bravePath -ArgumentList "--new-window", $templateUri
+        Start-Sleep -Seconds 5
+
+        # Try both process names for Brave
+        $braveProcessNames = @("brave", "BraveBrowser")
+        $bravePositioned = $false
+
+        foreach ($procName in $braveProcessNames) {
+            Write-Log "Attempting to position $procName..."
+            if (Set-WindowPosition -ProcessName $procName @rightMonitor) {
+                $bravePositioned = $true
+                break
+            }
+        }
+
+        if (-not $bravePositioned) {
+            Write-Warning "Failed to position Brave browser window. You may need to position it manually."
+        }
+
+        foreach ($procName in $braveProcessNames) {
+            Write-Log "Attempting to position second $procName window..."
+            if (Set-WindowPosition -ProcessName $procName @rightMonitorSecondHalf) {
+                break
+            }
+        }
+    } catch {
+        Write-Log "Failed to launch Brave: $_"
+    }
+} else {
+    # Fallback: Open the HTML dashboard with the default browser
+    try {
+        Write-Log "Opening dashboard at: $templateUri with the default browser"
+        Start-Process $templatePath
+    } catch {
+        Write-Log "Failed to open dashboard with the default browser: $_"
     }
 }
 
@@ -287,10 +315,13 @@ Write-Log "Setup completed successfully!"
 # Try to show notification if BurntToast is available
 try {
     if (Get-Module -ListAvailable -Name BurntToast) {
+        Import-Module BurntToast
         New-BurntToastNotification -Text "Morning Dev Environment", "Setup completed successfully! Your workspace is ready." -AppLogo "C:\Windows\System32\SecurityAndMaintenance.png"
+    } else {
+        Write-Log "BurntToast module not available."
     }
 } catch {
-    Write-Log "BurntToast notifications not available"
+    Write-Log "Error displaying notification: $_"
 }
 
 Write-Host "Morning setup completed successfully!"
