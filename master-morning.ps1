@@ -13,26 +13,57 @@ param([switch]$Elevated)
     ╚══════════════════════════════════════════════════════════════════════════════╝
 #>
 
-# Load environment variables from .env file
-function Load-EnvFile {
-    if (Test-Path ".env") {
-        Get-Content ".env" | ForEach-Object {
-            if ($_ -match '^\s*([^#][^=]+)=(.*)$') {
-                $key = $matches[1].Trim()
-                $value = $matches[2].Trim()
-                [Environment]::SetEnvironmentVariable($key, $value, "Process")
-            }
+
+# Function to check admin privileges
+function Test-Admin {
+    $currentUser = New-Object Security.Principal.WindowsPrincipal $([Security.Principal.WindowsIdentity]::GetCurrent())
+    return $currentUser.IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
+}
+
+# Ensure script is running with admin privileges unless $Elevated is specified
+if (-not $Elevated -and -not (Test-Admin)) {
+    Write-Host "Restarting script with admin privileges..."
+    Start-Process PowerShell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File '$PSCommandPath' -Elevated" -Verb RunAs
+    exit
+}
+
+Write-Host "Script running with administrative privileges"
+
+
+# Function to kill processes by name
+function Kill-Processes {
+    param([string[]]$ProcessNames)
+
+    foreach ($procName in $ProcessNames) {
+        try {
+            Get-Process -Name $procName -ErrorAction SilentlyContinue | Stop-Process -Force
+            Write-Host "Successfully terminated process: $procName"
+        } catch {
+            Write-Host "Process not found or could not be terminated: $procName"
         }
-    } else {
-        Write-Error "No .env file found. Please create one based on .env.example"
-        exit 1
     }
 }
 
-function Test-Admin {
-    $currentUser = New-Object Security.Principal.WindowsPrincipal $([Security.Principal.WindowsIdentity]::GetCurrent())
-    $currentUser.IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
+function Load-EnvFile {
+    param (
+        [string]$FilePath = "$PSScriptRoot\.env"
+    )
+
+    if (-Not (Test-Path $FilePath)) {
+        Write-Warning "Environment file '$FilePath' not found."
+        return
+    }
+
+    Get-Content $FilePath | ForEach-Object {
+        if ($_ -match '^\s*([^#=\s]+)\s*=\s*(.*)\s*$') {
+            $name = $matches[1]
+            $value = $matches[2]
+            [System.Environment]::SetEnvironmentVariable($name, $value, "Process")
+            Write-Host "Loaded environment variable: $name"
+        }
+    }
 }
+
 
 function Write-Log {
     param([string]$Message)
@@ -84,7 +115,7 @@ function Set-WindowPosition {
         $attempt = 0
         while ($attempt -lt $MaxAttempts) {
             Start-Sleep -Seconds 1
-            $process = Get-Process -Name $ProcessName -ErrorAction Stop | 
+            $process = Get-Process -Name $ProcessName -ErrorAction SilentlyContinue | 
                       Where-Object { $_.MainWindowHandle -ne 0 } |
                       Select-Object -First 1
             
@@ -92,7 +123,7 @@ function Set-WindowPosition {
                 [Win32]::ShowWindow($process.MainWindowHandle, 3)
                 $result = [Win32]::MoveWindow($process.MainWindowHandle, $X, $Y, $Width, $Height, $true)
                 [Win32]::SetForegroundWindow($process.MainWindowHandle)
-                Write-Log "Positioned $ProcessName window on attempt $($attempt)"
+                Write-Log "Positioned $ProcessName window on attempt $($attempt + 1)"
                 return $true
             }
             $attempt++
@@ -106,20 +137,11 @@ function Set-WindowPosition {
     }
 }
 
-# Main script execution starts here
-if ((Test-Admin) -eq $false) {
-    if ($elevated) { exit } 
-    else {
-        Start-Process powershell.exe -Verb RunAs -ArgumentList ('-noprofile -file "{0}" -elevated -WindowStyle Hidden' -f ($myinvocation.MyCommand.Definition))
-        exit
-    }
-}
-
-# Load environment variables
-Load-EnvFile
+Write-Host "Script running with administrative privileges"
 
 # Get the script's directory
-$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$scriptDir = $PSScriptRoot
+Write-Host "Script directory: $scriptDir"
 
 # Initialize logging
 $logFile = Join-Path $scriptDir "morning-report.txt"
@@ -127,49 +149,49 @@ Clear-Content $logFile -ErrorAction SilentlyContinue
 
 Write-Log "Starting morning setup..."
 
-# Read the template HTML
-$templatePath = Join-Path $scriptDir "current-status.html"
-$htmlContent = Get-Content $templatePath -Raw -Encoding UTF8
+# Load environment variables
+Load-EnvFile
 
-# Replace API keys and user settings with environment variables
-$htmlContent = $htmlContent -replace 'const apiKey = ".*?"', ('const apiKey = "' + $env:WEATHER_API_KEY + '"')
-$htmlContent = $htmlContent -replace 'const zipCode = ".*?"', ('const zipCode = "' + $env:ZIP_CODE + '"')
-$htmlContent = $htmlContent -replace 'const finnhubKey = ".*?"', ('const finnhubKey = "' + $env:FINNHUB_API_KEY + '"')
+# Generate env.js file with environment variables
+$envJsPath = Join-Path $scriptDir "env.js"
+Write-Log "Generating env.js at: $envJsPath"
 
-# Update crypto quantities from environment variables
-$cryptoHoldings = @{
-    XRP = $env:XRP_HOLDINGS
-    XYO = $env:XYO_HOLDINGS
-    BTC = $env:BTC_HOLDINGS
+$envVariables = @{
+    WEATHER_API_KEY = $env:WEATHER_API_KEY
+    FINNHUB_API_KEY = $env:FINNHUB_API_KEY
+    ZIP_CODE = $env:ZIP_CODE
+    USER_NAME = $env:USER_NAME
+    XRP_HOLDINGS = $env:XRP_HOLDINGS
+    XYO_HOLDINGS = $env:XYO_HOLDINGS
+    BTC_HOLDINGS = $env:BTC_HOLDINGS
+    META_SHARES = $env:META_SHARES
+    TSLA_SHARES = $env:TSLA_SHARES
+    AMZN_SHARES = $env:AMZN_SHARES
+    NVDA_SHARES = $env:NVDA_SHARES
+    GOOGL_SHARES = $env:GOOGL_SHARES
+    MSFT_SHARES = $env:MSFT_SHARES
+    NFLX_SHARES = $env:NFLX_SHARES
+    T_SHARES = $env:T_SHARES
 }
 
-$cryptoJson = $cryptoHoldings | ConvertTo-Json
-$htmlContent = $htmlContent -replace 'const cryptoQuantities = \{[^}]+\}', "const cryptoQuantities = $cryptoJson"
+$envJson = ConvertTo-Json $envVariables -Compress
 
-# Update stock quantities from environment variables
-$stockHoldings = @{
-    META = $env:META_SHARES
-    TSLA = $env:TSLA_SHARES
-    AMZN = $env:AMZN_SHARES
-    NVDA = $env:NVDA_SHARES
-    GOOGL = $env:GOOGL_SHARES
-    MSFT = $env:MSFT_SHARES
-    NFLX = $env:NFLX_SHARES
-    T = $env:T_SHARES
-}
+$envJsContent = "window.ENV = $envJson;`n`n" + @"
+// Log environment variables for debugging
+console.log('Environment variables loaded:', window.ENV);
 
-$stockJson = $stockHoldings | ConvertTo-Json
-$htmlContent = $htmlContent -replace 'const stockShares = \{[^}]+\}', "const stockShares = $stockJson"
+// Notify that env variables are ready
+window.dispatchEvent(new Event('envLoaded'));
+"@
 
-# Update greeting name
-$htmlContent = $htmlContent -replace 'User', $env:USER_NAME
+$envJsContent | Out-File $envJsPath -Encoding UTF8
 
-# Write the modified HTML back to the file
-$htmlContent | Out-File $templatePath -Encoding UTF8
+Write-Log "env.js generated successfully"
 
 # Kill all non-essential processes
 $processesToKill = @(
     "brave",
+    "BraveBrowser",
     "claude",
     "ApplicationFrameHost",
     "SystemSettings",
@@ -185,7 +207,7 @@ foreach ($proc in $processesToKill) {
         Get-Process -Name $proc -ErrorAction SilentlyContinue | Stop-Process -Force
         Write-Log "Killed $proc successfully"
     } catch {
-        Write-Log "No $proc process found"
+        Write-Log "No $proc process found or unable to kill"
     }
 }
 
@@ -217,7 +239,9 @@ $rightMonitorSecondHalf = @{
 Write-Log "Launching applications..."
 
 # Launch Cursor on left monitor
-Start-Process "C:\Users\$env:USERNAME\AppData\Local\Programs\Cursor\Cursor.exe"
+$cursorPath = "C:\Users\$env:USERNAME\AppData\Local\Programs\Cursor\Cursor.exe"
+Write-Log "Launching Cursor from: $cursorPath"
+Start-Process $cursorPath
 Start-Sleep -Seconds 5
 Set-WindowPosition -ProcessName "Cursor" @leftMonitor
 
@@ -226,22 +250,47 @@ $bravePath = "${env:LOCALAPPDATA}\BraveSoftware\Brave-Browser\Application\brave.
 if (-not (Test-Path $bravePath)) {
     $bravePath = "C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe"
 }
+Write-Log "Using Brave browser from: $bravePath"
 
 # Launch dashboard in Brave split across right monitor
-Start-Process $bravePath -ArgumentList "--new-window", "file:///$templatePath"
+$templatePath = Join-Path $scriptDir "current-status.html"
+$templateUri = "file:///" + $templatePath.Replace("\", "/")
+Write-Log "Opening dashboard at: $templateUri"
+Start-Process $bravePath -ArgumentList "--new-window", $templateUri
 Start-Sleep -Seconds 5
-Set-WindowPosition -ProcessName "brave" @rightMonitor
 
-# Launch a blank tab in the second window
-Start-Process $bravePath -ArgumentList "--new-window", "about:blank"
-Start-Sleep -Seconds 5
-Set-WindowPosition -ProcessName "brave" @rightMonitorSecondHalf
+# Try both process names for Brave
+$braveProcessNames = @("brave", "BraveBrowser")
+$bravePositioned = $false
+
+foreach ($procName in $braveProcessNames) {
+    Write-Log "Attempting to position $procName..."
+    if (Set-WindowPosition -ProcessName $procName @rightMonitor) {
+        $bravePositioned = $true
+        break
+    }
+}
+
+if (-not $bravePositioned) {
+    Write-Warning "Failed to position Brave browser window. You may need to position it manually."
+}
+
+foreach ($procName in $braveProcessNames) {
+    Write-Log "Attempting to position second $procName window..."
+    if (Set-WindowPosition -ProcessName $procName @rightMonitorSecondHalf) {
+        break
+    }
+}
 
 Write-Log "Setup completed successfully!"
 
-# Show notifications
-New-BurntToastNotification -Text "Morning Dev Environment", "Setup completed successfully! Your workspace is ready." -AppLogo "C:\Windows\System32\SecurityAndMaintenance.png"
+# Try to show notification if BurntToast is available
+try {
+    if (Get-Module -ListAvailable -Name BurntToast) {
+        New-BurntToastNotification -Text "Morning Dev Environment", "Setup completed successfully! Your workspace is ready." -AppLogo "C:\Windows\System32\SecurityAndMaintenance.png"
+    }
+} catch {
+    Write-Log "BurntToast notifications not available"
+}
 
-# Keep window open
-Write-Host "Press any key to exit..."
-$null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+Write-Host "Morning setup completed successfully!"

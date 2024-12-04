@@ -1,0 +1,29 @@
+/* variables.css */
+
+:root {
+    --background-color: #0a0d14;
+    --container-bg: rgba(17, 24, 39, 0.6);
+    --card-bg: rgba(13, 17, 23, 0.4);
+    --text-color: #e2e8f0;
+    --primary-color: #4f46e5;
+    --secondary-color: #7c3aed;
+    --accent-success: #10b981;
+    --accent-error: #ef4444;
+    --accent-warning: #f59e0b;
+    --border-color: #1f2937;
+    --input-bg: rgba(13, 17, 23, 0.8);
+    --input-border: #4f46e5;
+    --input-focus-border: #7c3aed;
+    --input-focus-shadow: rgba(79, 70, 229, 0.3);
+    --table-row-hover: rgba(255, 255, 255, 0.05);
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --button-bg: linear-gradient(135deg, #4f46e5, #7c3aed);
+    --button-border: rgba(79, 70, 229, 0.5);
+    --button-hover-bg: linear-gradient(135deg, #7c3aed, #4f46e5);
+    --button-color: #e2e8f0;
+    --sidebar-bg: rgba(13, 17, 23, 0.95);
+    --sidebar-width: 300px;
+    --todo-item-bg: rgba(31, 41, 55, 0.4);
+    --todo-item-hover: rgba(31, 41, 55, 0.6);
+    --todo-item-completed: rgba(16, 185, 129, 0.2);
+}

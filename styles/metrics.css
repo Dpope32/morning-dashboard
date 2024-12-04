@@ -1,0 +1,35 @@
+/* Metrics */
+.metric {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.metric:last-child {
+    border-bottom: none;
+}
+
+.metric span {
+    margin-right: 20px;
+}
+
+.metric-value {
+    background: rgba(31, 41, 55, 0.6);
+    padding: 8px 14px;
+    border-radius: 8px;
+    min-width: 140px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Market Status specific styles */
+#marketStatus .warning {
+    color: #fbbf24;
+    background: rgba(251, 191, 36, 0.1);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+}

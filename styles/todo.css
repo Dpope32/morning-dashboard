@@ -1,0 +1,112 @@
+/* todo.css */
+
+/* To-Do List */
+.todo-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.todo-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    margin-bottom: 10px;
+    background: var(--todo-item-bg);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.todo-item:hover {
+    background: var(--todo-item-hover);
+    transform: translateX(5px);
+}
+
+.todo-item.completed {
+    background: var(--todo-item-completed);
+}
+
+.todo-item.completed span {
+    text-decoration: line-through;
+    color: var(--accent-success);
+}
+
+.todo-checkbox {
+    margin-right: 12px;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 2px solid var(--primary-color);
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    position: relative;
+    background: transparent;
+    transition: all 0.3s ease;
+}
+
+.todo-checkbox:checked {
+    background: var(--accent-success);
+    border-color: var(--accent-success);
+}
+
+.todo-checkbox:checked::after {
+    content: '✓';
+    position: absolute;
+    color: white;
+    font-size: 12px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.todo-item span {
+    flex: 1;
+    color: var(--text-color);
+    font-size: 1em;
+    transition: all 0.3s ease;
+}
+
+.delete-todo {
+    background: transparent;
+    border: none;
+    color: var(--accent-error);
+    cursor: pointer;
+    font-size: 20px;
+    padding: 4px 8px;
+    opacity: 1;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 8px;
+    font-weight: bold;
+}
+
+.delete-todo:hover {
+    transform: scale(1.2);
+    text-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+}
+
+#newTodo {
+    width: 100%;
+    padding: 12px 15px;
+    margin-top: 15px;
+    border-radius: 8px;
+    border: 1px solid var(--input-border);
+    background: var(--input-bg);
+    color: var(--text-color);
+    font-size: 1em;
+    transition: all 0.3s ease;
+}
+
+#newTodo:focus {
+    outline: none;
+    border-color: var(--input-focus-border);
+    box-shadow: 0 0 12px var(--input-focus-shadow);
+}
+
+#newTodo::placeholder {
+    color: rgba(226, 232, 240, 0.6);
+}

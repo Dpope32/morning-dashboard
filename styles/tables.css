@@ -1,0 +1,107 @@
+/* Tables */
+.portfolio-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    margin-top: 15px;
+}
+
+.portfolio-table th {
+    color: #6b7280;
+    font-weight: 500;
+    text-align: center;
+    padding: 10px 15px;
+    font-size: 1em;
+    background: none;
+}
+
+.portfolio-table th:first-child {
+    text-align: left;
+}
+
+.portfolio-table tr {
+    background: rgba(31, 41, 55, 0.5);
+    border-radius: 10px;
+    transition: background 0.3s, transform 0.3s;
+}
+
+.portfolio-table tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateY(-2px);
+}
+
+.portfolio-table td {
+    padding: 12px 15px;
+    text-align: center;
+    font-size: 0.95em;
+}
+
+.portfolio-table td:first-child {
+    text-align: left;
+    font-size: 1.1em;
+    font-weight: bold;
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.portfolio-table td:last-child {
+    font-weight: bold;
+}
+
+.total-row {
+    background: rgba(31, 41, 55, 0.7) !important;
+}
+
+.total-row td {
+    background: none !important;
+}
+
+.total-row td:first-child {
+    color: var(--accent-success);
+}
+
+.total-row td:last-child.positive {
+    background: rgba(16, 185, 129, 0.2) !important;
+    border-radius: 8px;
+    color: var(--accent-success);
+    font-weight: bold;
+}
+
+.total-row td:last-child.negative {
+    background: rgba(239, 68, 68, 0.2) !important;
+    border-radius: 8px;
+    color: var(--accent-error);
+    font-weight: bold;
+}
+
+/* Price Change Colors */
+.price-change {
+    color: var(--accent-success);
+}
+
+.price-change.negative {
+    color: var(--accent-error);
+}
+
+/* In tables.css */
+@media (max-width: 768px) {
+    .portfolio-table th, .portfolio-table td {
+        padding: 8px 10px;
+        font-size: 0.9em;
+    }
+}
+
+/* In metrics.css */
+@media (max-width: 768px) {
+    .metric {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .metric-value {
+        margin-top: 5px;
+        min-width: unset;
+    }
+}
