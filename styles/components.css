@@ -39,6 +39,36 @@
     margin: 0 auto;
 }
 
+/* Weather Section */
+.weather-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    min-width: 150px;
+}
+
+.temp-display {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: right;
+}
+
+.temp-bar-container {
+    width: 150px;
+    height: 8px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.temp-bar {
+    height: 100%;
+    width: 0;
+    transition: width 0.5s ease, background-image 0.5s ease;
+    border-radius: 4px;
+}
+
 /* Search Section */
 .search-section {
     width: 100%;

@@ -23,6 +23,63 @@ const stockShares = {
     "T": parseFloat(window.ENV.T_SHARES) || 0
 };
 
+async function updateWeather() {
+    try {
+        const response = await fetch(`https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${zipCode}&aqi=no`, {
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        const temp = Math.round(data.current.temp_f);
+        
+        // Update temperature display
+        const tempDisplay = document.getElementById('currentTemp');
+        tempDisplay.textContent = `${temp}°F`;
+        
+        // Update temperature color based on value
+        if (temp <= 32) {
+            tempDisplay.style.color = '#00f';  // Blue for cold
+        } else if (temp <= 50) {
+            tempDisplay.style.color = '#0ff';  // Cyan for cool
+        } else if (temp <= 70) {
+            tempDisplay.style.color = '#0f0';  // Green for mild
+        } else if (temp <= 85) {
+            tempDisplay.style.color = '#ff0';  // Yellow for warm
+        } else {
+            tempDisplay.style.color = '#f00';  // Red for hot
+        }
+
+        // Update temperature bar
+        const tempBar = document.getElementById('tempBar');
+        const percentage = ((temp - 0) / (100 - 0)) * 100;  // Assuming temperature range 0-100°F
+        tempBar.style.width = `${Math.min(100, Math.max(0, percentage))}%`;
+        
+        // Update gradient based on temperature
+        const gradientColors = [
+            { temp: 32, color: '#00f' },   // Blue (cold)
+            { temp: 50, color: '#0ff' },   // Cyan (cool)
+            { temp: 70, color: '#0f0' },   // Green (mild)
+            { temp: 85, color: '#ff0' },   // Yellow (warm)
+            { temp: 100, color: '#f00' }   // Red (hot)
+        ];
+        
+        let gradient = 'linear-gradient(to right';
+        gradientColors.forEach((point, index) => {
+            const position = (point.temp / 100) * 100;
+            gradient += `, ${point.color} ${position}%`;
+        });
+        gradient += ')';
+        tempBar.style.backgroundImage = gradient;
+    } catch (error) {
+        console.error('Error fetching weather:', error);
+        document.getElementById('currentTemp').textContent = 'Error';
+    }
+}
+
 function formatNumber(number, type = 'default') {
     if (number === null || number === undefined || isNaN(number)) {
         return '0.00';
@@ -74,17 +131,32 @@ async function updateCryptoPrices() {
                 price = parseFloat(data.bpi.USD.rate.replace(',', ''));
                 priceChange = (Math.random() * 10) - 5;
             } else if (symbol === 'XRP') {
-                const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=ripple&vs_currencies=usd&precision=10');
+                const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=ripple&vs_currencies=usd&precision=10', {
+                    mode: 'cors',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
                 const data = await response.json();
                 price = data.ripple.usd;
                 priceChange = (Math.random() * 10) - 5;
             } else if (symbol === 'XYO') {
-                const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=xyo-network&vs_currencies=usd&precision=10');
+                const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=xyo-network&vs_currencies=usd&precision=10', {
+                    mode: 'cors',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
                 const data = await response.json();
                 price = data['xyo-network'].usd;
                 priceChange = (Math.random() * 10) - 5;
             } else if (symbol === 'SOL') {
-                const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd&precision=10');
+                const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd&precision=10', {
+                    mode: 'cors',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
                 const data = await response.json();
                 price = data.solana.usd;
                 priceChange = (Math.random() * 10) - 5;
@@ -189,7 +261,12 @@ async function checkNetworkStatus() {
     const networkStatusElement = document.getElementById('networkStatus');
     try {
         const startTime = performance.now();
-        const response = await fetch('https://api.coingecko.com/api/v3/ping');
+        const response = await fetch('https://api.coingecko.com/api/v3/ping', {
+            mode: 'cors',
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
         const endTime = performance.now();
         const latency = Math.round(endTime - startTime);
         
@@ -266,7 +343,9 @@ document.addEventListener('DOMContentLoaded', () => {
     checkNetworkStatus();
     updateStockPrices();
     updateCryptoPrices();
+    updateWeather();
 
-    // Periodically check network status
+    // Periodically check network status and weather
     setInterval(checkNetworkStatus, 30000); // Check every 30 seconds
+    setInterval(updateWeather, 300000); // Update weather every 5 minutes
 });
