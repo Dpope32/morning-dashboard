@@ -1,15 +1,23 @@
 class RightSidebar {
     constructor() {
         this.sidebar = document.getElementById('rightSidebar');
-        this.isOpen = true; // Track sidebar state
+        this.isOpen = true;
         this.setupCloseButton();
         this.setupToggleButton();
         this.setupEventListeners();
+        this.removeHeader();
+    }
+
+    removeHeader() {
+        const header = this.sidebar.querySelector('h3');
+        if (header) {
+            header.remove();
+        }
     }
 
     setupCloseButton() {
         const closeBtn = document.createElement('button');
-        closeBtn.innerHTML = '→';
+        closeBtn.innerHTML = '☰';
         closeBtn.className = 'right-sidebar-close';
         this.sidebar.insertBefore(closeBtn, this.sidebar.firstChild);
         
@@ -19,7 +27,6 @@ class RightSidebar {
     }
 
     setupToggleButton() {
-        // Remove any existing toggle button first
         const existingToggle = document.querySelector('.right-sidebar-toggle');
         if (existingToggle) {
             existingToggle.remove();
@@ -30,7 +37,6 @@ class RightSidebar {
         toggleBtn.className = 'right-sidebar-toggle';
         document.body.appendChild(toggleBtn);
         
-        // Initially hide the toggle button since sidebar is open by default
         toggleBtn.style.display = 'none';
         
         toggleBtn.addEventListener('click', () => {
@@ -61,7 +67,6 @@ class RightSidebar {
     }
 
     setupEventListeners() {
-        // Handle responsive behavior
         const mediaQuery = window.matchMedia('(max-width: 1200px)');
         const handleMediaChange = (e) => {
             if (e.matches) {
@@ -71,7 +76,7 @@ class RightSidebar {
             }
         };
         mediaQuery.addListener(handleMediaChange);
-        handleMediaChange(mediaQuery); // Initial check
+        handleMediaChange(mediaQuery);
     }
 }
 

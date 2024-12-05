@@ -37,23 +37,15 @@ body {
     padding: 25px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     margin-bottom: 20px;
-    margin-left: calc(var(--sidebar-width) + 25px);
-    transition: margin-left 0.3s ease;
-}
-
-/* Search Section */
-.search-section {
-    max-width: 960px;
-    margin: 0 auto 25px auto;
     margin-left: calc(var(--sidebar-width) + 25px);
     transition: margin-left 0.3s ease;
 }
 
 /* Responsive Design */
 @media (max-width: 1200px) {
-    .container, .header-section, .search-section {
+    .container, .header-section {
         margin-left: 25px;
         margin-right: 25px;
     }

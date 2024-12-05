@@ -10,8 +10,8 @@
 .todo-item {
     display: flex;
     align-items: center;
-    padding: 12px 15px;
-    margin-bottom: 10px;
+    padding: 12px 2px;
+    margin-bottom: 6px;
     background: var(--todo-item-bg);
     border-radius: 8px;
     border: 1px solid var(--border-color);
@@ -33,7 +33,7 @@
 }
 
 .todo-checkbox {
-    margin-right: 12px;
+    margin-right: 6px;
     width: 18px;
     height: 18px;
     border-radius: 4px;

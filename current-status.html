@@ -8,66 +8,96 @@
     <script src="env.js"></script>
 </head>
 <body class="dark-theme">
-    <!-- Left Sidebar -->
     <div class="sidebar" id="sidebar">
         <h3>To-Do List</h3>
         <ul class="todo-list" id="todoList">
-            <!-- To-Do items will be added here -->
         </ul>
         <input type="text" id="newTodo" placeholder="Add a new task..." />
     </div>
 
-    <!-- Right Sidebar -->
     <div class="right-sidebar" id="rightSidebar">
-        <h3>Dev Env</h3>
-        <div class="metric">
-            <span>Cursor</span>
-            <div class="metric-value">
-                <span class="success">Ready</span>
-            </div>
-        </div>
-        <div class="metric">
-            <span>System Status</span>
-            <div class="metric-value">
-                <span class="success">Clean</span>
-            </div>
-        </div>
-        <div class="metric">
-            <span>Market Status</span>
-            <div class="metric-value" id="marketStatus">
-                <span class="loading">Loading...</span>
-            </div>
-        </div>
-        <div class="metric">
-            <span>Network Status</span>
-            <div class="metric-value" id="networkStatus">
-                <span class="loading">Loading...</span>
-            </div>
-        </div>
         <div class="button-group">
             <button onclick="openPowerShell()">PowerShell</button>
             <button onclick="alert('AWSome Button Clicked')">AWSome</button>
             <button onclick="alert('Dev Button Clicked')">Dev</button>
             <button onclick="alert('Qdev Button Clicked')">Qdev</button>
         </div>
-    </div>
-
-    <!-- Main Content -->
-    <div class="main-content">
-        <div class="header-section">
-            <div class="welcome-header" id="greeting">Loading...</div>
-            <div class="weather-section">
-                <div class="temp-display">
-                    <span id="currentTemp">--°F</span>
+        
+        <div class="metrics-container">
+            <div class="metric">
+                <span>Cursor</span>
+                <div class="metric-value">
+                    <span class="success">Ready</span>
                 </div>
-                <div class="temp-bar-container">
-                    <div id="tempBar" class="temp-bar"></div>
+            </div>
+            <div class="metric">
+                <span>System</span>
+                <div class="metric-value">
+                    <span class="success">Clean</span>
+                </div>
+            </div>
+            <div class="metric">
+                <span>Market Status</span>
+                <div class="metric-value" id="marketStatus">
+                    <span class="loading">Loading...</span>
+                </div>
+            </div>
+            <div class="metric">
+                <span>Network</span>
+                <div class="metric-value" id="networkStatus">
+                    <span class="loading">Loading...</span>
+                </div>
+            </div>
+            <div class="metric">
+                <span>Ping</span>
+                <div class="metric-value" id="pingStatus">
+                    <span class="loading">Loading...</span>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="search-section">
-            <input type="text" class="search-input" placeholder="Search coming soon...">
+    <div class="main-content">
+        <div class="header-section">
+            <div class="left-content">
+                <div class="welcome-header" id="greeting">Loading...</div>
+                <div class="search-section">
+                    <input type="text" class="search-input" placeholder="Search coming soon...">
+                </div>
+            </div>
+            <div class="weather-section">
+                <div class="weather-container">
+                    <div class="weather-grid">
+                        <div class="weather-cell">
+                            <div class="temp-bar-container">
+                                <div id="tempBar" class="temp-bar"></div>
+                            </div>
+                            <div class="temp-display">
+                                <span id="currentTemp">--°F</span>
+                            </div>
+                            <h3>Today</h3>
+                        </div>
+                        <div class="weather-cell">
+                            <div class="temp-bar-container">
+                                <div id="tomorrowBar" class="temp-bar"></div>
+                            </div>
+                            <div class="temp-display">
+                                <span id="tomorrowTemp">--°F</span>
+                            </div>
+                            <h3 id="tomorrowDay">Tomorrow</h3>
+                        </div>
+                        <div class="weather-cell">
+                            <div class="temp-bar-container">
+                                <div id="nextDayBar" class="temp-bar"></div>
+                            </div>
+                            <div class="temp-display">
+                                <span id="nextDayTemp">--°F</span>
+                            </div>
+                            <h3 id="nextDayName">Next Day</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="container">
@@ -102,13 +132,6 @@
                         </tr>
                         <tr>
                             <td>BTC</td>
-                            <td>0</td>
-                            <td>Loading...</td>
-                            <td>Loading...</td>
-                            <td>Loading...</td>
-                        </tr>
-                        <tr>
-                            <td>SOL</td>
                             <td>0</td>
                             <td>Loading...</td>
                             <td>Loading...</td>

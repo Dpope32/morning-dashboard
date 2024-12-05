@@ -1,3 +1,6 @@
+# Note: Please update your .env file to use the correct Claude path:
+# CLAUDE_PATH=C:\Users\%WINDOWS_USERNAME%\AppData\Local\AnthropicClaude\app-0.7.5\claude.exe
+
 param([switch]$Elevated)
 
 <# 
@@ -5,11 +8,12 @@ param([switch]$Elevated)
     ║                     MORNING DEV ENVIRONMENT AUTOMATION                       ║
     ║                                                                              ║
     ║  What this script does:                                                      ║
-    ║  1. Closes all non-essential applications (Chrome, Edge, VS Code, etc.)      ║
+    ║  1. Closes non-essential applications (Chrome, Edge, VS Code, etc.)          ║
     ║  2. Sets up your workspace with:                                             ║
-    ║     - Clean slate by closing all running applications                        ║
-    ║     - Morning status dashboard in Brave on right monitor                     ║
-    ║     - Cursor editor on left monitor                                          ║
+    ║     - Clean slate by closing specified applications                          ║
+    ║     - Morning status dashboard in Brave                                      ║
+    ║     - Claude on left monitor                                                 ║
+    ║     - Opens Obsidian vault on right monitor                                  ║
     ╚══════════════════════════════════════════════════════════════════════════════╝
 #>
 
@@ -22,7 +26,7 @@ if ((Get-ExecutionPolicy -Scope CurrentUser) -ne 'RemoteSigned') {
 function Kill-Processes {
     param([string[]]$ProcessNames)
 
-    foreach ($procName in $ProcessNames) {
+    foreach ($procName in $processesToKill) {
         try {
             Get-Process -Name $procName -ErrorAction SilentlyContinue | Stop-Process -Force
             Write-Host "Successfully terminated process: $procName"
@@ -46,8 +50,11 @@ function Load-EnvFile {
         if ($_ -match '^\s*([^#=\s]+)\s*=\s*(.*)\s*$') {
             $name = $matches[1]
             $value = $matches[2]
+            # Replace %WINDOWS_USERNAME% with actual value in paths
+            if ($value -like '*%WINDOWS_USERNAME%*' -and $env:WINDOWS_USERNAME) {
+                $value = $value.Replace('%WINDOWS_USERNAME%', $env:WINDOWS_USERNAME)
+            }
             [System.Environment]::SetEnvironmentVariable($name, $value, "Process")
-            Write-Host "Loaded environment variable: $name"
         }
     }
 }
@@ -66,7 +73,7 @@ function Set-WindowPosition {
         [int]$Y,
         [int]$Width,
         [int]$Height,
-        [int]$MaxAttempts = 10
+        [int]$MaxAttempts = 3
     )
     
     try {
@@ -110,25 +117,22 @@ function Set-WindowPosition {
                 [Win32]::ShowWindow($process.MainWindowHandle, 3)
                 $result = [Win32]::MoveWindow($process.MainWindowHandle, $X, $Y, $Width, $Height, $true)
                 [Win32]::SetForegroundWindow($process.MainWindowHandle)
-                Write-Log "Positioned $ProcessName window on attempt $($attempt + 1)"
+                Write-Log "Positioned window successfully"
                 return $true
             }
             $attempt++
-            Write-Log "Attempt $($attempt): Waiting for $ProcessName window..."
+            Write-Log "Waiting for window..."
         }
-        Write-Log "Failed to position $ProcessName window after $MaxAttempts attempts"
+        Write-Log "Failed to position window after $MaxAttempts attempts"
         return $false
     } catch {
-        Write-Log "Error positioning $ProcessName window: $_"
+        Write-Log "Error positioning window"
         return $false
     }
 }
 
-Write-Host "Script running with administrative privileges"
-
 # Get the script's directory
 $scriptDir = $PSScriptRoot
-Write-Host "Script directory: $scriptDir"
 
 # Initialize logging
 $logFile = Join-Path $scriptDir "morning-report.txt"
@@ -139,13 +143,11 @@ Write-Log "Starting morning setup..."
 # Load environment variables
 Load-EnvFile
 
-# Generate env.js file with environment variables
+# Generate env.js file with environment variables (excluding sensitive data)
 $envJsPath = Join-Path $scriptDir "env.js"
-Write-Log "Generating env.js at: $envJsPath"
+Write-Log "Generating env.js"
 
 $envVariables = @{
-    WEATHER_API_KEY = $env:WEATHER_API_KEY
-    FINNHUB_API_KEY = $env:FINNHUB_API_KEY
     ZIP_CODE = $env:ZIP_CODE
     USER_NAME = $env:USER_NAME
     XRP_HOLDINGS = $env:XRP_HOLDINGS
@@ -161,29 +163,22 @@ $envVariables = @{
     T_SHARES = $env:T_SHARES
 }
 
+$envVariables["WEATHER_API_KEY"] = $env:WEATHER_API_KEY
+$envVariables["FINNHUB_API_KEY"] = $env:FINNHUB_API_KEY
+
 $envJson = ConvertTo-Json $envVariables -Compress
-
-$envJsContent = "window.ENV = $envJson;`n`n" + @"
-    // Log environment variables for debugging
-    console.log('Environment variables loaded:', window.ENV);
-    
-    // Notify that env variables are ready
-    window.dispatchEvent(new Event('envLoaded'));
-"@
-
+$envJsContent = "window.ENV = $envJson;`n"
 $envJsContent | Out-File $envJsPath -Encoding UTF8
 
-Write-Log "env.js generated successfully"
+Write-Log "Configuration generated"
 
 # Kill all non-essential processes
 $processesToKill = @(
     "brave",
     "BraveBrowser",
-    "claude",
     "ApplicationFrameHost",
     "SystemSettings",
     "TextInputHost",
-    "Cursor",
     "Code",
     "notepad",
     "slack"
@@ -192,33 +187,26 @@ $processesToKill = @(
 foreach ($proc in $processesToKill) {
     try {
         Get-Process -Name $proc -ErrorAction SilentlyContinue | Stop-Process -Force
-        Write-Log "Killed $proc successfully"
+        Write-Log "Closed application successfully"
     } catch {
-        Write-Log "No $proc process found or unable to kill"
+        Write-Log "Application not found or unable to close"
     }
 }
 
 # Wait a moment for processes to close
 Start-Sleep -Seconds 2
 
-$leftMonitor = @{
-    X = 0
+$rightMonitor = @{
+    X = 1920
     Y = 0
     Width = 1920
     Height = 1080
 }
 
-$rightMonitor = @{
-    X = 1920
+$leftMonitor = @{
+    X = 0
     Y = 0
-    Width = 960
-    Height = 1080
-}
-
-$rightMonitorSecondHalf = @{
-    X = 2880
-    Y = 0
-    Width = 960
+    Width = 1920
     Height = 1080
 }
 
@@ -236,21 +224,19 @@ function Launch-Application {
 
     if (Test-Path $AppPath) {
         try {
-            Write-Log "Launching $AppName from: $AppPath"
+            Write-Log "Launching application"
             Start-Process $AppPath -ArgumentList $Args
             Start-Sleep -Seconds 5
-            Set-WindowPosition -ProcessName $AppName @PositionParams
+            if ($PositionParams) {
+                Set-WindowPosition -ProcessName $AppName @PositionParams
+            }
         } catch {
-            Write-Log "Failed to launch ${AppName}: $_"
+            Write-Log "Failed to launch application"
         }
     } else {
-        Write-Log "$AppName executable not found at: $AppPath"
+        Write-Log "Application not found"
     }
 }
-
-# Launch Cursor on left monitor
-$cursorPath = "C:\Users\$env:USERNAME\AppData\Local\Programs\Cursor\Cursor.exe"
-Launch-Application -AppName "Cursor" -AppPath $cursorPath -Args @() -PositionParams $leftMonitor
 
 # Find Brave browser path
 $bravePath1 = "${env:LOCALAPPDATA}\BraveSoftware\Brave-Browser\Application\brave.exe"
@@ -262,66 +248,59 @@ if (Test-Path $bravePath1) {
     $bravePath = $bravePath2
 } else {
     $bravePath = $null
-    Write-Log "Brave browser not found in default locations."
+    Write-Log "Browser not found in default locations"
 }
 
 $templatePath = Join-Path $scriptDir "current-status.html"
 $templateUri = "file:///" + $templatePath.Replace("\", "/")
 
 if ($bravePath) {
-    # Launch dashboard in Brave split across right monitor
     try {
-        Write-Log "Opening dashboard at: $templateUri with Brave"
+        Write-Log "Opening dashboard"
         Start-Process $bravePath -ArgumentList "--new-window", $templateUri
-        Start-Sleep -Seconds 5
-
-        # Try both process names for Brave
-        $braveProcessNames = @("brave", "BraveBrowser")
-        $bravePositioned = $false
-
-        foreach ($procName in $braveProcessNames) {
-            Write-Log "Attempting to position $procName..."
-            if (Set-WindowPosition -ProcessName $procName @rightMonitor) {
-                $bravePositioned = $true
-                break
-            }
-        }
-
-        if (-not $bravePositioned) {
-            Write-Warning "Failed to position Brave browser window. You may need to position it manually."
-        }
-
-        foreach ($procName in $braveProcessNames) {
-            Write-Log "Attempting to position second $procName window..."
-            if (Set-WindowPosition -ProcessName $procName @rightMonitorSecondHalf) {
-                break
-            }
-        }
     } catch {
-        Write-Log "Failed to launch Brave: $_"
+        Write-Log "Failed to launch browser"
     }
 } else {
-    # Fallback: Open the HTML dashboard with the default browser
     try {
-        Write-Log "Opening dashboard at: $templateUri with the default browser"
+        Write-Log "Opening dashboard with default browser"
         Start-Process $templatePath
     } catch {
-        Write-Log "Failed to open dashboard with the default browser: $_"
+        Write-Log "Failed to open dashboard"
     }
 }
 
-Write-Log "Setup completed successfully!"
+# Launch Claude on left monitor
+Launch-Application -AppName "claude" -AppPath $env:CLAUDE_PATH -Args @() -PositionParams $leftMonitor
+
+# Launch Obsidian with vault on right monitor
+if (-not (Get-Process -Name "Obsidian" -ErrorAction SilentlyContinue)) {
+    if (Test-Path $env:OBSIDIAN_PATH) {
+        try {
+            Write-Log "Opening Obsidian"
+            Start-Process $env:OBSIDIAN_PATH -ArgumentList "--vault", $env:OBSIDIAN_VAULT_PATH
+            Start-Sleep -Seconds 5
+            Set-WindowPosition -ProcessName "Obsidian" @rightMonitor
+        } catch {
+            Write-Log "Failed to launch Obsidian"
+        }
+    } else {
+        Write-Log "Obsidian not found"
+    }
+} else {
+    Write-Log "Obsidian is already running"
+}
+
+Write-Log "Setup completed"
 
 # Try to show notification if BurntToast is available
 try {
     if (Get-Module -ListAvailable -Name BurntToast) {
         Import-Module BurntToast
-        New-BurntToastNotification -Text "Morning Dev Environment", "Setup completed successfully! Your workspace is ready." -AppLogo "C:\Windows\System32\SecurityAndMaintenance.png"
-    } else {
-        Write-Log "BurntToast module not available."
+        New-BurntToastNotification -Text "Morning Dev Environment", "Setup completed successfully!" -AppLogo "C:\Windows\System32\SecurityAndMaintenance.png"
     }
 } catch {
-    Write-Log "Error displaying notification: $_"
+    Write-Log "Notification error"
 }
 
 Write-Host "Morning setup completed successfully!"

@@ -12,7 +12,7 @@ class Sidebar {
 
     setupCloseButton() {
         const closeBtn = document.createElement('button');
-        closeBtn.innerHTML = '←';
+        closeBtn.innerHTML = '☰';
         closeBtn.className = 'sidebar-close';
         this.sidebar.insertBefore(closeBtn, this.sidebar.firstChild);
         

@@ -9,7 +9,6 @@ const cryptoQuantities = {
     "XRP": parseFloat(window.ENV.XRP_HOLDINGS) || 0,
     "XYO": parseFloat(window.ENV.XYO_HOLDINGS) || 0,
     "BTC": parseFloat(window.ENV.BTC_HOLDINGS) || 0,
-    "SOL": parseFloat(window.ENV.SOL_HOLDINGS) || 0
 };
 
 const stockShares = {
@@ -23,60 +22,113 @@ const stockShares = {
     "T": parseFloat(window.ENV.T_SHARES) || 0
 };
 
+function getTemperatureColor(temp) {
+    const colors = [
+        { temp: -16, color: '#1a237e' }, // Deep blue
+        { temp: -8, color: '#283593' },  // Darker blue
+        { temp: 0, color: '#3949ab' },   // Dark blue
+        { temp: 8, color: '#1e88e5' },   // Medium blue
+        { temp: 16, color: '#039be5' },  // Light blue
+        { temp: 24, color: '#00acc1' },  // Cyan
+        { temp: 32, color: '#00897b' },  // Teal
+        { temp: 40, color: '#43a047' },  // Light green
+        { temp: 48, color: '#7cb342' },  // Lime green
+        { temp: 56, color: '#c0ca33' },  // Yellow green
+        { temp: 64, color: '#fdd835' },  // Yellow
+        { temp: 72, color: '#ffb300' },  // Amber
+        { temp: 80, color: '#fb8c00' },  // Orange
+        { temp: 88, color: '#f4511e' },  // Deep orange
+        { temp: 96, color: '#e53935' },  // Red
+        { temp: 104, color: '#d32f2f' }, // Dark red
+        { temp: 112, color: '#c62828' }  // Deep red
+    ];
+
+    // Find the appropriate color range
+    for (let i = 0; i < colors.length - 1; i++) {
+        if (temp <= colors[i + 1].temp) {
+            return colors[i].color;
+        }
+    }
+    return colors[colors.length - 1].color;
+}
+
+function updateTemperatureDisplay(temp, displayId, barId) {
+    const tempDisplay = document.getElementById(displayId);
+    const tempBar = document.getElementById(barId);
+    const color = getTemperatureColor(temp);
+    
+    tempDisplay.textContent = `${temp}°F`;
+    tempDisplay.style.color = color;
+    
+    const percentage = ((temp + 16) / (112 + 16)) * 100;
+    tempBar.style.height = `${Math.min(100, Math.max(0, percentage))}%`;
+    tempBar.style.backgroundColor = color;
+}
+
+function getDayName(date) {
+    return date.toLocaleDateString('en-US', { weekday: 'long' });
+}
+
 async function updateWeather() {
     try {
-        const response = await fetch(`https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${zipCode}&aqi=no`, {
+        const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${zipCode}&days=3&aqi=no`, {
             headers: {
                 'Accept': 'application/json'
             }
         });
+        
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
+        
         const data = await response.json();
-        const temp = Math.round(data.current.temp_f);
         
-        // Update temperature display
-        const tempDisplay = document.getElementById('currentTemp');
-        tempDisplay.textContent = `${temp}°F`;
+        // Update current temperature
+        const currentTemp = Math.round(data.current.temp_f);
+        updateTemperatureDisplay(currentTemp, 'currentTemp', 'tempBar');
         
-        // Update temperature color based on value
-        if (temp <= 32) {
-            tempDisplay.style.color = '#00f';  // Blue for cold
-        } else if (temp <= 50) {
-            tempDisplay.style.color = '#0ff';  // Cyan for cool
-        } else if (temp <= 70) {
-            tempDisplay.style.color = '#0f0';  // Green for mild
-        } else if (temp <= 85) {
-            tempDisplay.style.color = '#ff0';  // Yellow for warm
-        } else {
-            tempDisplay.style.color = '#f00';  // Red for hot
-        }
-
-        // Update temperature bar
-        const tempBar = document.getElementById('tempBar');
-        const percentage = ((temp - 0) / (100 - 0)) * 100;  // Assuming temperature range 0-100°F
-        tempBar.style.width = `${Math.min(100, Math.max(0, percentage))}%`;
+        // Update tomorrow's temperature and day name
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const tomorrowTemp = Math.round(data.forecast.forecastday[1].day.avgtemp_f);
+        updateTemperatureDisplay(tomorrowTemp, 'tomorrowTemp', 'tomorrowBar');
+        document.getElementById('tomorrowDay').textContent = getDayName(tomorrow);
         
-        // Update gradient based on temperature
-        const gradientColors = [
-            { temp: 32, color: '#00f' },   // Blue (cold)
-            { temp: 50, color: '#0ff' },   // Cyan (cool)
-            { temp: 70, color: '#0f0' },   // Green (mild)
-            { temp: 85, color: '#ff0' },   // Yellow (warm)
-            { temp: 100, color: '#f00' }   // Red (hot)
-        ];
+        // Update next day's temperature and day name
+        const nextDay = new Date();
+        nextDay.setDate(nextDay.getDate() + 2);
+        const nextDayTemp = Math.round(data.forecast.forecastday[2].day.avgtemp_f);
+        updateTemperatureDisplay(nextDayTemp, 'nextDayTemp', 'nextDayBar');
+        document.getElementById('nextDayName').textContent = getDayName(nextDay);
         
-        let gradient = 'linear-gradient(to right';
-        gradientColors.forEach((point, index) => {
-            const position = (point.temp / 100) * 100;
-            gradient += `, ${point.color} ${position}%`;
-        });
-        gradient += ')';
-        tempBar.style.backgroundImage = gradient;
     } catch (error) {
-        console.error('Error fetching weather:', error);
-        document.getElementById('currentTemp').textContent = 'Error';
+        console.error('Error fetching weather data:', error);
+        ['currentTemp', 'tomorrowTemp', 'nextDayTemp'].forEach(id => {
+            document.getElementById(id).textContent = 'Error';
+        });
+    }
+}
+
+async function checkPing() {
+    const pingStatusElement = document.getElementById('pingStatus');
+    try {
+        const startTime = performance.now();
+        const response = await fetch('https://www.google.com/favicon.ico', {
+            mode: 'no-cors',
+            cache: 'no-cache'
+        });
+        const endTime = performance.now();
+        const latency = Math.round(endTime - startTime);
+        
+        if (latency < 100) {
+            pingStatusElement.innerHTML = `<span class="success">${latency}ms</span>`;
+        } else if (latency < 300) {
+            pingStatusElement.innerHTML = `<span class="success">${latency}ms</span>`;
+        } else {
+            pingStatusElement.innerHTML = `<span class="warning">${latency}ms</span>`;
+        }
+    } catch (error) {
+        pingStatusElement.innerHTML = '<span class="error">Failed</span>';
     }
 }
 
@@ -132,7 +184,6 @@ async function updateCryptoPrices() {
                 priceChange = (Math.random() * 10) - 5;
             } else if (symbol === 'XRP') {
                 try {
-                    // Try to get fresh data
                     const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=ripple&vs_currencies=usd&precision=10', {
                         mode: 'cors',
                         headers: {
@@ -142,28 +193,22 @@ async function updateCryptoPrices() {
                     const data = await response.json();
                     price = data.ripple.usd;
                     
-                    // Get previous price from cache
                     const cachedData = await localforage.getItem('xrp-price');
                     
                     if (cachedData) {
-                        // Calculate real price change
                         priceChange = ((price - cachedData.price) / cachedData.price) * 100;
-                        console.log('XRP price change:', priceChange);
                     }
                     
-                    // Store new price with timestamp
                     await localforage.setItem('xrp-price', {
                         price: price,
                         timestamp: Date.now()
                     });
                 } catch (error) {
-                    console.error('Error fetching XRP price:', error);
-                    // Try to get cached data if API fails
+                    console.error('Error fetching XRP price');
                     const cachedData = await localforage.getItem('xrp-price');
                     if (cachedData) {
                         price = cachedData.price;
-                        priceChange = null; // Use null to indicate we're using cached data
-                        console.log('Using cached XRP price:', price);
+                        priceChange = null;
                     }
                 }
             } else if (symbol === 'XYO') {
@@ -175,16 +220,6 @@ async function updateCryptoPrices() {
                 });
                 const data = await response.json();
                 price = data['xyo-network'].usd;
-                priceChange = (Math.random() * 10) - 5;
-            } else if (symbol === 'SOL') {
-                const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd&precision=10', {
-                    mode: 'cors',
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                });
-                const data = await response.json();
-                price = data.solana.usd;
                 priceChange = (Math.random() * 10) - 5;
             }
 
@@ -199,7 +234,7 @@ async function updateCryptoPrices() {
             row.cells[3].textContent = '$' + (symbol === 'BTC' ? formatNumber(price, 'btc-price') : formatNumber(price, 'crypto-price'));
             row.cells[4].textContent = '$' + formatNumber(value);
         } catch (error) {
-            console.error('Error fetching price for ' + symbol + ':', error);
+            console.error('Error fetching price data');
             row.cells[2].innerHTML = '<span class="error">N/A</span>';
             row.cells[3].textContent = 'N/A';
             row.cells[4].textContent = 'N/A';
@@ -246,7 +281,7 @@ async function updateStockPrices() {
             row.cells[4].textContent = '$' + formatNumber(value);
                 
         } catch (error) {
-            console.error('Error fetching price for ' + symbol + ':', error);
+            console.error('Error fetching stock price data');
             row.cells[2].innerHTML = '<span class="error">N/A</span>';
             row.cells[3].textContent = 'N/A';
             row.cells[4].textContent = 'N/A';
@@ -275,7 +310,7 @@ async function updateMarketStatus() {
             statusElement.innerHTML = '<span class="warning">Closed</span>';
         }
     } catch (error) {
-        console.error('Error fetching market status:', error);
+        console.error('Error fetching market status');
         const statusElement = document.getElementById('marketStatus');
         if (statusElement) {
             statusElement.innerHTML = '<span class="error">Error</span>';
@@ -354,24 +389,16 @@ function openPowerShell() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Log environment variables for debugging
-    console.log('Script loaded with environment variables:', {
-        userName,
-        apiKey,
-        zipCode,
-        finnhubKey,
-        cryptoQuantities,
-        stockShares
-    });
-
     updateDateAndGreeting();
     updateMarketStatus();
     checkNetworkStatus();
+    checkPing();
     updateStockPrices();
     updateCryptoPrices();
     updateWeather();
 
-    // Periodically check network status and weather
+    // Periodically check network status, ping and weather
     setInterval(checkNetworkStatus, 30000); // Check every 30 seconds
+    setInterval(checkPing, 30000); // Check ping every 30 seconds
     setInterval(updateWeather, 300000); // Update weather every 5 minutes
 });

@@ -4,13 +4,14 @@
     --background-color: #0a0d14;
     --container-bg: rgba(17, 24, 39, 0.6);
     --card-bg: rgba(0, 0, 0, 1);
+    --header-color: #dbd0c6;
     --text-color: #e2e8f0;
     --primary-color: #4f46e5;
     --secondary-color: #7c3aed;
     --accent-success: #10b981;
     --accent-error: #ef4444;
     --accent-warning: #f59e0b;
-    --border-color: #1f2937;
+    --border-color: #465468;
     --input-bg: rgba(13, 17, 23, 0.8);
     --input-border: #4f46e5;
     --input-focus-border: #7c3aed;

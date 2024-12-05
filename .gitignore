@@ -1,17 +1,39 @@
+# Environment files
 .env
-.env/
-.env.js
 env.js
-node_modules/
-.DS_Store
-*.log
-morning-report.txt
+*.env
+.env.*
+!.env.example
 
-# Environment variables
-.env
+# Dependencies
+node_modules/
+vendor/
+
+# Build outputs
+dist/
+build/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 
 # Personal data
 crypto-data.json
-
-# PowerShell scripts with sensitive data
-PPNF.ps1
