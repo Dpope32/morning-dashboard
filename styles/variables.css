@@ -3,7 +3,7 @@
 :root {
     --background-color: #0a0d14;
     --container-bg: rgba(17, 24, 39, 0.6);
-    --card-bg: rgba(13, 17, 23, 0.6);
+    --card-bg: rgba(0, 0, 0, 1);
     --text-color: #e2e8f0;
     --primary-color: #4f46e5;
     --secondary-color: #7c3aed;

@@ -131,15 +131,41 @@ async function updateCryptoPrices() {
                 price = parseFloat(data.bpi.USD.rate.replace(',', ''));
                 priceChange = (Math.random() * 10) - 5;
             } else if (symbol === 'XRP') {
-                const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=ripple&vs_currencies=usd&precision=10', {
-                    mode: 'cors',
-                    headers: {
-                        'Accept': 'application/json'
+                try {
+                    // Try to get fresh data
+                    const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=ripple&vs_currencies=usd&precision=10', {
+                        mode: 'cors',
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+                    const data = await response.json();
+                    price = data.ripple.usd;
+                    
+                    // Get previous price from cache
+                    const cachedData = await localforage.getItem('xrp-price');
+                    
+                    if (cachedData) {
+                        // Calculate real price change
+                        priceChange = ((price - cachedData.price) / cachedData.price) * 100;
+                        console.log('XRP price change:', priceChange);
                     }
-                });
-                const data = await response.json();
-                price = data.ripple.usd;
-                priceChange = (Math.random() * 10) - 5;
+                    
+                    // Store new price with timestamp
+                    await localforage.setItem('xrp-price', {
+                        price: price,
+                        timestamp: Date.now()
+                    });
+                } catch (error) {
+                    console.error('Error fetching XRP price:', error);
+                    // Try to get cached data if API fails
+                    const cachedData = await localforage.getItem('xrp-price');
+                    if (cachedData) {
+                        price = cachedData.price;
+                        priceChange = null; // Use null to indicate we're using cached data
+                        console.log('Using cached XRP price:', price);
+                    }
+                }
             } else if (symbol === 'XYO') {
                 const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=xyo-network&vs_currencies=usd&precision=10', {
                     mode: 'cors',
