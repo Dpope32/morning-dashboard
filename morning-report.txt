@@ -1,17 +1,17 @@
-2024-12-05 16:41:57 - Starting morning setup...
-2024-12-05 16:41:57 - Generating env.js
-2024-12-05 16:41:58 - Configuration generated
-2024-12-05 16:41:58 - Closed application successfully
-2024-12-05 16:41:58 - Closed application successfully
-2024-12-05 16:41:58 - Closed application successfully
-2024-12-05 16:41:58 - Closed application successfully
-2024-12-05 16:41:58 - Closed application successfully
-2024-12-05 16:41:58 - Closed application successfully
-2024-12-05 16:41:58 - Closed application successfully
-2024-12-05 16:41:58 - Closed application successfully
-2024-12-05 16:42:00 - Launching applications...
-2024-12-05 16:42:00 - Opening dashboard
-2024-12-05 16:42:00 - Launching application
-2024-12-05 16:42:00 - Failed to launch application
-2024-12-05 16:42:00 - Obsidian is already running
-2024-12-05 16:42:00 - Setup completed
+2024-12-06 07:10:55 - Starting morning setup...
+2024-12-06 07:10:55 - Generating env.js
+2024-12-06 07:10:55 - Configuration generated
+2024-12-06 07:10:55 - Closed application successfully
+2024-12-06 07:10:55 - Closed application successfully
+2024-12-06 07:10:55 - Closed application successfully
+2024-12-06 07:10:55 - Closed application successfully
+2024-12-06 07:10:55 - Closed application successfully
+2024-12-06 07:10:55 - Closed application successfully
+2024-12-06 07:10:55 - Closed application successfully
+2024-12-06 07:10:55 - Closed application successfully
+2024-12-06 07:10:57 - Launching applications...
+2024-12-06 07:10:57 - Opening dashboard
+2024-12-06 07:10:57 - Launching application
+2024-12-06 07:10:57 - Failed to launch application
+2024-12-06 07:10:57 - Obsidian is already running
+2024-12-06 07:10:57 - Setup completed
