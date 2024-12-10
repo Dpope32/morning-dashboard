@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Dashboard</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles/styles.css">
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/3767/3767084.png">
-    <script src="env.js"></script>
 </head>
 <body class="dark-theme">
     <div class="sidebar" id="sidebar">
@@ -17,10 +16,10 @@
 
     <div class="right-sidebar" id="rightSidebar">
         <div class="button-group">
-            <button onclick="openPowerShell()">PowerShell</button>
-            <button onclick="alert('AWSome Button Clicked')">AWSome</button>
-            <button onclick="alert('Dev Button Clicked')">Dev</button>
-            <button onclick="alert('Qdev Button Clicked')">Qdev</button>
+            <button>Backup</button>
+            <button>AWSome</button>
+            <button>Dev</button>
+            <button>Qdev</button>
         </div>
         
         <div class="metrics-container">
@@ -31,13 +30,13 @@
                 </div>
             </div>
             <div class="metric">
-                <span>System</span>
-                <div class="metric-value">
-                    <span class="success">Clean</span>
+                <span>CPU</span>
+                <div class="metric-value" id="cpuStatus">
+                    <span class="loading">Loading...</span>
                 </div>
             </div>
             <div class="metric">
-                <span>Market Status</span>
+                <span>Market</span>
                 <div class="metric-value" id="marketStatus">
                     <span class="loading">Loading...</span>
                 </div>
@@ -45,6 +44,12 @@
             <div class="metric">
                 <span>Network</span>
                 <div class="metric-value" id="networkStatus">
+                    <span class="loading">Loading...</span>
+                </div>
+            </div>
+            <div class="metric">
+                <span>Ram</span>
+                <div class="metric-value" id="ramStatus">
                     <span class="loading">Loading...</span>
                 </div>
             </div>
@@ -61,10 +66,13 @@
         <div class="header-section">
             <div class="left-content">
                 <div class="welcome-header" id="greeting">Loading...</div>
+                <!--
                 <div class="search-section">
                     <input type="text" class="search-input" placeholder="Search coming soon...">
                 </div>
+                -->
             </div>
+            <div class="clock" id="clock">00:00</div>
             <div class="weather-section">
                 <div class="weather-container">
                     <div class="weather-grid">
@@ -103,6 +111,19 @@
         <div class="container">
             <div class="header" id="dashboardDate">Loading...</div>
 
+            <div class="tasks-section">
+                <div class="tasks-header">
+                    Today's Tasks
+                    <span id="taskCount">(0/5)</span>
+                </div>
+                <div class="tasks-progress">
+                    <div class="progress-bar" id="taskProgress" style="width: 0%"></div>
+                </div>
+                <ul class="tasks-list" id="dailyTasks">
+                    <!-- Tasks will be dynamically inserted here -->
+                </ul>
+            </div>
+
             <div class="status-card">
                 <h3>Crypto</h3>
                 <table class="portfolio-table">
@@ -118,20 +139,6 @@
                     <tbody id="cryptoTableBody">
                         <tr>
                             <td>XRP</td>
-                            <td>0</td>
-                            <td>Loading...</td>
-                            <td>Loading...</td>
-                            <td>Loading...</td>
-                        </tr>
-                        <tr>
-                            <td>XYO</td>
-                            <td>0</td>
-                            <td>Loading...</td>
-                            <td>Loading...</td>
-                            <td>Loading...</td>
-                        </tr>
-                        <tr>
-                            <td>BTC</td>
                             <td>0</td>
                             <td>Loading...</td>
                             <td>Loading...</td>
@@ -230,8 +237,21 @@
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
-    <script src="script.js"></script>
-    <script src="sidebar.js"></script>
-    <script src="right-sidebar.js"></script>
+    <script src="scripts/modules/env.js"></script>
+    <script src="scripts/modules/tasksByDay.js"></script>
+    <script src="scripts/modules/tasks.js"></script>
+    <script src="scripts/utils/dom.js"></script>
+    <script src="scripts/utils/format.js"></script>
+    <script src="scripts/modules/clock.js"></script>
+    <script src="scripts/modules/weather.js"></script>
+    <script src="scripts/modules/ping.js"></script>
+    <script src="scripts/modules/marketStatus.js"></script>
+    <script src="scripts/modules/cryptoPrices.js"></script>
+    <script src="scripts/modules/stockPrices.js"></script>
+    <script src="scripts/modules/dateGreeting.js"></script>
+    <script src="scripts/modules/taskProgress.js"></script>
+    <script src="scripts/main.js"></script>
+    <script src="scripts/modules/sidebar.js"></script>
+    <script src="scripts/modules/right-sidebar.js"></script>
 </body>
 </html>

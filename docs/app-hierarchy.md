@@ -3,12 +3,26 @@
 ## Frontend Structure
 ```
 current-status.html             # Main entry point of the application
-├── script.js                   # Core application logic
-│   └── Manages overall app state and behavior
-│
-├── Sidebar System
-│   ├── right-sidebar.js       # Right sidebar specific functionality
-│   └── sidebar.js             # General sidebar management
+├── scripts/                    # JavaScript modules and utilities
+│   ├── main.js                # Core application logic
+│   ├── modules/               # Modular JavaScript components
+│   │   ├── right-sidebar.js   # Right sidebar specific functionality
+│   │   ├── sidebar.js         # General sidebar management
+│   │   ├── tasks.js          # Task management functionality
+│   │   ├── tasksByDay.js     # Daily task organization
+│   │   ├── env.js            # Environment configuration
+│   │   ├── clock.js          # Clock functionality
+│   │   ├── weather.js        # Weather information
+│   │   ├── ping.js           # Network ping functionality
+│   │   ├── cryptoPrices.js   # Cryptocurrency price tracking
+│   │   ├── stockPrices.js    # Stock market price tracking
+│   │   ├── marketStatus.js   # Market status monitoring
+│   │   ├── networkStatus.js  # Network status monitoring
+│   │   ├── dateGreeting.js   # Date-based greeting system
+│   │   └── taskProgress.js   # Task progress tracking
+│   └── utils/                 # Utility functions
+│       ├── dom.js            # DOM manipulation utilities
+│       └── format.js         # Data formatting utilities
 │
 └── Styling System
     ├── styles.css             # Main stylesheet
@@ -22,7 +36,6 @@ current-status.html             # Main entry point of the application
         ├── tables.css         # Table component styling
         ├── todo.css          # Todo feature styling
         └── variables.css      # Global CSS variables and theming
-
 ```
 
 ## Component Dependencies
@@ -31,9 +44,10 @@ current-status.html             # Main entry point of the application
    - Imports and coordinates all JavaScript and CSS resources
 
 2. JavaScript Layer
-   - `script.js` initializes core functionality
-   - Sidebar modules (`right-sidebar.js` and `sidebar.js`) handle navigation and UI state
-   - JavaScript components interact with DOM elements styled by corresponding CSS modules
+   - Organized in `scripts/modules/` for better modularity
+   - Core functionality split into specific module files
+   - Utility functions in `scripts/utils/` for shared functionality
+   - Each module handles specific features (sidebars, tasks, weather, etc.)
 
 3. CSS Layer
    - Hierarchical styling system with `styles.css` as the entry point

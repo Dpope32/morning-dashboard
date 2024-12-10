@@ -14,6 +14,7 @@ param([switch]$Elevated)
     ║     - Morning status dashboard in Brave                                      ║
     ║     - Claude on left monitor                                                 ║
     ║     - Opens Obsidian vault on right monitor                                  ║
+    ║  3. Starts Node.js server in the background                                  ║
     ╚══════════════════════════════════════════════════════════════════════════════╝
 #>
 
@@ -213,6 +214,8 @@ $leftMonitor = @{
 # Launch applications with retries
 Write-Log "Launching applications..."
 
+$cursorPath = "${env:USERPROFILE}\AppData\Local\Programs\cursor\Cursor.exe"
+
 # Function to launch an application if the path exists
 function Launch-Application {
     param (
@@ -224,21 +227,39 @@ function Launch-Application {
 
     if (Test-Path $AppPath) {
         try {
-            Write-Log "Launching application"
-            Start-Process $AppPath -ArgumentList $Args
-            Start-Sleep -Seconds 5
-            if ($PositionParams) {
-                Set-WindowPosition -ProcessName $AppName @PositionParams
+            Write-Log "Launching $AppName at path: $AppPath"
+            
+            # Special handling for Cursor
+            if ($AppName -eq "cursor") {
+                $workingDir = Split-Path -Parent $AppPath
+                $cursorProc = Start-Process $AppPath -WorkingDirectory $workingDir -ArgumentList $Args -PassThru
+                Start-Sleep -Seconds 3
+                
+                # Verify Cursor is running
+                $isRunning = Get-Process -Name "cursor" -ErrorAction SilentlyContinue
+                if ($isRunning -and $PositionParams) {
+                    Set-WindowPosition -ProcessName $AppName @PositionParams
+                    Write-Log "Cursor positioned successfully"
+                    return $true
+                } else {
+                    Write-Log "Cursor launch verification failed"
+                    return $false
+                }
+            } else {
+                Start-Process $AppPath -ArgumentList $Args
+                Start-Sleep -Seconds 2
+                if ($PositionParams) {
+                    Set-WindowPosition -ProcessName $AppName @PositionParams
+                }
             }
         } catch {
-            Write-Log "Failed to launch application"
+            Write-Log "Failed to launch $AppName : $_"
         }
     } else {
-        Write-Log "Application not found"
+        Write-Log "$AppName not found at path: $AppPath"
     }
 }
 
-# Find Brave browser path
 $bravePath1 = "${env:LOCALAPPDATA}\BraveSoftware\Brave-Browser\Application\brave.exe"
 $bravePath2 = "C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe"
 
@@ -251,9 +272,22 @@ if (Test-Path $bravePath1) {
     Write-Log "Browser not found in default locations"
 }
 
+
 $templatePath = Join-Path $scriptDir "current-status.html"
 $templateUri = "file:///" + $templatePath.Replace("\", "/")
 
+# Start Node.js server in the background first
+try {
+    Write-Log "Starting Node.js server"
+    Start-Process node -ArgumentList "$scriptDir\src\api\server.js" -WindowStyle Hidden
+    Write-Log "Node.js server started successfully"
+    # Wait for server to start up
+    Start-Sleep -Seconds 3
+} catch {
+    Write-Log "Failed to start Node.js server"
+}
+
+# Now open the browser pointing to the local server
 if ($bravePath) {
     try {
         Write-Log "Opening dashboard"
@@ -264,7 +298,7 @@ if ($bravePath) {
 } else {
     try {
         Write-Log "Opening dashboard with default browser"
-        Start-Process $templatePath
+         Start-Process $templatePath
     } catch {
         Write-Log "Failed to open dashboard"
     }

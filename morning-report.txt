@@ -1,17 +1,19 @@
-2024-12-06 07:10:55 - Starting morning setup...
-2024-12-06 07:10:55 - Generating env.js
-2024-12-06 07:10:55 - Configuration generated
-2024-12-06 07:10:55 - Closed application successfully
-2024-12-06 07:10:55 - Closed application successfully
-2024-12-06 07:10:55 - Closed application successfully
-2024-12-06 07:10:55 - Closed application successfully
-2024-12-06 07:10:55 - Closed application successfully
-2024-12-06 07:10:55 - Closed application successfully
-2024-12-06 07:10:55 - Closed application successfully
-2024-12-06 07:10:55 - Closed application successfully
-2024-12-06 07:10:57 - Launching applications...
-2024-12-06 07:10:57 - Opening dashboard
-2024-12-06 07:10:57 - Launching application
-2024-12-06 07:10:57 - Failed to launch application
-2024-12-06 07:10:57 - Obsidian is already running
-2024-12-06 07:10:57 - Setup completed
+2024-12-09 18:18:43 - Starting morning setup...
+2024-12-09 18:18:43 - Generating env.js
+2024-12-09 18:18:43 - Configuration generated
+2024-12-09 18:18:43 - Closed application successfully
+2024-12-09 18:18:43 - Closed application successfully
+2024-12-09 18:18:43 - Closed application successfully
+2024-12-09 18:18:43 - Closed application successfully
+2024-12-09 18:18:43 - Closed application successfully
+2024-12-09 18:18:43 - Closed application successfully
+2024-12-09 18:18:43 - Closed application successfully
+2024-12-09 18:18:43 - Closed application successfully
+2024-12-09 18:18:45 - Launching applications...
+2024-12-09 18:18:45 - Starting Node.js server
+2024-12-09 18:18:45 - Node.js server started successfully
+2024-12-09 18:18:48 - Opening dashboard
+2024-12-09 18:18:48 - Launching claude at path: C:\Users\poped\AppData\Local\AnthropicClaude\app-0.7.5\claude.exe
+2024-12-09 18:18:48 - Failed to launch claude : Cannot validate argument on parameter 'ArgumentList'. The argument is null, empty, or an element of the argument collection contains a null value. Supply a collection that does not contain any null values and then try the command again.
+2024-12-09 18:18:48 - Obsidian is already running
+2024-12-09 18:18:48 - Setup completed
