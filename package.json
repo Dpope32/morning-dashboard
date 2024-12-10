@@ -2,17 +2,6 @@
   "name": "dashboard",
   "version": "1.0.0",
   "description": "Personal dashboard with system monitoring, tasks, and financial tracking",
-  "main": "src/api/server.js",
-  "scripts": {
-    "start": "node src/api/server.js",
-    "dev": "nodemon src/api/server.js"
-  },
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^16.0.3",
-    "express": "^4.18.2"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.22"
-  }
+  "dependencies": {},
+  "devDependencies": {}
 }

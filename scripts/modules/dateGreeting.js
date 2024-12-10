@@ -16,7 +16,7 @@ function updateDateAndGreeting() {
 
     let greetingText = 'Hello';
     if (hours >= 5 && hours < 12) {
-        greetingText = 'Good Morning';
+        greetingText = 'Gm';
     } else if (hours >= 12 && hours < 17) {
         greetingText = 'Good Afternoon';
     } else if (hours >= 17 && hours < 22) {

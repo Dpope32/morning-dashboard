@@ -1,21 +1,19 @@
-# Note: Please update your .env file to use the correct Claude path:
-# CLAUDE_PATH=C:\Users\%WINDOWS_USERNAME%\AppData\Local\AnthropicClaude\app-0.7.5\claude.exe
-
 param([switch]$Elevated)
 
 <# 
-    ╔══════════════════════════════════════════════════════════════════════════════╗
-    ║                     MORNING DEV ENVIRONMENT AUTOMATION                       ║
-    ║                                                                              ║
-    ║  What this script does:                                                      ║
-    ║  1. Closes non-essential applications (Chrome, Edge, VS Code, etc.)          ║
-    ║  2. Sets up your workspace with:                                             ║
-    ║     - Clean slate by closing specified applications                          ║
-    ║     - Morning status dashboard in Brave                                      ║
-    ║     - Claude on left monitor                                                 ║
-    ║     - Opens Obsidian vault on right monitor                                  ║
-    ║  3. Starts Node.js server in the background                                  ║
-    ╚══════════════════════════════════════════════════════════════════════════════╝
+    ╔═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+    ║                     MORNING DEV ENVIRONMENT AUTOMATION                                                                      ║
+    ║                                                                                                                             ║
+    ║  What this script does:                                                                                                     ║
+    ║  1. Closes non-essential applications (Chrome, Edge, VS Code, etc.)                                                         ║
+    ║  2. Sets up your workspace with:                                                                                            ║
+    ║     - Clean slate by closing specified applications                                                                         ║
+    ║     - Morning status dashboard in Brave                                                                                     ║
+    ║     - Claude on left monitor                                                                                                ║
+    ║     - Opens Obsidian vault on right monitor                                                                                 ║
+    ║  3. Starts Node.js server in the background                                                                                 ║
+    ║                                                                                                                             ║                                                   
+    ╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 #>
 
 # Ensure the script can run by modifying the execution policy
@@ -276,15 +274,21 @@ if (Test-Path $bravePath1) {
 $templatePath = Join-Path $scriptDir "current-status.html"
 $templateUri = "file:///" + $templatePath.Replace("\", "/")
 
-# Start Node.js server in the background first
-try {
-    Write-Log "Starting Node.js server"
-    Start-Process node -ArgumentList "$scriptDir\src\api\server.js" -WindowStyle Hidden
-    Write-Log "Node.js server started successfully"
-    # Wait for server to start up
-    Start-Sleep -Seconds 3
-} catch {
-    Write-Log "Failed to start Node.js server"
+# Check for nanostores setup
+Write-Log "Checking nanostores setup..."
+$taskStoreFile = Join-Path $scriptDir "scripts\modules\taskStore.js"
+if (Test-Path $taskStoreFile) {
+    Write-Log "TaskStore module found"
+    $taskStoreContent = Get-Content $taskStoreFile -Raw
+    if ($taskStoreContent -match "nanostores") {
+        Write-Log "Nanostores integration verified"
+        $storageSize = (Get-Item $taskStoreFile).Length / 1KB
+        Write-Log "TaskStore size: $($storageSize.ToString('0.00')) KB"
+    } else {
+        Write-Log "Warning: TaskStore may not be properly configured"
+    }
+} else {
+    Write-Log "Warning: TaskStore module not found"
 }
 
 # Now open the browser pointing to the local server

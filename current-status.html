@@ -7,6 +7,7 @@
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/3767/3767084.png">
 </head>
 <body class="dark-theme">
+    <!-- Previous HTML content remains the same until scripts section -->
     <div class="sidebar" id="sidebar">
         <h3>To-Do List</h3>
         <ul class="todo-list" id="todoList">
@@ -239,6 +240,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
     <script src="scripts/modules/env.js"></script>
     <script src="scripts/modules/tasksByDay.js"></script>
+    <script src="scripts/modules/taskStore.js"></script>
     <script src="scripts/modules/tasks.js"></script>
     <script src="scripts/utils/dom.js"></script>
     <script src="scripts/utils/format.js"></script>
@@ -253,5 +255,16 @@
     <script src="scripts/main.js"></script>
     <script src="scripts/modules/sidebar.js"></script>
     <script src="scripts/modules/right-sidebar.js"></script>
+
+    <script>
+        // Verify taskStore initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.taskStore) {
+                console.log('[TaskStore] Status:', window.taskStore.getStoreStatus());
+            } else {
+                console.error('[TaskStore] Failed to initialize');
+            }
+        });
+    </script>
 </body>
 </html>

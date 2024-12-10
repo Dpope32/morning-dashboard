@@ -1,0 +1,70 @@
+name: Dashboard CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 0 * * *' # Daily at midnight
+
+jobs:
+  validate:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Validate package.json
+        run: |
+          if (Test-Path package.json) {
+            Get-Content package.json | ConvertFrom-Json
+          }
+        shell: pwsh
+
+      - name: Check API endpoints
+        run: |
+          $endpoints = @(
+            "https://api.coindesk.com/v1/bpi/currentprice.json",
+            "https://api.coingecko.com/api/v3/ping",
+            "https://finnhub.io/api/v1/stock/market-status?exchange=US"
+          )
+          
+          foreach ($endpoint in $endpoints) {
+            try {
+              $response = Invoke-WebRequest -Uri $endpoint -Method Head -UseBasicParsing
+              Write-Host "✅ $endpoint is up (Status: $($response.StatusCode))"
+            } catch {
+              Write-Host "❌ $endpoint is down"
+            }
+          }
+        shell: pwsh
+
+  dependency-review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v3
+        
+      - name: Check for outdated dependencies
+        run: |
+          if [ -f package.json ]; then
+            npm outdated || true
+          fi
+
+  notify:
+    needs: [validate, dependency-review]
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Issue on Failure
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '🚨 Dashboard Health Check Failed',
+              body: 'Daily health check detected issues. Please review the workflow run for details.'
+            })

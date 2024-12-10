@@ -1,19 +1,22 @@
-2024-12-09 18:18:43 - Starting morning setup...
-2024-12-09 18:18:43 - Generating env.js
-2024-12-09 18:18:43 - Configuration generated
-2024-12-09 18:18:43 - Closed application successfully
-2024-12-09 18:18:43 - Closed application successfully
-2024-12-09 18:18:43 - Closed application successfully
-2024-12-09 18:18:43 - Closed application successfully
-2024-12-09 18:18:43 - Closed application successfully
-2024-12-09 18:18:43 - Closed application successfully
-2024-12-09 18:18:43 - Closed application successfully
-2024-12-09 18:18:43 - Closed application successfully
-2024-12-09 18:18:45 - Launching applications...
-2024-12-09 18:18:45 - Starting Node.js server
-2024-12-09 18:18:45 - Node.js server started successfully
-2024-12-09 18:18:48 - Opening dashboard
-2024-12-09 18:18:48 - Launching claude at path: C:\Users\poped\AppData\Local\AnthropicClaude\app-0.7.5\claude.exe
-2024-12-09 18:18:48 - Failed to launch claude : Cannot validate argument on parameter 'ArgumentList'. The argument is null, empty, or an element of the argument collection contains a null value. Supply a collection that does not contain any null values and then try the command again.
-2024-12-09 18:18:48 - Obsidian is already running
-2024-12-09 18:18:48 - Setup completed
+2024-12-10 08:50:30 - Starting morning setup...
+2024-12-10 08:50:30 - Generating env.js
+2024-12-10 08:50:30 - Configuration generated
+2024-12-10 08:50:30 - Closed application successfully
+2024-12-10 08:50:30 - Closed application successfully
+2024-12-10 08:50:30 - Closed application successfully
+2024-12-10 08:50:30 - Closed application successfully
+2024-12-10 08:50:30 - Closed application successfully
+2024-12-10 08:50:30 - Closed application successfully
+2024-12-10 08:50:30 - Closed application successfully
+2024-12-10 08:50:30 - Closed application successfully
+2024-12-10 08:50:32 - Launching applications...
+2024-12-10 08:50:32 - Starting Node.js server
+2024-12-10 08:50:32 - Node.js server started successfully
+2024-12-10 08:50:35 - Checking nanostores setup...
+2024-12-10 08:50:35 - TaskStore module found
+2024-12-10 08:50:35 - Warning: TaskStore may not be properly configured
+2024-12-10 08:50:35 - Opening dashboard
+2024-12-10 08:50:35 - Launching claude at path: C:\Users\poped\AppData\Local\AnthropicClaude\app-0.7.5\claude.exe
+2024-12-10 08:50:35 - Failed to launch claude : Cannot validate argument on parameter 'ArgumentList'. The argument is null, empty, or an element of the argument collection contains a null value. Supply a collection that does not contain any null values and then try the command again.
+2024-12-10 08:50:35 - Obsidian is already running
+2024-12-10 08:50:35 - Setup completed
