@@ -8,6 +8,7 @@ class RightSidebar {
         this.removeHeader();
         this.loadData();
         this.setupTaskStoreMonitor();
+        this.setupWeatherButton();
     }
 
     removeHeader() {
@@ -28,6 +29,63 @@ class RightSidebar {
                 ramElement.innerHTML = 'RAM: 60%';
             }
         }, 1000);
+    }
+
+    setupWeatherButton() {
+        const weatherSection = document.createElement('div');
+        weatherSection.style.cssText = `
+            margin-top: 20px;
+            padding: 0 15px;
+        `;
+
+        const weatherButton = document.createElement('button');
+        weatherButton.className = 'weather-button';
+        weatherButton.style.cssText = `
+            width: 100%;
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9em;
+            transition: all 0.2s ease;
+            text-align: left;
+        `;
+
+        // Create icon container
+        const iconSpan = document.createElement('span');
+        iconSpan.textContent = '🌤️';
+        iconSpan.style.fontSize = '1.1em';
+
+        // Create text container
+        const textSpan = document.createElement('span');
+        textSpan.textContent = 'Weather Forecast';
+
+        weatherButton.appendChild(iconSpan);
+        weatherButton.appendChild(textSpan);
+
+        weatherButton.addEventListener('mouseover', () => {
+            weatherButton.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+            weatherButton.style.color = 'var(--text-primary)';
+        });
+
+        weatherButton.addEventListener('mouseout', () => {
+            weatherButton.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+            weatherButton.style.color = 'var(--text-secondary)';
+        });
+
+        weatherButton.addEventListener('click', () => {
+            if (window.weatherModal) {
+                window.weatherModal.show();
+            }
+        });
+
+        weatherSection.appendChild(weatherButton);
+        this.sidebar.appendChild(weatherSection);
     }
 
     setupTaskStoreMonitor() {

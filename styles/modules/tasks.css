@@ -3,13 +3,14 @@
     background: var(--card-bg);
     border: 1px solid var(--border-color);
     border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 20px;
+    padding: 15px;
+    margin-bottom: 15px;
     transition: all 0.3s ease;
+    height: 100%;
 }
 
 .tasks-section.collapsed {
-    padding: 15px 20px;
+    padding: 12px 15px;
 }
 
 .tasks-section.collapsed .tasks-list {
@@ -18,8 +19,8 @@
 
 .tasks-header {
     color: var(--text-primary);
-    font-size: 1.2em;
-    margin-bottom: 15px;
+    font-size: 1.1em;
+    margin-bottom: 12px;
     font-weight: 600;
     display: flex;
     justify-content: space-between;
@@ -37,18 +38,29 @@
     transform: rotate(-90deg);
 }
 
+/* Tasks List Container */
+.tasks-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
 .task-item {
     display: flex;
     align-items: center;
-    padding: 12px;
-    margin-bottom: 8px;
+    padding: 8px;
+    margin-bottom: 6px;
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid var(--border-color);
-    border-radius: 8px;
+    border-radius: 6px;
     transition: all 0.2s ease;
     position: relative;
     overflow: hidden;
     backdrop-filter: blur(5px);
+}
+
+.task-item:last-child {
+    margin-bottom: 0;
 }
 
 .task-item:hover {
@@ -58,7 +70,7 @@
 }
 
 .task-priority {
-    width: 4px;
+    width: 3px;
     height: 100%;
     position: absolute;
     left: 0;
@@ -68,7 +80,7 @@
 }
 
 .task-item:hover .task-priority {
-    width: 6px;
+    width: 4px;
 }
 
 .priority-high {
@@ -85,19 +97,19 @@
 
 .task-content {
     flex: 1;
-    margin: 0 12px;
-    padding-left: 8px;
+    margin: 0 8px;
+    padding-left: 6px;
 }
 
 .task-main {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
 }
 
 .task-text {
     color: var(--text-primary);
-    font-size: 0.95em;
+    font-size: 0.9em;
     flex: 1;
     transition: all 0.2s ease;
 }
@@ -113,11 +125,11 @@
 
 .task-time {
     color: var(--text-secondary);
-    font-size: 0.85em;
+    font-size: 0.8em;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid var(--border-color);
-    padding: 2px 10px;
-    border-radius: 12px;
+    padding: 1px 8px;
+    border-radius: 10px;
     white-space: nowrap;
     transition: all 0.2s ease;
 }
@@ -130,16 +142,16 @@
 .task-metadata {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 6px;
-    font-size: 0.8em;
+    gap: 6px;
+    margin-top: 4px;
+    font-size: 0.75em;
 }
 
 .task-category,
 .task-improving,
 .task-status {
-    padding: 2px 10px;
-    border-radius: 12px;
+    padding: 1px 8px;
+    border-radius: 10px;
     transition: all 0.2s ease;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
@@ -181,8 +193,8 @@
 .task-actions {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-right: 8px;
+    gap: 8px;
+    margin-right: 6px;
     opacity: 0.7;
     transition: all 0.2s ease;
 }
@@ -197,8 +209,8 @@
     position: relative;
     cursor: pointer;
     user-select: none;
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
 }
 
 .checkbox-container input {
@@ -213,8 +225,8 @@
     position: absolute;
     top: 0;
     left: 0;
-    height: 20px;
-    width: 20px;
+    height: 18px;
+    width: 18px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid var(--border-color);
     border-radius: 4px;
@@ -235,10 +247,10 @@
     content: "";
     position: absolute;
     display: none;
-    left: 6px;
+    left: 5px;
     top: 2px;
-    width: 6px;
-    height: 12px;
+    width: 5px;
+    height: 10px;
     border: solid white;
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
@@ -252,9 +264,9 @@
 .skip-btn {
     background: none;
     border: none;
-    padding: 4px;
+    padding: 3px;
     cursor: pointer;
-    font-size: 1.1em;
+    font-size: 1em;
     opacity: 0.6;
     transition: all 0.2s ease;
     color: var(--text-secondary);
@@ -266,40 +278,19 @@
     color: var(--text-primary);
 }
 
-/* Task Completion Animation */
-@keyframes taskComplete {
-    0% {
-        transform: translateX(0);
-        opacity: 1;
-    }
-    50% {
-        transform: translateX(10px);
-        opacity: 0.7;
-    }
-    100% {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-
 /* Progress Bar Styles */
 .progress-container {
-    height: 4px;
+    height: 3px;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 2px;
     overflow: hidden;
-    margin-top: 10px;
+    margin-top: 8px;
 }
 
 .progress-bar {
     height: 100%;
     background: linear-gradient(90deg, #00C851, #007E33);
     transition: width 0.3s ease;
-}
-
-/* Tasks List Styles */
-.tasks-list {
-    transition: all 0.3s ease;
 }
 
 /* Completed Tasks Styles */
@@ -319,7 +310,7 @@
     .task-main {
         flex-direction: column;
         align-items: flex-start;
-        gap: 5px;
+        gap: 4px;
     }
     
     .task-metadata {

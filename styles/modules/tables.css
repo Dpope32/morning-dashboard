@@ -2,16 +2,16 @@
 .portfolio-table {
     width: 100%;
     border-collapse: separate;
-    border-spacing: 0 10px;
-    margin-top: 15px;
+    border-spacing: 0 6px;
+    margin-top: 10px;
 }
 
 .portfolio-table th {
     color: #6b7280;
     font-weight: 500;
     text-align: center;
-    padding: 10px 15px;
-    font-size: 1em;
+    padding: 6px 10px;
+    font-size: 0.9em;
     background: none;
 }
 
@@ -20,25 +20,25 @@
 }
 
 .portfolio-table tr {
-    background: rgba(31, 41, 55, 0.5);
-    border-radius: 10px;
+    background: rgba(31, 41, 55, 0.7);
+    border-radius: 8px;
     transition: background 0.3s, transform 0.3s;
 }
 
 .portfolio-table tr:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.1);
     transform: translateY(-2px);
 }
 
 .portfolio-table td {
-    padding: 12px 15px;
+    padding: 8px 10px;
     text-align: center;
-    font-size: 0.95em;
+    font-size: 0.9em;
 }
 
 .portfolio-table td:first-child {
     text-align: left;
-    font-size: 1.1em;
+    font-size: 1em;
     font-weight: bold;
     background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
     -webkit-background-clip: text;
@@ -52,26 +52,30 @@
 
 .total-row {
     background: rgba(31, 41, 55, 0) !important;
+    margin-top: 4px;
 }
 
 .total-row td {
     background: none !important;
+    padding: 4px 10px;
 }
 
 .total-row td:first-child {
     color: var(--accent-success);
+    font-size: 0.9em;
+    white-space: nowrap;
 }
 
 .total-row td:last-child.positive {
     background: rgba(16, 185, 129, 0.2) !important;
-    border-radius: 8px;
+    border-radius: 6px;
     color: var(--accent-success);
     font-weight: bold;
 }
 
 .total-row td:last-child.negative {
     background: rgba(239, 68, 68, 0.2) !important;
-    border-radius: 8px;
+    border-radius: 6px;
     color: var(--accent-error);
     font-weight: bold;
 }
@@ -88,8 +92,8 @@
 /* In tables.css */
 @media (max-width: 768px) {
     .portfolio-table th, .portfolio-table td {
-        padding: 8px 10px;
-        font-size: 0.9em;
+        padding: 6px 8px;
+        font-size: 0.85em;
     }
 }
 

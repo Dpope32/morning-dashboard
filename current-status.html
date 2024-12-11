@@ -12,41 +12,6 @@
         <ul class="todo-list" id="todoList">
         </ul>
         <input type="text" id="newTodo" placeholder="Add a new task..." />
-        
-        <!-- Weather section moved to sidebar -->
-        <div class="weather-section">
-            <div class="weather-container">
-                <div class="weather-grid">
-                    <div class="weather-cell">
-                        <div class="temp-bar-container">
-                            <div id="tempBar" class="temp-bar"></div>
-                        </div>
-                        <div class="temp-display">
-                            <span id="currentTemp">--°F</span>
-                        </div>
-                        <h3>Today</h3>
-                    </div>
-                    <div class="weather-cell">
-                        <div class="temp-bar-container">
-                            <div id="tomorrowBar" class="temp-bar"></div>
-                        </div>
-                        <div class="temp-display">
-                            <span id="tomorrowTemp">--°F</span>
-                        </div>
-                        <h3 id="tomorrowDay">Tomorrow</h3>
-                    </div>
-                    <div class="weather-cell">
-                        <div class="temp-bar-container">
-                            <div id="nextDayBar" class="temp-bar"></div>
-                        </div>
-                        <div class="temp-display">
-                            <span id="nextDayTemp">--°F</span>
-                        </div>
-                        <h3 id="nextDayName">Next Day</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <div class="right-sidebar" id="rightSidebar">
@@ -54,7 +19,6 @@
             <button>Backup</button>
             <button>AWSome</button>
             <button>Dev</button>
-            <button>Qdev</button>
         </div>
         
         <div class="metrics-container">
@@ -83,12 +47,6 @@
                 </div>
             </div>
             <div class="metric">
-                <span>Ram</span>
-                <div class="metric-value" id="ramStatus">
-                    <span class="loading">Loading...</span>
-                </div>
-            </div>
-            <div class="metric">
                 <span>Ping</span>
                 <div class="metric-value" id="pingStatus">
                     <span class="loading">Loading...</span>
@@ -101,138 +59,139 @@
         <div class="header-section">
             <div class="welcome-header" id="greeting">Loading...</div>
             <div class="clock" id="clock">00:00</div>
-            <!--
-            <div class="search-section">
-                <input type="text" class="search-input" placeholder="Search coming soon...">
-            </div>
-            -->
         </div>
 
         <div class="container">
             <div class="header" id="dashboardDate">Loading...</div>
 
-            <div class="tasks-section">
-                <div class="tasks-header">
-                    Today's Tasks
-                    <span id="taskCount">(0/5)</span>
+            <div class="two-column-layout">
+                <div class="column left-column">
+                    <div class="tasks-section">
+                        <div class="tasks-header">
+                            Today's Tasks
+                            <span id="taskCount">(0/5)</span>
+                        </div>
+                        <div class="tasks-progress">
+                            <div class="progress-bar" id="taskProgress" style="width: 0%"></div>
+                        </div>
+                        <ul class="tasks-list" id="dailyTasks">
+                            <!-- Tasks will be dynamically inserted here -->
+                        </ul>
+                    </div>
                 </div>
-                <div class="tasks-progress">
-                    <div class="progress-bar" id="taskProgress" style="width: 0%"></div>
+
+                <div class="column right-column">
+                    <div class="status-card">
+                        <h3>Crypto</h3>
+                        <table class="portfolio-table">
+                            <thead>
+                                <tr>
+                                    <th>Asset</th>
+                                    <th>Quantity</th>
+                                    <th>Price Change</th>
+                                    <th>Price</th>
+                                    <th>Total Value</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cryptoTableBody">
+                                <tr>
+                                    <td>XRP</td>
+                                    <td>0</td>
+                                    <td>Loading...</td>
+                                    <td>Loading...</td>
+                                    <td>Loading...</td>
+                                </tr>
+                                <tr class="total-row">
+                                    <td>Total Portfolio Value</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td id="cryptoTotalValue">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="status-card">
+                        <h3>Stocks</h3>
+                        <table class="portfolio-table">
+                            <thead>
+                                <tr>
+                                    <th>Asset</th>
+                                    <th>Quantity</th>
+                                    <th>Price Change</th>
+                                    <th>Price</th>
+                                    <th>Total Value</th>
+                                </tr>
+                            </thead>
+                            <tbody id="stockTableBody">
+                                <tr>
+                                    <td>META</td>
+                                    <td>0</td>
+                                    <td>Loading...</td>
+                                    <td>Loading...</td>
+                                    <td>Loading...</td>
+                                </tr>
+                                <tr>
+                                    <td>TSLA</td>
+                                    <td>0</td>
+                                    <td>Loading...</td>
+                                    <td>Loading...</td>
+                                    <td>Loading...</td>
+                                </tr>
+                                <tr>
+                                    <td>AMZN</td>
+                                    <td>0</td>
+                                    <td>Loading...</td>
+                                    <td>Loading...</td>
+                                    <td>Loading...</td>
+                                </tr>
+                                <tr>
+                                    <td>NVDA</td>
+                                    <td>0</td>
+                                    <td>Loading...</td>
+                                    <td>Loading...</td>
+                                    <td>Loading...</td>
+                                </tr>
+                                <tr>
+                                    <td>GOOGL</td>
+                                    <td>0</td>
+                                    <td>Loading...</td>
+                                    <td>Loading...</td>
+                                    <td>Loading...</td>
+                                </tr>
+                                <tr>
+                                    <td>MSFT</td>
+                                    <td>0</td>
+                                    <td>Loading...</td>
+                                    <td>Loading...</td>
+                                    <td>Loading...</td>
+                                </tr>
+                                <tr>
+                                    <td>NFLX</td>
+                                    <td>0</td>
+                                    <td>Loading...</td>
+                                    <td>Loading...</td>
+                                    <td>Loading...</td>
+                                </tr>
+                                <tr>
+                                    <td>T</td>
+                                    <td>0</td>
+                                    <td>Loading...</td>
+                                    <td>Loading...</td>
+                                    <td>Loading...</td>
+                                </tr>
+                                <tr class="total-row">
+                                    <td>Total Portfolio Value</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td id="stockTotalValue">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <ul class="tasks-list" id="dailyTasks">
-                    <!-- Tasks will be dynamically inserted here -->
-                </ul>
-            </div>
-
-            <div class="status-card">
-                <h3>Crypto</h3>
-                <table class="portfolio-table">
-                    <thead>
-                        <tr>
-                            <th>Asset</th>
-                            <th>Quantity</th>
-                            <th>Price Change</th>
-                            <th>Price</th>
-                            <th>Total Value</th>
-                        </tr>
-                    </thead>
-                    <tbody id="cryptoTableBody">
-                        <tr>
-                            <td>XRP</td>
-                            <td>0</td>
-                            <td>Loading...</td>
-                            <td>Loading...</td>
-                            <td>Loading...</td>
-                        </tr>
-                        <tr class="total-row">
-                            <td>Total Portfolio Value</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td id="cryptoTotalValue">Loading...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="status-card">
-                <h3>Stocks</h3>
-                <table class="portfolio-table">
-                    <thead>
-                        <tr>
-                            <th>Asset</th>
-                            <th>Quantity</th>
-                            <th>Price Change</th>
-                            <th>Price</th>
-                            <th>Total Value</th>
-                        </tr>
-                    </thead>
-                    <tbody id="stockTableBody">
-                        <tr>
-                            <td>META</td>
-                            <td>0</td>
-                            <td>Loading...</td>
-                            <td>Loading...</td>
-                            <td>Loading...</td>
-                        </tr>
-                        <tr>
-                            <td>TSLA</td>
-                            <td>0</td>
-                            <td>Loading...</td>
-                            <td>Loading...</td>
-                            <td>Loading...</td>
-                        </tr>
-                        <tr>
-                            <td>AMZN</td>
-                            <td>0</td>
-                            <td>Loading...</td>
-                            <td>Loading...</td>
-                            <td>Loading...</td>
-                        </tr>
-                        <tr>
-                            <td>NVDA</td>
-                            <td>0</td>
-                            <td>Loading...</td>
-                            <td>Loading...</td>
-                            <td>Loading...</td>
-                        </tr>
-                        <tr>
-                            <td>GOOGL</td>
-                            <td>0</td>
-                            <td>Loading...</td>
-                            <td>Loading...</td>
-                            <td>Loading...</td>
-                        </tr>
-                        <tr>
-                            <td>MSFT</td>
-                            <td>0</td>
-                            <td>Loading...</td>
-                            <td>Loading...</td>
-                            <td>Loading...</td>
-                        </tr>
-                        <tr>
-                            <td>NFLX</td>
-                            <td>0</td>
-                            <td>Loading...</td>
-                            <td>Loading...</td>
-                            <td>Loading...</td>
-                        </tr>
-                        <tr>
-                            <td>T</td>
-                            <td>0</td>
-                            <td>Loading...</td>
-                            <td>Loading...</td>
-                            <td>Loading...</td>
-                        </tr>
-                        <tr class="total-row">
-                            <td>Total Portfolio Value</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td id="stockTotalValue">Loading...</td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
         </div>
     </div>

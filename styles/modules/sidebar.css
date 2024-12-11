@@ -84,7 +84,7 @@
     width: 100%;
     margin-bottom: 20px;
     padding: 12px;
-    background: rgba(79, 70, 229, 0.05);
+    background: var(--todo-item-bg);
     border-radius: 10px;
     border: 1px solid var(--border-color);
     transition: all 0.3s ease;
