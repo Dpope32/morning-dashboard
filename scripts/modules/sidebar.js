@@ -38,7 +38,7 @@ class Sidebar {
             this.toggleSidebar();
         });
 
-        this.toggleBtn = toggleBtn; 
+        this.toggleBtn = toggleBtn;
     }
 
     closeSidebar() {
@@ -68,6 +68,7 @@ class Sidebar {
                 this.newTodoInput.value = '';
             }
         });
+
         const mediaQuery = window.matchMedia('(max-width: 1200px)');
         const handleMediaChange = (e) => {
             if (e.matches) {
@@ -77,7 +78,7 @@ class Sidebar {
             }
         };
         mediaQuery.addListener(handleMediaChange);
-        handleMediaChange(mediaQuery); 
+        handleMediaChange(mediaQuery);
     }
 
     addTodoItem(text) {
@@ -86,7 +87,7 @@ class Sidebar {
         li.innerHTML = `
             <input type="checkbox" class="todo-checkbox" />
             <span>${text}</span>
-            <button class="delete-todo" style="opacity: 1;">×</button>
+            <button class="delete-todo">×</button>
         `;
 
         // Delete button handler
@@ -130,7 +131,7 @@ class Sidebar {
                 li.innerHTML = `
                     <input type="checkbox" class="todo-checkbox" ${todo.checked ? 'checked' : ''} />
                     <span>${todo.text}</span>
-                    <button class="delete-todo" style="opacity: 1;">×</button>
+                    <button class="delete-todo">×</button>
                 `;
 
                 // Delete button handler

@@ -51,7 +51,7 @@
 }
 
 .total-row {
-    background: rgba(31, 41, 55, 0.7) !important;
+    background: rgba(31, 41, 55, 0) !important;
 }
 
 .total-row td {

@@ -15,46 +15,30 @@ function updateDailyTasks() {
 
     tasksContainer.innerHTML = '';
     
-    // Create active tasks section
-    const activeTasks = document.createElement('div');
-    activeTasks.className = 'active-tasks-section';
+    // Create tasks list
+    const tasksList = document.createElement('div');
+    tasksList.className = 'tasks-list';
     
-    // Filter tasks based on their status from taskStore
-    const activeTasksList = todayData.active.filter(task => {
-        const status = window.taskStore ? window.taskStore.getTaskStatus(today, task.task) : task.status;
-        return status === 'pending';
+    // Get all tasks and their statuses
+    const allTasks = todayData.active.map(task => ({
+        task: task,
+        status: window.taskStore ? window.taskStore.getTaskStatus(today, task.task) : task.status
+    }));
+
+    // Sort tasks so completed ones are at the bottom
+    allTasks.sort((a, b) => {
+        if (a.status === 'pending' && b.status !== 'pending') return -1;
+        if (a.status !== 'pending' && b.status === 'pending') return 1;
+        return 0;
     });
-    
-    activeTasksList.forEach((task) => {
+
+    // Add all tasks to the list
+    allTasks.forEach(({ task }) => {
         const taskElement = createTaskElement(task, today);
-        activeTasks.appendChild(taskElement);
+        tasksList.appendChild(taskElement);
     });
     
-    tasksContainer.appendChild(activeTasks);
-
-    // Create completed tasks section
-    const completedTasks = todayData.active.filter(task => {
-        const status = window.taskStore ? window.taskStore.getTaskStatus(today, task.task) : task.status;
-        return status !== 'pending';
-    });
-
-    if (completedTasks.length > 0) {
-        const completedSection = document.createElement('div');
-        completedSection.className = 'completed-tasks-section';
-        
-        const completedHeader = document.createElement('div');
-        completedHeader.className = 'tasks-header';
-        completedHeader.textContent = 'Completed';
-        completedSection.appendChild(completedHeader);
-
-        completedTasks.forEach((task) => {
-            const taskElement = createTaskElement(task, today);
-            completedSection.appendChild(taskElement);
-        });
-
-        tasksContainer.appendChild(completedSection);
-    }
-
+    tasksContainer.appendChild(tasksList);
     updateProgress(today, todayData.active);
 }
 
@@ -74,6 +58,17 @@ function updateProgress(today, allTasks) {
         const percentage = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
         progressBar.style.width = `${percentage}%`;
         progressBar.setAttribute('aria-valuenow', percentage);
+
+        // Handle collapsible state when all tasks are completed
+        const tasksSection = document.querySelector('.tasks-section');
+        if (percentage === 100) {
+            tasksSection.classList.add('completed');
+            if (!tasksSection.classList.contains('collapsed')) {
+                tasksSection.classList.add('collapsed');
+            }
+        } else {
+            tasksSection.classList.remove('completed', 'collapsed');
+        }
     }
 }
 
@@ -154,6 +149,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // Wait a short moment to ensure taskStore is initialized
     setTimeout(() => {
         updateDailyTasks();
+        
+        // Add click handler for tasks header to toggle collapse
+        const tasksSection = document.querySelector('.tasks-section');
+        const tasksHeader = document.querySelector('.tasks-header');
+        
+        tasksHeader.addEventListener('click', () => {
+            if (tasksSection.classList.contains('completed')) {
+                tasksSection.classList.toggle('collapsed');
+            }
+        });
+
         // Update tasks every minute in case day changes
         setInterval(updateDailyTasks, 60000);
         // Subscribe to store changes if taskStore is available

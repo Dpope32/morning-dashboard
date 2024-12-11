@@ -7,12 +7,46 @@
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/3767/3767084.png">
 </head>
 <body class="dark-theme">
-    <!-- Previous HTML content remains the same until scripts section -->
     <div class="sidebar" id="sidebar">
         <h3>To-Do List</h3>
         <ul class="todo-list" id="todoList">
         </ul>
         <input type="text" id="newTodo" placeholder="Add a new task..." />
+        
+        <!-- Weather section moved to sidebar -->
+        <div class="weather-section">
+            <div class="weather-container">
+                <div class="weather-grid">
+                    <div class="weather-cell">
+                        <div class="temp-bar-container">
+                            <div id="tempBar" class="temp-bar"></div>
+                        </div>
+                        <div class="temp-display">
+                            <span id="currentTemp">--°F</span>
+                        </div>
+                        <h3>Today</h3>
+                    </div>
+                    <div class="weather-cell">
+                        <div class="temp-bar-container">
+                            <div id="tomorrowBar" class="temp-bar"></div>
+                        </div>
+                        <div class="temp-display">
+                            <span id="tomorrowTemp">--°F</span>
+                        </div>
+                        <h3 id="tomorrowDay">Tomorrow</h3>
+                    </div>
+                    <div class="weather-cell">
+                        <div class="temp-bar-container">
+                            <div id="nextDayBar" class="temp-bar"></div>
+                        </div>
+                        <div class="temp-display">
+                            <span id="nextDayTemp">--°F</span>
+                        </div>
+                        <h3 id="nextDayName">Next Day</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="right-sidebar" id="rightSidebar">
@@ -65,48 +99,13 @@
 
     <div class="main-content">
         <div class="header-section">
-            <div class="left-content">
-                <div class="welcome-header" id="greeting">Loading...</div>
-                <!--
-                <div class="search-section">
-                    <input type="text" class="search-input" placeholder="Search coming soon...">
-                </div>
-                -->
-            </div>
+            <div class="welcome-header" id="greeting">Loading...</div>
             <div class="clock" id="clock">00:00</div>
-            <div class="weather-section">
-                <div class="weather-container">
-                    <div class="weather-grid">
-                        <div class="weather-cell">
-                            <div class="temp-bar-container">
-                                <div id="tempBar" class="temp-bar"></div>
-                            </div>
-                            <div class="temp-display">
-                                <span id="currentTemp">--°F</span>
-                            </div>
-                            <h3>Today</h3>
-                        </div>
-                        <div class="weather-cell">
-                            <div class="temp-bar-container">
-                                <div id="tomorrowBar" class="temp-bar"></div>
-                            </div>
-                            <div class="temp-display">
-                                <span id="tomorrowTemp">--°F</span>
-                            </div>
-                            <h3 id="tomorrowDay">Tomorrow</h3>
-                        </div>
-                        <div class="weather-cell">
-                            <div class="temp-bar-container">
-                                <div id="nextDayBar" class="temp-bar"></div>
-                            </div>
-                            <div class="temp-display">
-                                <span id="nextDayTemp">--°F</span>
-                            </div>
-                            <h3 id="nextDayName">Next Day</h3>
-                        </div>
-                    </div>
-                </div>
+            <!--
+            <div class="search-section">
+                <input type="text" class="search-input" placeholder="Search coming soon...">
             </div>
+            -->
         </div>
 
         <div class="container">
