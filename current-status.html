@@ -4,7 +4,205 @@
     <meta charset="UTF-8">
     <title>Dashboard</title>
     <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="styles/components/modal.css">
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/3767/3767084.png">
+    <style>
+        .button-group {
+            padding: 0 15px;
+        }
+        .button-group button {
+            width: 100%;
+            padding: 10px 15px;
+            background: rgb(32, 35, 36) !important;
+            border: 1px solid rgb(52, 54, 55) !important;
+            border-radius: 8px;
+            color: rgb(232, 230, 227) !important;
+            cursor: pointer;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85em;
+            transition: all 0.2s ease;
+            margin-top: 10px;
+            position: relative;
+        }
+        .button-group button:hover {
+            background-color: rgb(35, 38, 40) !important;
+        }
+        .button-group button span:first-child {
+            font-size: 1.1em;
+            justify-self: start;
+        }
+        .button-group button span:last-child {
+            text-align: center;
+            margin-left: -24px;
+        }
+        
+        /* New styles for vertical layout and compact tasks */
+        .vertical-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .tasks-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 15px;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .tasks-section.collapsed {
+            padding: 15px;
+            max-height: 60px;
+        }
+        
+        .tasks-section:not(.collapsed) {
+            max-height: 1000px;
+        }
+        
+        .tasks-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .tasks-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .task-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .task-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+        }
+        
+        /* Task category colors */
+        .task-item.Personal::before { background: linear-gradient(to bottom, #9c27b0, #7b1fa2); }
+        .task-item.Work::before { background: linear-gradient(to bottom, #e91e63, #c2185b); }
+        .task-item.Health::before { background: linear-gradient(to bottom, #00C851, #007E33); }
+        .task-item.Chores::before { background: linear-gradient(to bottom, #ffbb33, #ff8800); }
+        
+        .task-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding-left: 8px;
+        }
+        
+        .task-text {
+            font-size: 0.9em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 2px;
+        }
+        
+        .task-time {
+            font-size: 0.75em;
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1px 6px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-bottom: 4px;
+        }
+        
+        .task-metadata {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+        
+        .task-chip {
+            font-size: 0.7em;
+            padding: 1px 6px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+        
+        .task-actions {
+            display: flex;
+            gap: 4px;
+            margin-top: 4px;
+        }
+        
+        .checkbox-container {
+            width: 16px;
+            height: 16px;
+        }
+        
+        .checkmark {
+            width: 16px;
+            height: 16px;
+        }
+        
+        .skip-btn {
+            font-size: 0.8em;
+            padding: 2px;
+        }
+        
+        .status-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 0;
+        }
+        
+        .tasks-progress {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            transition: width 0.3s ease;
+        }
+
+        /* Make principal inputs read-only in dashboard */
+        .principal-input {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            width: 100px;
+            text-align: right;
+            pointer-events: none;
+        }
+    </style>
 </head>
 <body class="dark-theme">
     <div class="sidebar" id="sidebar">
@@ -16,9 +214,7 @@
 
     <div class="right-sidebar" id="rightSidebar">
         <div class="button-group">
-            <button>Backup</button>
-            <button>AWSome</button>
-            <button>Dev</button>
+            <!-- Weather and Task buttons will be inserted here by right-sidebar.js -->
         </div>
         
         <div class="metrics-container">
@@ -26,12 +222,6 @@
                 <span>Cursor</span>
                 <div class="metric-value">
                     <span class="success">Ready</span>
-                </div>
-            </div>
-            <div class="metric">
-                <span>CPU</span>
-                <div class="metric-value" id="cpuStatus">
-                    <span class="loading">Loading...</span>
                 </div>
             </div>
             <div class="metric">
@@ -64,133 +254,141 @@
         <div class="container">
             <div class="header" id="dashboardDate">Loading...</div>
 
-            <div class="two-column-layout">
-                <div class="column left-column">
-                    <div class="tasks-section">
-                        <div class="tasks-header">
-                            Today's Tasks
-                            <span id="taskCount">(0/5)</span>
-                        </div>
-                        <div class="tasks-progress">
-                            <div class="progress-bar" id="taskProgress" style="width: 0%"></div>
-                        </div>
-                        <ul class="tasks-list" id="dailyTasks">
-                            <!-- Tasks will be dynamically inserted here -->
-                        </ul>
+            <div class="vertical-layout">
+                <div class="tasks-section">
+                    <div class="tasks-header" onclick="this.parentElement.classList.toggle('collapsed')">
+                        Today's Tasks
+                        <span id="taskCount">(0/7)</span>
+                    </div>
+                    <div class="tasks-progress">
+                        <div class="progress-bar" id="taskProgress" style="width: 0%"></div>
+                    </div>
+                    <div class="tasks-grid">
+                        <!-- Tasks will be dynamically inserted here -->
                     </div>
                 </div>
 
-                <div class="column right-column">
-                    <div class="status-card">
-                        <h3>Crypto</h3>
-                        <table class="portfolio-table">
-                            <thead>
-                                <tr>
-                                    <th>Asset</th>
-                                    <th>Quantity</th>
-                                    <th>Price Change</th>
-                                    <th>Price</th>
-                                    <th>Total Value</th>
-                                </tr>
-                            </thead>
-                            <tbody id="cryptoTableBody">
-                                <tr>
-                                    <td>XRP</td>
-                                    <td>0</td>
-                                    <td>Loading...</td>
-                                    <td>Loading...</td>
-                                    <td>Loading...</td>
-                                </tr>
-                                <tr class="total-row">
-                                    <td>Total Portfolio Value</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td id="cryptoTotalValue">Loading...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="status-card">
+                    <h3>Crypto</h3>
+                    <table class="portfolio-table">
+                        <thead>
+                            <tr>
+                                <th>Asset</th>
+                                <th>Quantity</th>
+                                <th>Change</th>
+                                <th>Price</th>
+                                <th>Value</th>
+                                <th>Principal</th>
+                                <th>P/L</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cryptoTableBody">
+                            <tr>
+                                <td>XRP</td>
+                                <td>0</td>
+                                <td>Loading...</td>
+                                <td>Loading...</td>
+                                <td>Loading...</td>
+                                <td>
+                                    <input type="number" step="any" class="principal-input" data-type="crypto" data-symbol="XRP" value="1" readonly>
+                                </td>
+                                <td>Loading...</td>
+                            </tr>
+                            <tr class="total-row">
+                                <td>Total Portfolio Value</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td id="cryptoTotalValue">Loading...</td>
+                                <td id="cryptoTotalPrincipal">$0.00</td>
+                                <td id="cryptoTotalPL">$0.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-                    <div class="status-card">
-                        <h3>Stocks</h3>
-                        <table class="portfolio-table">
-                            <thead>
-                                <tr>
-                                    <th>Asset</th>
-                                    <th>Quantity</th>
-                                    <th>Price Change</th>
-                                    <th>Price</th>
-                                    <th>Total Value</th>
-                                </tr>
-                            </thead>
-                            <tbody id="stockTableBody">
-                                <tr>
-                                    <td>META</td>
-                                    <td>0</td>
-                                    <td>Loading...</td>
-                                    <td>Loading...</td>
-                                    <td>Loading...</td>
-                                </tr>
-                                <tr>
-                                    <td>TSLA</td>
-                                    <td>0</td>
-                                    <td>Loading...</td>
-                                    <td>Loading...</td>
-                                    <td>Loading...</td>
-                                </tr>
-                                <tr>
-                                    <td>AMZN</td>
-                                    <td>0</td>
-                                    <td>Loading...</td>
-                                    <td>Loading...</td>
-                                    <td>Loading...</td>
-                                </tr>
-                                <tr>
-                                    <td>NVDA</td>
-                                    <td>0</td>
-                                    <td>Loading...</td>
-                                    <td>Loading...</td>
-                                    <td>Loading...</td>
-                                </tr>
-                                <tr>
-                                    <td>GOOGL</td>
-                                    <td>0</td>
-                                    <td>Loading...</td>
-                                    <td>Loading...</td>
-                                    <td>Loading...</td>
-                                </tr>
-                                <tr>
-                                    <td>MSFT</td>
-                                    <td>0</td>
-                                    <td>Loading...</td>
-                                    <td>Loading...</td>
-                                    <td>Loading...</td>
-                                </tr>
-                                <tr>
-                                    <td>NFLX</td>
-                                    <td>0</td>
-                                    <td>Loading...</td>
-                                    <td>Loading...</td>
-                                    <td>Loading...</td>
-                                </tr>
-                                <tr>
-                                    <td>T</td>
-                                    <td>0</td>
-                                    <td>Loading...</td>
-                                    <td>Loading...</td>
-                                    <td>Loading...</td>
-                                </tr>
-                                <tr class="total-row">
-                                    <td>Total Portfolio Value</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td id="stockTotalValue">Loading...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="status-card">
+                    <h3>Stocks</h3>
+                    <table class="portfolio-table">
+                        <thead>
+                            <tr>
+                                <th>Asset</th>
+                                <th>Quantity</th>
+                                <th>Change</th>
+                                <th>Price</th>
+                                <th>Value</th>
+                                <th>Principal</th>
+                                <th>P/L</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stockTableBody">
+                            <tr>
+                                <td>META</td>
+                                <td>0</td>
+                                <td>Loading...</td>
+                                <td>Loading...</td>
+                                <td>Loading...</td>
+                                <td>
+                                    <input type="number" step="any" class="principal-input" data-type="stock" data-symbol="META" value="1" readonly>
+                                </td>
+                                <td>Loading...</td>
+                            </tr>
+                            <tr>
+                                <td>NVDA</td>
+                                <td>0</td>
+                                <td>Loading...</td>
+                                <td>Loading...</td>
+                                <td>Loading...</td>
+                                <td>
+                                    <input type="number" step="any" class="principal-input" data-type="stock" data-symbol="NVDA" value="1" readonly>
+                                </td>
+                                <td>Loading...</td>
+                            </tr>
+                            <tr>
+                                <td>TSLA</td>
+                                <td>0</td>
+                                <td>Loading...</td>
+                                <td>Loading...</td>
+                                <td>Loading...</td>
+                                <td>
+                                    <input type="number" step="any" class="principal-input" data-type="stock" data-symbol="TSLA" value="1" readonly>
+                                </td>
+                                <td>Loading...</td>
+                            </tr>
+                            <tr>
+                                <td>AMZN</td>
+                                <td>0</td>
+                                <td>Loading...</td>
+                                <td>Loading...</td>
+                                <td>Loading...</td>
+                                <td>
+                                    <input type="number" step="any" class="principal-input" data-type="stock" data-symbol="AMZN" value="1" readonly>
+                                </td>
+                                <td>Loading...</td>
+                            </tr>
+                            <tr>
+                                <td>MSTR</td>
+                                <td>0</td>
+                                <td>Loading...</td>
+                                <td>Loading...</td>
+                                <td>Loading...</td>
+                                <td>
+                                    <input type="number" step="any" class="principal-input" data-type="stock" data-symbol="MSTR" value="1" readonly>
+                                </td>
+                                <td>Loading...</td>
+                            </tr>
+                        
+                            <tr class="total-row">
+                                <td>Total Portfolio Value</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td id="stockTotalValue">Loading...</td>
+                                <td id="stockTotalPrincipal">$0.00</td>
+                                <td id="stockTotalPL">$0.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -198,7 +396,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
     <script src="scripts/modules/env.js"></script>
     <script src="scripts/modules/tasksByDay.js"></script>
-    <script src="scripts/modules/taskStore.js"></script>
+    <script src="store/taskStore.js"></script>
     <script src="scripts/modules/tasks.js"></script>
     <script src="scripts/utils/dom.js"></script>
     <script src="scripts/utils/format.js"></script>
@@ -213,15 +411,22 @@
     <script src="scripts/main.js"></script>
     <script src="scripts/modules/sidebar.js"></script>
     <script src="scripts/modules/right-sidebar.js"></script>
+    <script src="modals/taskModal.js"></script>
+    <script src="modals/cryptoModal.js"></script>
+    <script src="modals/stocksModal.js"></script>
 
     <script>
-        // Verify taskStore initialization
+        // Handle principal input changes
         document.addEventListener('DOMContentLoaded', () => {
-            if (window.taskStore) {
-                console.log('[TaskStore] Status:', window.taskStore.getStoreStatus());
-            } else {
-                console.error('[TaskStore] Failed to initialize');
-            }
+            document.querySelectorAll('.principal-input').forEach(input => {
+                const type = input.dataset.type;
+                const symbol = input.dataset.symbol;
+                
+                // Set initial value from ENV or default to 1
+                input.value = type === 'crypto' 
+                    ? (window.ENV.cryptoPrincipals[symbol] || 1)
+                    : (window.ENV.stockPrincipals[symbol] || 1);
+            });
         });
     </script>
 </body>

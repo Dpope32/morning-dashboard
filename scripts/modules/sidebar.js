@@ -8,6 +8,7 @@ class Sidebar {
         this.setupToggleButton();
         this.loadTodos();
         this.setupEventListeners();
+        this.setupDragAndDrop();
     }
 
     setupCloseButton() {
@@ -39,6 +40,42 @@ class Sidebar {
         });
 
         this.toggleBtn = toggleBtn;
+    }
+
+    setupDragAndDrop() {
+        this.todoList.addEventListener('dragstart', (e) => {
+            if (e.target.classList.contains('todo-item')) {
+                e.target.classList.add('dragging');
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', e.target.querySelector('span').textContent);
+            }
+        });
+
+        this.todoList.addEventListener('dragend', (e) => {
+            if (e.target.classList.contains('todo-item')) {
+                e.target.classList.remove('dragging');
+                this.saveTodos();
+            }
+        });
+
+        this.todoList.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            const draggingItem = this.todoList.querySelector('.dragging');
+            if (!draggingItem) return;
+
+            const siblings = [...this.todoList.querySelectorAll('.todo-item:not(.dragging)')];
+            const nextSibling = siblings.find(sibling => {
+                const box = sibling.getBoundingClientRect();
+                const offset = e.clientY - box.top - box.height / 2;
+                return offset < 0;
+            });
+
+            this.todoList.insertBefore(draggingItem, nextSibling);
+        });
+
+        this.todoList.addEventListener('drop', (e) => {
+            e.preventDefault();
+        });
     }
 
     closeSidebar() {
@@ -84,6 +121,7 @@ class Sidebar {
     addTodoItem(text) {
         const li = document.createElement('li');
         li.className = 'todo-item';
+        li.draggable = true;
         li.innerHTML = `
             <input type="checkbox" class="todo-checkbox" />
             <span>${text}</span>
@@ -127,6 +165,7 @@ class Sidebar {
             todos.forEach(todo => {
                 const li = document.createElement('li');
                 li.className = 'todo-item' + (todo.checked ? ' completed' : '');
+                li.draggable = true;
                 li.style.background = todo.checked ? 'var(--todo-item-completed)' : 'var(--todo-item-bg)';
                 li.innerHTML = `
                     <input type="checkbox" class="todo-checkbox" ${todo.checked ? 'checked' : ''} />

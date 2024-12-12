@@ -6,9 +6,12 @@ class RightSidebar {
         this.setupToggleButton();
         this.setupEventListeners();
         this.removeHeader();
+        this.setupWeatherButton();
+        this.setupTaskManagerButton();
+        this.setupCryptoButton();
+        this.setupStocksButton();
         this.loadData();
         this.setupTaskStoreMonitor();
-        this.setupWeatherButton();
     }
 
     removeHeader() {
@@ -34,7 +37,7 @@ class RightSidebar {
     setupWeatherButton() {
         const weatherSection = document.createElement('div');
         weatherSection.style.cssText = `
-            margin-top: 20px;
+            margin-top: 15px;
             padding: 0 15px;
         `;
 
@@ -43,39 +46,45 @@ class RightSidebar {
         weatherButton.style.cssText = `
             width: 100%;
             padding: 10px 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--text-secondary);
+            background: rgb(32, 35, 36);
+            border: 1px solid rgb(52, 54, 55);
+            border-radius: 20px;
+            color: rgb(232, 230, 227);
             cursor: pointer;
-            display: flex;
+            display: grid;
+            grid-template-columns: auto 1fr;
             align-items: center;
             gap: 8px;
-            font-size: 0.9em;
+            font-size: 0.85em;
             transition: all 0.2s ease;
-            text-align: left;
+            position: relative;
         `;
 
         // Create icon container
         const iconSpan = document.createElement('span');
         iconSpan.textContent = '🌤️';
-        iconSpan.style.fontSize = '1.1em';
+        iconSpan.style.cssText = `
+            font-size: 1.1em;
+            justify-self: start;
+        `;
 
         // Create text container
         const textSpan = document.createElement('span');
-        textSpan.textContent = 'Weather Forecast';
+        textSpan.textContent = 'WEATHER';
+        textSpan.style.cssText = `
+            text-align: center;
+            margin-left: -24px;
+        `;
 
         weatherButton.appendChild(iconSpan);
         weatherButton.appendChild(textSpan);
 
         weatherButton.addEventListener('mouseover', () => {
-            weatherButton.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
-            weatherButton.style.color = 'var(--text-primary)';
+            weatherButton.style.backgroundColor = 'rgb(35, 38, 40)';
         });
 
         weatherButton.addEventListener('mouseout', () => {
-            weatherButton.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
-            weatherButton.style.color = 'var(--text-secondary)';
+            weatherButton.style.backgroundColor = 'rgb(32, 35, 36)';
         });
 
         weatherButton.addEventListener('click', () => {
@@ -85,7 +94,219 @@ class RightSidebar {
         });
 
         weatherSection.appendChild(weatherButton);
-        this.sidebar.appendChild(weatherSection);
+        
+        // Insert after the button-group
+        const buttonGroup = this.sidebar.querySelector('.button-group');
+        if (buttonGroup) {
+            buttonGroup.insertAdjacentElement('afterend', weatherSection);
+        }
+    }
+
+    setupTaskManagerButton() {
+        const taskSection = document.createElement('div');
+        taskSection.style.cssText = `
+            margin-top: 15px;
+            padding: 0 15px;
+        `;
+
+        const taskButton = document.createElement('button');
+        taskButton.className = 'task-manager-button';
+        taskButton.style.cssText = `
+            width: 100%;
+            padding: 10px 15px;
+            background: rgb(32, 35, 36);
+            border: 1px solid rgb(52, 54, 55);
+            border-radius: 20px;
+            color: rgb(232, 230, 227);
+            cursor: pointer;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85em;
+            transition: all 0.2s ease;
+            position: relative;
+        `;
+
+        // Create icon container
+        const iconSpan = document.createElement('span');
+        iconSpan.textContent = '📋';
+        iconSpan.style.cssText = `
+            font-size: 1.1em;
+            justify-self: start;
+        `;
+
+        // Create text container
+        const textSpan = document.createElement('span');
+        textSpan.textContent = 'TASKS';
+        textSpan.style.cssText = `
+            text-align: center;
+            margin-left: -24px;
+        `;
+
+        taskButton.appendChild(iconSpan);
+        taskButton.appendChild(textSpan);
+
+        taskButton.addEventListener('mouseover', () => {
+            taskButton.style.backgroundColor = 'rgb(35, 38, 40)';
+        });
+
+        taskButton.addEventListener('mouseout', () => {
+            taskButton.style.backgroundColor = 'rgb(32, 35, 36)';
+        });
+
+        taskButton.addEventListener('click', () => {
+            if (window.taskModal) {
+                window.taskModal.show();
+            }
+        });
+
+        taskSection.appendChild(taskButton);
+        
+        // Insert after the weather button
+        const weatherButton = this.sidebar.querySelector('.weather-button');
+        if (weatherButton) {
+            const weatherSection = weatherButton.closest('div');
+            weatherSection.insertAdjacentElement('afterend', taskSection);
+        }
+    }
+
+    setupCryptoButton() {
+        const cryptoSection = document.createElement('div');
+        cryptoSection.style.cssText = `
+            margin-top: 15px;
+            padding: 0 15px;
+        `;
+
+        const cryptoButton = document.createElement('button');
+        cryptoButton.className = 'crypto-button';
+        cryptoButton.style.cssText = `
+            width: 100%;
+            padding: 10px 15px;
+            background: rgb(32, 35, 36);
+            border: 1px solid rgb(52, 54, 55);
+            border-radius: 20px;
+            color: rgb(232, 230, 227);
+            cursor: pointer;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85em;
+            transition: all 0.2s ease;
+            position: relative;
+        `;
+
+        // Create icon container
+        const iconSpan = document.createElement('span');
+        iconSpan.textContent = '₿';
+        iconSpan.style.cssText = `
+            font-size: 1.1em;
+            justify-self: start;
+        `;
+
+        // Create text container
+        const textSpan = document.createElement('span');
+        textSpan.textContent = 'CRYPTO';
+        textSpan.style.cssText = `
+            text-align: center;
+            margin-left: -24px;
+        `;
+
+        cryptoButton.appendChild(iconSpan);
+        cryptoButton.appendChild(textSpan);
+
+        cryptoButton.addEventListener('mouseover', () => {
+            cryptoButton.style.backgroundColor = 'rgb(35, 38, 40)';
+        });
+
+        cryptoButton.addEventListener('mouseout', () => {
+            cryptoButton.style.backgroundColor = 'rgb(32, 35, 36)';
+        });
+
+        cryptoButton.addEventListener('click', () => {
+            if (window.cryptoModal) {
+                window.cryptoModal.show();
+            }
+        });
+
+        cryptoSection.appendChild(cryptoButton);
+        
+        // Insert after the task button
+        const taskButton = this.sidebar.querySelector('.task-manager-button');
+        if (taskButton) {
+            const taskSection = taskButton.closest('div');
+            taskSection.insertAdjacentElement('afterend', cryptoSection);
+        }
+    }
+
+    setupStocksButton() {
+        const stocksSection = document.createElement('div');
+        stocksSection.style.cssText = `
+            margin-top: 15px;
+            padding: 0 15px;
+        `;
+
+        const stocksButton = document.createElement('button');
+        stocksButton.className = 'stocks-button';
+        stocksButton.style.cssText = `
+            width: 100%;
+            padding: 10px 15px;
+            background: rgb(32, 35, 36);
+            border: 1px solid rgb(52, 54, 55);
+            border-radius: 20px;
+            color: rgb(232, 230, 227);
+            cursor: pointer;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85em;
+            transition: all 0.2s ease;
+            position: relative;
+        `;
+
+        // Create icon container
+        const iconSpan = document.createElement('span');
+        iconSpan.textContent = '📈';
+        iconSpan.style.cssText = `
+            font-size: 1.1em;
+            justify-self: start;
+        `;
+
+        // Create text container
+        const textSpan = document.createElement('span');
+        textSpan.textContent = 'STOCKS';
+        textSpan.style.cssText = `
+            text-align: center;
+            margin-left: -24px;
+        `;
+
+        stocksButton.appendChild(iconSpan);
+        stocksButton.appendChild(textSpan);
+
+        stocksButton.addEventListener('mouseover', () => {
+            stocksButton.style.backgroundColor = 'rgb(35, 38, 40)';
+        });
+
+        stocksButton.addEventListener('mouseout', () => {
+            stocksButton.style.backgroundColor = 'rgb(32, 35, 36)';
+        });
+
+        stocksButton.addEventListener('click', () => {
+            if (window.stocksModal) {
+                window.stocksModal.show();
+            }
+        });
+
+        stocksSection.appendChild(stocksButton);
+        
+        // Insert after the crypto button
+        const cryptoButton = this.sidebar.querySelector('.crypto-button');
+        if (cryptoButton) {
+            const cryptoSection = cryptoButton.closest('div');
+            cryptoSection.insertAdjacentElement('afterend', stocksSection);
+        }
     }
 
     setupTaskStoreMonitor() {
@@ -149,9 +370,11 @@ class RightSidebar {
         `;
         storageMeter.appendChild(storageUsed);
         monitorSection.appendChild(storageMeter);
-
-        // Add to sidebar
-        this.sidebar.appendChild(monitorSection);
+     
+      // commenting out until i extract this to a separate module
+      // want this to be a button instead? or a complete store modal that can be opened?
+      
+      //  this.sidebar.appendChild(monitorSection);
 
         // Update monitor data
         const updateMonitor = () => {

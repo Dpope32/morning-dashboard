@@ -2,102 +2,166 @@
 .portfolio-table {
     width: 100%;
     border-collapse: separate;
-    border-spacing: 0 6px;
-    margin-top: 10px;
+    border-spacing: 0 8px;
+    margin-top: 12px;
 }
 
 .portfolio-table th {
-    color: #6b7280;
+    color: rgba(107, 114, 128, 0.7);
     font-weight: 500;
     text-align: center;
-    padding: 6px 10px;
-    font-size: 0.9em;
-    background: none;
+    padding: 4px 8px;
+    font-size: 0.75em;
+    background: transparent;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .portfolio-table th:first-child {
     text-align: left;
+    padding-left: 16px;
 }
 
 .portfolio-table tr {
-    background: rgba(31, 41, 55, 0.7);
-    border-radius: 8px;
-    transition: background 0.3s, transform 0.3s;
+    background: rgba(31, 41, 55, 0.2);
+    transition: all 0.3s ease;
+    position: relative;
 }
 
-.portfolio-table tr:hover {
+.portfolio-table tr:not(.total-row) td:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.portfolio-table tr:not(.total-row) td:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.portfolio-table tr:not(.total-row):hover {
     background: rgba(255, 255, 255, 0.1);
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .portfolio-table td {
-    padding: 8px 10px;
+    padding: 12px;
     text-align: center;
     font-size: 0.9em;
+    background: transparent;
 }
 
 .portfolio-table td:first-child {
     text-align: left;
-    font-size: 1em;
-    font-weight: bold;
+    padding-left: 16px;
+    font-size: 0.95em;
+    font-weight: 600;
     background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
 }
 
-.portfolio-table td:last-child {
-    font-weight: bold;
+/* Positive/Negative values */
+.portfolio-table td.positive,
+.portfolio-table td:last-child.positive {
+    color: var(--accent-success);
 }
 
+.portfolio-table td.negative,
+.portfolio-table td:last-child.negative {
+    color: var(--accent-error);
+}
+
+/* Total row styling */
 .total-row {
-    background: rgba(31, 41, 55, 0) !important;
-    margin-top: 4px;
+    background: transparent !important;
+    margin-top: 8px;
 }
 
 .total-row td {
-    background: none !important;
-    padding: 4px 10px;
+    background: transparent !important;
+    padding: 8px 16px;
+    font-size: 0.85em;
 }
 
 .total-row td:first-child {
     color: var(--accent-success);
-    font-size: 0.9em;
+    font-weight: 500;
     white-space: nowrap;
+    padding-left: 16px;
+}
+
+.total-row td:last-child {
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 600;
 }
 
 .total-row td:last-child.positive {
-    background: rgba(16, 185, 129, 0.2) !important;
-    border-radius: 6px;
+    background: rgba(16, 185, 129, 0.15) !important;
     color: var(--accent-success);
-    font-weight: bold;
 }
 
 .total-row td:last-child.negative {
-    background: rgba(239, 68, 68, 0.2) !important;
-    border-radius: 6px;
+    background: rgba(239, 68, 68, 0.15) !important;
     color: var(--accent-error);
-    font-weight: bold;
 }
 
 /* Price Change Colors */
 .price-change {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-weight: 500;
     color: var(--accent-success);
+    background: rgba(16, 185, 129, 0.1);
 }
 
 .price-change.negative {
     color: var(--accent-error);
+    background: rgba(239, 68, 68, 0.1);
 }
 
-/* In tables.css */
+/* Value and P/L columns */
+.portfolio-table td:nth-last-child(2),
+.portfolio-table td:last-child {
+    font-weight: 600;
+}
+
+.portfolio-table td:last-child {
+    background: rgba(16, 185, 129, 0.1);
+}
+
+.portfolio-table td:last-child.negative {
+    background: rgba(239, 68, 68, 0.1);
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
-    .portfolio-table th, .portfolio-table td {
-        padding: 6px 8px;
+    .portfolio-table th, 
+    .portfolio-table td {
+        padding: 8px;
         font-size: 0.85em;
+    }
+
+    .portfolio-table td:first-child {
+        padding-left: 12px;
+    }
+
+    .portfolio-table td:last-child {
+        padding-right: 12px;
+    }
+
+    .total-row td:first-child {
+        padding-left: 12px;
+    }
+
+    .total-row td:last-child {
+        padding-right: 12px;
     }
 }
 
-/* In metrics.css */
+/* Additional Metrics Responsive Design */
 @media (max-width: 768px) {
     .metric {
         flex-direction: column;

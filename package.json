@@ -1,7 +1,0 @@
-{
-  "name": "dashboard",
-  "version": "1.0.0",
-  "description": "Personal dashboard with system monitoring, tasks, and financial tracking",
-  "dependencies": {},
-  "devDependencies": {}
-}

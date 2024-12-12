@@ -22,7 +22,7 @@
     --button-border: rgba(79, 70, 229, 0.5);
     --button-hover-bg: linear-gradient(135deg, #7c3aed, #4f46e5);
     --button-color: #e2e8f0;
-    --sidebar-bg: rgba(13, 17, 23, 0.95);
+    --sidebar-bg: rgba(10, 14, 20, 0.75);
     --sidebar-width: 300px;
     --todo-item-bg: rgba(31, 41, 55, 0.4);
     --todo-item-hover: rgba(31, 41, 55, 0.6);

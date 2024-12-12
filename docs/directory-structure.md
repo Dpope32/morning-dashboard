@@ -1,4 +1,3 @@
-├── .env.example
 ├── .gitignore
 ├── current-status.html
 ├── master-morning.ps1
@@ -6,12 +5,13 @@
 ├── package-lock.json
 ├── package.json
 ├── README.md
-├── styles.css
-├── tasksByDay.example.js
 ├── docs/
 │   ├── app-hierarchy.md
 │   ├── app-structure.md
 │   └── directory-structure.md
+├── examples/
+│   ├── .env.example
+│   └── tasksByDay.example.js
 ├── images/
 │   └── interesting.jpg
 ├── scripts/
@@ -27,6 +27,7 @@
 │   │   ├── right-sidebar.js
 │   │   ├── sidebar.js
 │   │   ├── stockPrices.js
+│   │   ├── taskModal.js
 │   │   ├── taskProgress.js
 │   │   ├── tasks.js
 │   │   ├── tasksByDay.js
@@ -35,11 +36,16 @@
 │       ├── dom.js
 │       └── format.js
 └── styles/
-    ├── components.css
-    ├── layout.css
-    ├── metrics.css
-    ├── sidebar.css
-    ├── tables.css
-    ├── tasks.css
-    ├── todo.css
-    └── variables.css
+    ├── styles.css
+    ├── base/
+    │   ├── layout.css
+    │   └── variables.css
+    ├── components/
+    │   ├── components.css
+    │   └── weather-calendar.css
+    └── modules/
+        ├── metrics.css
+        ├── sidebar.css
+        ├── tables.css
+        ├── tasks.css
+        └── todo.css

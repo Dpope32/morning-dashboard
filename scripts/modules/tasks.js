@@ -1,79 +1,84 @@
 // TasksByDay functionality with completion tracking
 function updateDailyTasks() {
     const today = new Date().toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
-    const tasksContainer = document.getElementById('dailyTasks');
+    const tasksContainer = document.querySelector('.tasks-grid');
     const todayData = window.tasksByDay[today] || { active: [], completed: [] };
 
-    // Sort active tasks by time if present
-    if (window.tasksByDay.settings.sortBy === 'time') {
-        todayData.active.sort((a, b) => {
-            if (!a.time) return 1;
-            if (!b.time) return -1;
-            return a.time.localeCompare(b.time);
-        });
-    }
-
+    if (!tasksContainer) return;
+    
     tasksContainer.innerHTML = '';
     
-    // Create tasks list
-    const tasksList = document.createElement('div');
-    tasksList.className = 'tasks-list';
-    
-    // Get all tasks and their statuses
-    const allTasks = todayData.active.map(task => ({
-        task: task,
-        status: window.taskStore ? window.taskStore.getTaskStatus(today, task.task) : task.status
-    }));
-
-    // Sort tasks so completed ones are at the bottom
-    allTasks.sort((a, b) => {
-        if (a.status === 'pending' && b.status !== 'pending') return -1;
-        if (a.status !== 'pending' && b.status === 'pending') return 1;
-        return 0;
+    // Sort tasks by completion status and time
+    const allTasks = todayData.active.sort((a, b) => {
+        const statusA = window.taskStore ? window.taskStore.getTaskStatus(today, a.task) : a.status;
+        const statusB = window.taskStore ? window.taskStore.getTaskStatus(today, b.task) : b.status;
+        
+        // Move completed tasks to the end
+        if (statusA === 'completed' && statusB !== 'completed') return 1;
+        if (statusA !== 'completed' && statusB === 'completed') return -1;
+        
+        // For non-completed tasks, sort by time
+        if (a.time && b.time) {
+            return a.time.localeCompare(b.time);
+        }
+        if (a.time) return -1;
+        if (b.time) return 1;
+        
+        const priorityOrder = { high: 0, medium: 1, low: 2 };
+        return priorityOrder[a.priority] - priorityOrder[b.priority];
     });
 
-    // Add all tasks to the list
-    allTasks.forEach(({ task }) => {
+    // Create task elements
+    allTasks.forEach(task => {
         const taskElement = createTaskElement(task, today);
-        tasksList.appendChild(taskElement);
+        tasksContainer.appendChild(taskElement);
     });
-    
-    tasksContainer.appendChild(tasksList);
+
     updateProgress(today, todayData.active);
 }
 
 function updateProgress(today, allTasks) {
-    const completedCount = allTasks.filter(task => {
+    // Filter out skipped tasks and count completed tasks
+    const activeTasks = allTasks.filter(task => {
+        const status = window.taskStore ? window.taskStore.getTaskStatus(today, task.task) : task.status;
+        return status !== 'skipped';
+    });
+
+    const completedCount = activeTasks.filter(task => {
         const status = window.taskStore ? window.taskStore.getTaskStatus(today, task.task) : task.status;
         return status === 'completed';
     }).length;
-    const totalCount = allTasks.length;
+
+    const totalCount = activeTasks.length;
 
     // Update task count
-    document.getElementById('taskCount').textContent = `(${completedCount}/${totalCount})`;
+    const taskCount = document.getElementById('taskCount');
+    if (taskCount) {
+        taskCount.textContent = `(${completedCount}/${totalCount})`;
+    }
 
     // Update progress bar
     const progressBar = document.querySelector('.progress-bar');
     if (progressBar) {
         const percentage = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
         progressBar.style.width = `${percentage}%`;
-        progressBar.setAttribute('aria-valuenow', percentage);
+        progressBar.setAttribute('aria-valuenow', percentage.toString());
 
-        // Handle collapsible state when all tasks are completed
-        const tasksSection = document.querySelector('.tasks-section');
+        // Add celebration animation at 100%
         if (percentage === 100) {
-            tasksSection.classList.add('completed');
-            if (!tasksSection.classList.contains('collapsed')) {
-                tasksSection.classList.add('collapsed');
-            }
-        } else {
-            tasksSection.classList.remove('completed', 'collapsed');
+            progressBar.style.animation = 'celebrate 0.5s ease-in-out';
+            setTimeout(() => {
+                progressBar.style.animation = '';
+            }, 500);
         }
     }
 }
 
 function formatTime(timeStr) {
     if (!timeStr) return '';
+    if (timeStr.includes('AM') || timeStr.includes('PM')) {
+        return timeStr;
+    }
     const [hours, minutes] = timeStr.split(':');
     const hour = parseInt(hours);
     const ampm = hour >= 12 ? 'PM' : 'AM';
@@ -83,65 +88,97 @@ function formatTime(timeStr) {
 
 function createTaskElement(task, dayOfWeek) {
     const taskElement = document.createElement('div');
-    taskElement.className = 'task-item';
-    
     const taskStatus = window.taskStore ? window.taskStore.getTaskStatus(dayOfWeek, task.task) : task.status;
+    taskElement.className = `task-item ${task.category} ${taskStatus}`;
+    
     const isActionable = taskStatus === 'pending';
     const formattedTime = formatTime(task.time);
     
     taskElement.innerHTML = `
-        <div class="task-priority priority-${task.priority}"></div>
         <div class="task-content">
             <div class="task-main">
-                <div class="task-text ${taskStatus}">${task.task}</div>
-                ${formattedTime ? `<div class="task-time">${formattedTime}</div>` : ''}
+                <div class="task-left">
+                    <div class="task-text ${taskStatus}">${task.task}</div>
+                </div>
+                <div class="task-time">${formattedTime}</div>
+                ${isActionable ? `
+                <div class="task-actions">
+                    <label class="checkbox-container">
+                        <input type="checkbox" class="complete-checkbox">
+                        <span class="checkmark"></span>
+                    </label>
+                    <button class="skip-btn" title="Skip Task">↪️</button>
+                </div>
+                ` : ''}
             </div>
             <div class="task-metadata">
-                <span class="task-category category-${task.category}">${task.category}</span>
-                <span class="task-improving">${task.improving}</span>
-                <span class="task-status status-${taskStatus}">${taskStatus}</span>
+                <span class="task-chip ${task.improving}">${task.improving}</span>
+                ${task.oneTime ? '<span class="task-chip one-time">One-time</span>' : ''}
+                <span class="task-chip ${taskStatus}">${taskStatus}</span>
             </div>
         </div>
-        ${isActionable ? `
-        <div class="task-actions">
-            <label class="checkbox-container">
-                <input type="checkbox" class="complete-checkbox">
-                <span class="checkmark"></span>
-            </label>
-            <button class="skip-btn" title="Skip Task">↪️</button>
-        </div>
-        ` : ''}
     `;
 
     if (isActionable) {
-        const checkbox = taskElement.querySelector('.complete-checkbox');
-        const skipBtn = taskElement.querySelector('.skip-btn');
+        setupTaskActions(taskElement, task, dayOfWeek);
+    }
 
-        checkbox.addEventListener('change', (e) => {
-            if (e.target.checked) {
-                taskElement.style.animation = 'taskComplete 0.5s ease-out';
+    return taskElement;
+}
+
+function setupTaskActions(taskElement, task, dayOfWeek) {
+    const checkbox = taskElement.querySelector('.complete-checkbox');
+    const skipBtn = taskElement.querySelector('.skip-btn');
+
+    checkbox?.addEventListener('change', (e) => {
+        if (e.target.checked) {
+            taskElement.style.animation = 'taskComplete 0.5s ease-out';
+            taskElement.classList.add('completed');
+            
+            // Update progress immediately
+            const taskIndex = window.tasksByDay[dayOfWeek].active.findIndex(t => t.task === task.task);
+            if (taskIndex !== -1) {
+                task.status = 'completed';
+                updateProgress(dayOfWeek, window.tasksByDay[dayOfWeek].active);
+                
+                // After animation, update store and refresh
                 setTimeout(() => {
                     if (window.taskStore) {
                         window.taskStore.completeTask(dayOfWeek, task.task);
                     } else {
-                        task.status = 'completed';
+                        window.taskManager.completeTask(dayOfWeek, taskIndex);
                     }
+
+                    try {
+                        localStorage.setItem('tasksByDay', JSON.stringify(window.tasksByDay));
+                    } catch (e) {
+                        console.error('Error saving tasks to localStorage:', e);
+                    }
+
                     updateDailyTasks();
                 }, 500);
             }
-        });
+        }
+    });
 
-        skipBtn.addEventListener('click', () => {
+    skipBtn?.addEventListener('click', () => {
+        const taskIndex = window.tasksByDay[dayOfWeek].active.findIndex(t => t.task === task.task);
+        if (taskIndex !== -1) {
             if (window.taskStore) {
                 window.taskStore.skipTask(dayOfWeek, task.task);
             } else {
-                task.status = 'skipped';
+                window.taskManager.skipTask(dayOfWeek, taskIndex);
             }
-            updateDailyTasks();
-        });
-    }
 
-    return taskElement;
+            try {
+                localStorage.setItem('tasksByDay', JSON.stringify(window.tasksByDay));
+            } catch (e) {
+                console.error('Error saving tasks to localStorage:', e);
+            }
+
+            updateDailyTasks();
+        }
+    });
 }
 
 // Initialize tasks when the page loads
@@ -154,19 +191,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const tasksSection = document.querySelector('.tasks-section');
         const tasksHeader = document.querySelector('.tasks-header');
         
-        tasksHeader.addEventListener('click', () => {
-            if (tasksSection.classList.contains('completed')) {
-                tasksSection.classList.toggle('collapsed');
-            }
+        tasksHeader?.addEventListener('click', () => {
+            tasksSection?.classList.toggle('collapsed');
         });
 
         // Update tasks every minute in case day changes
         setInterval(updateDailyTasks, 60000);
-        // Subscribe to store changes if taskStore is available
-        if (window.taskStore) {
-            window.taskStore.subscribe(() => {
-                updateDailyTasks();
-            });
-        }
     }, 100);
 });

@@ -20,7 +20,7 @@ class WeatherModal {
 
         const title = document.createElement('h2');
         title.className = 'modal-title';
-        title.textContent = 'Weather Forecast';
+        title.textContent = 'WEATHER';
 
         this.modal.appendChild(closeButton);
         this.modal.appendChild(title);

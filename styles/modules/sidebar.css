@@ -53,11 +53,11 @@
 }
 
 .right-sidebar .button-group button {
-    padding: 12px 18px;
+    padding: 8px 12px;
     border: 1px solid var(--primary-color);
-    border-radius: 10px;
-    background: rgba(79, 70, 229, 0.15);
-    color: #a5b4fc;
+    border-radius: 18px;
+    background: rgba(79, 70, 229, 0.05);
+    color: var(--primary-color);
     cursor: pointer;
     transition: all 0.3s ease;
     font-size: 0.95em;

@@ -196,7 +196,7 @@ body::before {
     padding: 8px 12px;
     border: 1px solid var(--primary-color);
     border-radius: 18px;
-    background: rgba(79, 70, 229, 0.15);
+    background: rgba(79, 70, 229, 0.05);
     color:var(--primary-color);
     cursor: pointer;
     transition: all 0.3s ease;

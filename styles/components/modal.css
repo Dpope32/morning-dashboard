@@ -1,0 +1,175 @@
+/* Base Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    animation: fadeIn 0.2s ease-out;
+    overflow-y: auto;
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    position: relative;
+    background: rgba(13, 17, 23, 0.95);
+    margin: 5% auto;
+    padding: 25px;
+    width: 95%;
+    max-width: 1400px;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    animation: slideIn 0.3s ease-out;
+}
+
+.modal-close {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    font-size: 28px;
+    border: none;
+    background: none;
+    color: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    padding: 5px 10px;
+    transition: all 0.2s ease;
+    border-radius: 6px;
+    line-height: 1;
+}
+
+.modal-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Form Elements */
+.modal-form {
+    display: grid;
+    gap: 15px;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-label {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+    font-size: 0.9em;
+}
+
+.form-input,
+.form-select {
+    padding: 10px 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(32, 35, 36, 0.95);
+    color: #fff;
+    border-radius: 8px;
+    font-size: 0.9em;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+}
+
+/* Dropdown specific styles */
+.form-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    padding-right: 40px;
+}
+
+/* Dropdown options */
+.form-select option {
+    background: rgb(32, 35, 36);
+    color: #646464;
+    padding: 10px;
+}
+
+/* Selected option */
+.form-select option:checked {
+    background: rgb(45, 49, 51);
+}
+
+/* Hover state for options */
+.form-select option:hover {
+    background: rgb(45, 49, 51);
+}
+
+.form-input:focus,
+.form-select:focus {
+    background: rgba(45, 49, 51, 0.95);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-1px);
+    outline: none;
+}
+
+/* Buttons */
+.modal-button {
+    padding: 10px 20px;
+    background: transparent;
+    border: 2px solid #4f46e5;
+    color: #4f46e5;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9em;
+    transition: all 0.2s ease;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.modal-button:hover {
+    background: rgba(79, 70, 229, 0.1);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(79, 70, 229, 0.2);
+}
+
+.modal-button.delete {
+    border-color: #ff4444;
+    color: #ff4444;
+}
+
+.modal-button.delete:hover {
+    background: rgba(255, 68, 68, 0.1);
+    box-shadow: 0 4px 8px rgba(255, 68, 68, 0.2);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Scrollbar Styles */
+.modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
