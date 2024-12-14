@@ -42,7 +42,7 @@ async function updateStockPrices() {
             // Calculate P/L
             const pl = value - principal;
             row.cells[6].textContent = '$' + formatNumber(pl);
-            row.cells[6].style.color = pl >= 0 ? '#00C851' : '#ff4444';
+            row.cells[6].className = pl >= 0 ? 'positive' : 'negative';
                 
         } catch (error) {
             console.error('Error fetching stock price data:', error);
@@ -60,7 +60,7 @@ async function updateStockPrices() {
         totalRow.cells[4].textContent = '$' + formatNumber(totalValue);
         totalRow.cells[5].style.display = 'none'; // Hide principal cell in total row
         totalRow.cells[6].textContent = '$' + formatNumber(totalPL);
-        totalRow.cells[6].style.color = totalPL >= 0 ? '#00C851' : '#ff4444';
+        totalRow.cells[6].className = totalPL >= 0 ? 'positive' : 'negative';
     }
 
     const totalValueElement = document.getElementById('stockTotalValue');

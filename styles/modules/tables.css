@@ -65,12 +65,12 @@
 /* Positive/Negative values */
 .portfolio-table td.positive,
 .portfolio-table td:last-child.positive {
-    color: var(--accent-success);
+    color: var(--accent-success) !important;
 }
 
 .portfolio-table td.negative,
 .portfolio-table td:last-child.negative {
-    color: var(--accent-error);
+    color: var(--accent-error) !important;
 }
 
 /* Total row styling */
@@ -99,7 +99,7 @@
 }
 
 .total-row td:last-child.positive {
-    background: rgba(16, 185, 129, 0.15) !important;
+    background: var(--accent-success-td) !important;
     color: var(--accent-success);
 }
 
@@ -129,11 +129,13 @@
 }
 
 .portfolio-table td:last-child {
-    background: rgba(16, 185, 129, 0.1);
+    background: transparent;
+    color: var(--accent-success) !important;
 }
 
 .portfolio-table td:last-child.negative {
-    background: rgba(239, 68, 68, 0.1);
+    background: transparent;
+    color: var(--accent-error) !important;
 }
 
 /* Responsive Design */

@@ -115,81 +115,28 @@ class TaskModal {
 
     createTaskList(day) {
         const taskList = document.createElement('div');
-        taskList.style.cssText = `
-            margin-top: 20px;
-            padding-top: 20px;
-        `;
+        taskList.style.marginTop = '20px';
+        taskList.style.paddingTop = '20px';
 
         const tasks = window.tasksByDay[day].active;
         tasks.forEach((task, index) => {
             const taskItem = document.createElement('div');
-            taskItem.style.cssText = `
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 12px 15px;
-                background: rgba(255, 255, 255, 0.03);
-                border-radius: 8px;
-                margin-bottom: 10px;
-                transition: all 0.2s ease;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                backdrop-filter: blur(5px);
-            `;
-
-            taskItem.onmouseover = () => {
-                taskItem.style.transform = 'translateY(-1px)';
-                taskItem.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
-                taskItem.style.background = 'rgba(255, 255, 255, 0.07)';
-            };
-
-            taskItem.onmouseout = () => {
-                taskItem.style.transform = 'translateY(0)';
-                taskItem.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
-                taskItem.style.background = 'rgba(255, 255, 255, 0.03)';
-            };
+            taskItem.className = 'modal-task-item';
 
             const taskInfo = document.createElement('div');
-            taskInfo.style.cssText = `
-                flex-grow: 1;
-                color: #fff;
-            `;
+            taskInfo.className = 'modal-task-info';
 
             const taskName = document.createElement('div');
+            taskName.className = 'modal-task-name';
             taskName.textContent = task.task;
-            taskName.style.cssText = `
-                font-weight: 500;
-                margin-bottom: 4px;
-            `;
 
             const taskDetails = document.createElement('div');
-            taskDetails.style.cssText = `
-                font-size: 0.9em;
-                color: rgba(255, 255, 255, 0.5);
-            `;
+            taskDetails.className = 'modal-task-details';
             taskDetails.textContent = `${task.category} • ${task.priority} priority${task.time ? ` • ${task.time}` : ''}${task.oneTime ? ' • One-time task' : ''}`;
 
             const deleteBtn = document.createElement('button');
             deleteBtn.innerHTML = '×';
-            deleteBtn.style.cssText = `
-                background: none;
-                border: none;
-                color: #ff4444;
-                font-size: 24px;
-                cursor: pointer;
-                padding: 0 10px;
-                opacity: 0.7;
-                transition: all 0.2s ease;
-            `;
-
-            deleteBtn.onmouseover = () => {
-                deleteBtn.style.opacity = '1';
-                deleteBtn.style.transform = 'scale(1.1)';
-            };
-
-            deleteBtn.onmouseout = () => {
-                deleteBtn.style.opacity = '0.7';
-                deleteBtn.style.transform = 'scale(1)';
-            };
+            deleteBtn.className = 'modal-task-delete';
 
             deleteBtn.onclick = () => {
                 if (!this.confirmationModal) {
@@ -445,91 +392,68 @@ class TaskModal {
             let input;
             if (field.type === 'select') {
                 input = document.createElement('select');
+                input.id = field.id;
+                input.required = field.required;
+                input.style.cssText = `
+                    padding: 12px 8px;
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    background: rgb(18, 20, 23) !important;
+                    color: #ffffff !important;
+                    border-radius: 8px;
+                    font-size: 0.95em;
+                    transition: all 0.2s ease;
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                    backdrop-filter: blur(5px);
+                    appearance: none;
+                    -webkit-appearance: none;
+                    -moz-appearance: none;
+                    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+                    background-repeat: no-repeat;
+                    background-position: right 10px center;
+                    background-size: 16px;
+                    padding-right: 40px;
+                `;
+
                 field.options.forEach(option => {
                     const opt = document.createElement('option');
                     opt.value = option;
                     opt.textContent = option.charAt(0).toUpperCase() + option.slice(1);
+                    opt.style.cssText = `
+                        background: rgb(18, 20, 23) !important;
+                        color: #ffffff !important;
+                        padding: 12px !important;
+                    `;
                     input.appendChild(opt);
                 });
             } else if (field.type === 'checkbox') {
                 input = document.createElement('input');
                 input.type = 'checkbox';
-                input.style.cssText = `
-                    width: 18px;
-                    height: 18px;
-                    cursor: pointer;
-                    appearance: none;
-                    background: rgba(255, 255, 255, 0.05);
-                    border: 2px solid rgba(255, 255, 255, 0.2);
-                    border-radius: 4px;
-                    transition: all 0.2s ease;
-                    position: relative;
-                    flex-shrink: 0;
-                `;
-
-                input.onmouseover = () => {
-                    if (!input.checked) {
-                        input.style.background = 'rgba(255, 255, 255, 0.1)';
-                        input.style.borderColor = 'rgba(255, 255, 255, 0.3)';
-                    }
-                };
-
-                input.onmouseout = () => {
-                    if (!input.checked) {
-                        input.style.background = 'rgba(255, 255, 255, 0.05)';
-                        input.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-                    }
-                };
-
-                input.addEventListener('change', () => {
-                    if (input.checked) {
-                        input.style.background = '#4f46e5';
-                        input.style.borderColor = '#4f46e5';
-                    } else {
-                        input.style.background = 'rgba(255, 255, 255, 0.05)';
-                        input.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-                    }
-                });
-                
-                if (field.description) {
-                    const description = document.createElement('span');
-                    description.textContent = field.description;
-                    description.style.cssText = `
-                        color: rgba(255, 255, 255, 0.5);
-                        font-size: 0.85em;
-                        margin-left: auto;
-                    `;
-                    fieldContainer.appendChild(description);
-                }
+                input.id = field.id;
             } else {
                 input = document.createElement('input');
                 input.type = field.type;
-            }
-
-            input.id = field.id;
-            input.required = field.required || false;
-            
-            if (field.type !== 'checkbox') {
+                input.id = field.id;
+                input.required = field.required;
                 input.style.cssText = `
                     padding: 12px 8px;
                     border: 1px solid rgba(255, 255, 255, 0.1);
-                    background: rgba(255, 255, 255, 0.03);
-                    color: #fff;
+                    background: rgb(18, 20, 23);
+                    color: #ffffff;
                     border-radius: 8px;
                     font-size: 0.95em;
                     transition: all 0.2s ease;
                     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
                     backdrop-filter: blur(5px);
                 `;
+            }
 
+            if (field.type !== 'checkbox') {
                 input.onfocus = () => {
-                    input.style.background = 'rgba(255, 255, 255, 0.05)';
                     input.style.borderColor = 'rgba(255, 255, 255, 0.2)';
                     input.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
                 };
 
                 input.onblur = () => {
-                    input.style.background = 'rgba(255, 255, 255, 0.03)';
                     input.style.borderColor = 'rgba(255, 255, 255, 0.1)';
                     input.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
                 };
@@ -538,10 +462,21 @@ class TaskModal {
             if (field.type === 'checkbox') {
                 fieldContainer.appendChild(input);
                 fieldContainer.appendChild(label);
+                if (field.description) {
+                    const description = document.createElement('span');
+                    description.textContent = field.description;
+                    description.style.cssText = `
+                        font-size: 0.8em;
+                        color: rgba(255, 255, 255, 0.5);
+                        margin-left: auto;
+                    `;
+                    fieldContainer.appendChild(description);
+                }
             } else {
                 fieldContainer.appendChild(label);
                 fieldContainer.appendChild(input);
             }
+
             form.appendChild(fieldContainer);
         });
 
@@ -594,7 +529,7 @@ class TaskModal {
         [leftDays, rightDays].forEach(columnDays => {
             const column = document.createElement('div');
             column.className = 'task-list-column';
-                column.style.cssText = `
+            column.style.cssText = `
                 background: rgba(13, 17, 23, 0.95);
                 border-radius: 12px;
                 padding: 25px;
@@ -728,6 +663,7 @@ class TaskModal {
             text-align: center;
             animation: fadeIn 0.2s ease-out;
         `;
+        e.target.appendChild(successMsg);
         setTimeout(() => {
             e.target.reset();
             this.selectedDays.clear();
@@ -781,4 +717,3 @@ document.addEventListener('DOMContentLoaded', () => {
         updateDailyTasks();
     }
 });
-

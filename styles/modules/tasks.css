@@ -149,7 +149,8 @@
 
 .task-metadata {
     display: flex;
-    gap: 6px;
+    gap: 4px;
+    align-items: flex-start;
 }
 
 /* Metadata chip colors */
@@ -165,7 +166,6 @@
     padding: 2px 8px;
     border-radius: 12px;
     border: none;
-    margin-left: auto;
 }
 
 .task-chip.pending {
@@ -176,6 +176,61 @@
 .task-chip.completed {
     background: rgba(0, 200, 81, 0.15);
     color: #00C851;
+}
+
+/* Modal Task Item Styles */
+.modal-task-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    margin-bottom: 12px;
+    transition: all 0.2s ease;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+}
+
+.modal-task-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.modal-task-info {
+    flex-grow: 1;
+    color: #fff;
+}
+
+.modal-task-name {
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.modal-task-details {
+    font-size: 0.9em;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.modal-task-delete {
+    background: none;
+    border: none;
+    color: #ff4444;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0 10px;
+    opacity: 0.7;
+    transition: all 0.2s ease;
+    margin-left: 15px;
+}
+
+.modal-task-delete:hover {
+    opacity: 1;
+    transform: scale(1.1);
 }
 
 /* Checkbox Styles */
@@ -256,7 +311,17 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .tasks-grid {
-        grid-template-columns: 1fr;
+    .task-main {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+    
+    .task-metadata {
+        flex-wrap: wrap;
+    }
+
+    .task-time {
+        align-self: flex-start;
     }
 }
