@@ -34,7 +34,7 @@ jobs:
               $response = Invoke-WebRequest -Uri $endpoint -Method Head -UseBasicParsing
               Write-Host "✅ $endpoint is up (Status: $($response.StatusCode))"
             } catch {
-              Write-Host "❌ $endpoint is down"
+              Write-Error "❌ $endpoint is down: $($_.Exception.Message)"
             }
           }
         shell: pwsh
