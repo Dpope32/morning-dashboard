@@ -5,7 +5,10 @@
     <title>Dashboard</title>
     <link rel="stylesheet" href="styles/styles.css">
     <link rel="stylesheet" href="styles/components/modal.css">
+    <link rel="stylesheet" href="styles/components/portfolioModal.css">
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/3767/3767084.png">
+</head>
+<body class="dark-theme">
     <style>
         .button-group {
             padding: 0 15px;
@@ -268,45 +271,18 @@
                     </div>
                 </div>
 
-                <div class="status-card">
-                    <h3>Crypto</h3>
-                    <table class="portfolio-table">
-                        <thead>
-                            <tr>
-                                <th>Asset</th>
-                                <th>Quantity</th>
-                                <th>Change</th>
-                                <th>Price</th>
-                                <th>Value</th>
-                                <th>Principal</th>
-                                <th>P/L</th>
-                            </tr>
-                        </thead>
-                        <tbody id="cryptoTableBody">
-                            <tr>
-                                <td>XRP</td>
-                                <td>0</td>
-                                <td>Loading...</td>
-                                <td>Loading...</td>
-                                <td>Loading...</td>
-                                <td>
-                                    <input type="number" step="any" class="principal-input" data-type="crypto" data-symbol="XRP" value="1" readonly>
-                                </td>
-                                <td>Loading...</td>
-                            </tr>
-                            <tr class="total-row">
-                                <td>Total Portfolio Value</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td id="cryptoTotalValue">Loading...</td>
-                                <td id="cryptoTotalPrincipal">$0.00</td>
-                                <td id="cryptoTotalPL">$0.00</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="projects-section">
+                    <div class="projects-header" onclick="this.parentElement.classList.toggle('collapsed')">
+                        Today's Projects
+                        <span id="projectCount">(0/0)</span>
+                    </div>
+                    <div class="projects-progress">
+                        <div class="progress-bar" id="projectProgress" style="width: 0%"></div>
+                    </div>
+                    <div class="projects-grid">
+                        <!-- Project tasks will be dynamically inserted here -->
+                    </div>
                 </div>
-
                 <div class="status-card">
                     <h3>Stocks</h3>
                     <table class="portfolio-table">
@@ -390,16 +366,67 @@
                         </tbody>
                     </table>
                 </div>
+
+                <div class="status-card">
+                    <h3>Crypto</h3>
+                    <table class="portfolio-table">
+                        <thead>
+                            <tr>
+                                <th>Asset</th>
+                                <th>Quantity</th>
+                                <th>Change</th>
+                                <th>Price</th>
+                                <th>Value</th>
+                                <th>Principal</th>
+                                <th>P/L</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cryptoTableBody">
+                            <tr>
+                                <td>XRP</td>
+                                <td>0</td>
+                                <td>Loading...</td>
+                                <td>Loading...</td>
+                                <td>Loading...</td>
+                                <td>
+                                    <input type="number" step="any" class="principal-input" data-type="crypto" data-symbol="XRP" value="1" readonly>
+                                </td>
+                                <td>Loading...</td>
+                            </tr>
+                            <tr class="total-row">
+                                <td>Total Portfolio Value</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td id="cryptoTotalValue">Loading...</td>
+                                <td id="cryptoTotalPrincipal">$0.00</td>
+                                <td id="cryptoTotalPL">$0.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
             </div>
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
+    <!-- Load environment and data first -->
     <script src="scripts/modules/env.js"></script>
     <script src="scripts/modules/tasksByDay.js"></script>
+    
+    <!-- Load stores next -->
     <script src="store/taskStore.js"></script>
-    <script src="scripts/modules/tasks.js"></script>
+    <script src="store/projectTaskStore.js"></script>
+    
+    <!-- Load utility modules -->
     <script src="scripts/utils/dom.js"></script>
     <script src="scripts/utils/format.js"></script>
+    
+    <!-- Load feature modules -->
     <script src="scripts/modules/clock.js"></script>
     <script src="scripts/modules/weather.js"></script>
     <script src="scripts/modules/ping.js"></script>
@@ -408,12 +435,23 @@
     <script src="scripts/modules/stockPrices.js"></script>
     <script src="scripts/modules/dateGreeting.js"></script>
     <script src="scripts/modules/taskProgress.js"></script>
-    <script src="scripts/main.js"></script>
+    
+    <!-- Load task-related modules -->
+    <script src="scripts/modules/tasks.js"></script>
+    <script src="scripts/modules/projectTasks.js"></script>
+    
+    <!-- Load sidebar modules -->
     <script src="scripts/modules/sidebar.js"></script>
     <script src="scripts/modules/right-sidebar.js"></script>
+    
+    <!-- Load modals last -->
     <script src="modals/taskModal.js"></script>
     <script src="modals/cryptoModal.js"></script>
     <script src="modals/stocksModal.js"></script>
+    <script src="modals/projectsModal.js"></script>
+    
+    <!-- Load main script last -->
+    <script src="scripts/main.js"></script>
 
     <script>
         // Handle principal input changes
