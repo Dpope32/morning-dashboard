@@ -1,5 +1,15 @@
 param([switch]$Elevated)
 
+# Check if not admin and set execution policy
+if ((Get-ExecutionPolicy -Scope CurrentUser) -ne 'RemoteSigned') {
+    try {
+        Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope LocalMachine -Force -ErrorAction Stop
+    }
+    catch {
+        # If LocalMachine fails, fall back to CurrentUser
+        Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+    }
+}
 <# 
     ╔═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
     ║                     MORNING DEV ENVIRONMENT AUTOMATION                                                                      ║
@@ -17,10 +27,15 @@ param([switch]$Elevated)
     ╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 #>
 
-# Ensure the script can run by modifying the execution policy
-if ((Get-ExecutionPolicy -Scope CurrentUser) -ne 'RemoteSigned') {
-    Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force
+# Import the WindowManager module
+$moduleFile = Join-Path $PSScriptRoot "modules\WindowManager.psm1"
+if (Test-Path $moduleFile) {
+    Import-Module $moduleFile -Force
+} else {
+    Write-Error "WindowManager module not found at: $moduleFile"
+    exit 1
 }
+
 
 # Function to kill processes by name
 function Kill-Processes {
@@ -59,76 +74,12 @@ function Load-EnvFile {
     }
 }
 
+
 function Write-Log {
     param([string]$Message)
     $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
     "$timestamp - $Message" | Add-Content $logFile
     Write-Host $Message
-}
-
-function Set-WindowPosition {
-    param(
-        [string]$ProcessName,
-        [int]$X,
-        [int]$Y,
-        [int]$Width,
-        [int]$Height,
-        [int]$MaxAttempts = 3
-    )
-    
-    try {
-        Add-Type @"
-            using System;
-            using System.Runtime.InteropServices;
-            public class Win32 {
-                [DllImport("user32.dll")]
-                [return: MarshalAs(UnmanagedType.Bool)]
-                public static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
-                
-                [DllImport("user32.dll")]
-                [return: MarshalAs(UnmanagedType.Bool)]
-                public static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
-                
-                [DllImport("user32.dll")]
-                public static extern bool SetForegroundWindow(IntPtr hWnd);
-
-                [DllImport("user32.dll")]
-                public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-                
-                [StructLayout(LayoutKind.Sequential)]
-                public struct RECT
-                {
-                    public int Left;
-                    public int Top;
-                    public int Right;
-                    public int Bottom;
-                }
-            }
-"@ -ErrorAction Stop
-
-        $attempt = 0
-        while ($attempt -lt $MaxAttempts) {
-            Start-Sleep -Seconds 1
-            $process = Get-Process -Name $ProcessName -ErrorAction SilentlyContinue | 
-                      Where-Object { $_.MainWindowHandle -ne 0 } |
-                      Select-Object -First 1
-            
-            if ($process -and $process.MainWindowHandle -ne 0) {
-                [Win32]::ShowWindow($process.MainWindowHandle, 3)
-                $result = [Win32]::MoveWindow($process.MainWindowHandle, $X, $Y, $Width, $Height, $true)
-                [Win32]::SetForegroundWindow($process.MainWindowHandle)
-                Write-Log "Positioned window successfully"
-                return $true
-            }
-            $attempt++
-            Write-Log "Waiting for window..."
-        }
-        Write-Log "Failed to position window after $MaxAttempts attempts"
-        return $false
-    } catch {
-        Write-Log "Error positioning window"
-        return $false
-    }
 }
 
 # Get the script's directory
@@ -177,6 +128,10 @@ Write-Log "Configuration generated"
 # Kill all non-essential processes
 $processesToKill = @(
     "brave",
+    "chrome",
+    "claude",
+    "Spotify",
+    "explorer", 
     "BraveBrowser",
     "ApplicationFrameHost",
     "SystemSettings",
@@ -186,14 +141,11 @@ $processesToKill = @(
     "slack"
 )
 
+Write-Log "Closing applications..."
 foreach ($proc in $processesToKill) {
-    try {
-        Get-Process -Name $proc -ErrorAction SilentlyContinue | Stop-Process -Force
-        Write-Log "Closed application successfully"
-    } catch {
-        Write-Log "Application not found or unable to close"
-    }
+    Stop-ProcessSafely -ProcessName $proc
 }
+
 
 # Wait a moment for processes to close
 Start-Sleep -Seconds 2
@@ -311,8 +263,62 @@ if ($bravePath) {
     }
 }
 
-# Launch Claude on left monitor
-Launch-Application -AppName "claude" -AppPath $env:CLAUDE_PATH -Args @() -PositionParams $leftMonitor
+# Claude launch section
+Write-Log "Launching Claude..."
+try {
+    # Kill any existing Claude processes
+    Get-Process -Name "claude" -ErrorAction SilentlyContinue | ForEach-Object {
+        Write-Log "Terminating existing Claude process: $($_.Id)"
+        $_ | Stop-Process -Force
+    }
+    Start-Sleep -Seconds 1
+
+    # Clear cache
+    $claudeCachePath = "$env:LOCALAPPDATA\claude\Cache"
+    if (Test-Path $claudeCachePath) {
+        Write-Log "Clearing Claude cache..."
+        Remove-Item -Path $claudeCachePath -Recurse -Force -ErrorAction SilentlyContinue
+    }
+    
+    Write-Log "Starting Claude..."
+    Start-Process $env:CLAUDE_PATH
+    Write-Log "Waiting for Claude to initialize..."
+    Start-Sleep -Seconds 3  # Give more time for initialization
+
+    $maxAttempts = 3
+    $attempt = 1
+    $success = $false
+
+    while (-not $success -and $attempt -le $maxAttempts) {
+        Write-Log "Attempt $attempt to position Claude window..."
+        $claudeWindow = Get-ProcessWindow -ProcessName "claude" -TimeoutSeconds 15
+        if ($claudeWindow) {
+            # Right monitor (DISPLAY1), left half
+            $success = Move-Window -Handle $claudeWindow.MainWindowHandle `
+                                -X 1920 `        # Starting X coordinate of DISPLAY1
+                                -Y 11 `          # Matches DISPLAY1's Y offset
+                                -Width 960 `     # Half of 1920
+                                -Height 1080 `   # Full height
+                                -RetryAttempts 5
+
+            if (-not $success) {
+                Write-Log "Failed positioning attempt $attempt"
+                Start-Sleep -Seconds 2
+            }
+        } else {
+            Write-Log "Failed to get window handle on attempt $attempt"
+        }
+        $attempt++
+    }  # Added closing brace for while loop
+
+    if ($success) {
+        Write-Log "Claude window positioning completed successfully"
+    } else {
+        Write-Log "All positioning attempts failed"
+    }
+} catch {
+    Write-Log "Error in Claude launch sequence: $_"
+}  # Added closing brace for try block
 
 # Function to open a new terminal with admin privileges and run a command
 function Open-NewAdminTerminal {
@@ -335,7 +341,7 @@ if (-not (Get-Process -Name "Obsidian" -ErrorAction SilentlyContinue)) {
         try {
             Write-Log "Opening Obsidian"
             Start-Process $env:OBSIDIAN_PATH -ArgumentList "--vault", $env:OBSIDIAN_VAULT_PATH
-            Start-Sleep -Seconds 5
+            Start-Sleep -Seconds 3
             Set-WindowPosition -ProcessName "Obsidian" @rightMonitor
         } catch {
             Write-Log "Failed to launch Obsidian"

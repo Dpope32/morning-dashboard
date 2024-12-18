@@ -8,6 +8,7 @@ class RightSidebar {
         this.removeHeader();
         this.setupWeatherButton();
         this.setupTaskManagerButton();
+        this.setupProjectManagerButton();
         this.setupCryptoButton();
         this.setupStocksButton();
         this.loadData();
@@ -171,6 +172,75 @@ class RightSidebar {
         }
     }
 
+    setupProjectManagerButton() {
+        const projectSection = document.createElement('div');
+        projectSection.style.cssText = `
+            margin-top: 15px;
+            padding: 0 15px;
+        `;
+
+        const projectButton = document.createElement('button');
+        projectButton.className = 'project-manager-button';
+        projectButton.style.cssText = `
+            width: 100%;
+            padding: 10px 15px;
+            background: rgb(32, 35, 36);
+            border: 1px solid rgb(52, 54, 55);
+            border-radius: 20px;
+            color: rgb(232, 230, 227);
+            cursor: pointer;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85em;
+            transition: all 0.2s ease;
+            position: relative;
+        `;
+
+        // Create icon container
+        const iconSpan = document.createElement('span');
+        iconSpan.textContent = '☗';
+        iconSpan.style.cssText = `
+            font-size: 1.1em;
+            justify-self: start;
+        `;
+
+        // Create text container
+        const textSpan = document.createElement('span');
+        textSpan.textContent = 'PROJECTS';
+         textSpan.style.cssText = `
+            text-align: center;
+            margin-left: -24px;
+        `;
+
+        projectButton.appendChild(iconSpan);
+        projectButton.appendChild(textSpan);
+
+        projectButton.addEventListener('mouseover', () => {
+            projectButton.style.backgroundColor = 'rgb(35, 38, 40)';
+        });
+
+        projectButton.addEventListener('mouseout', () => {
+            projectButton.style.backgroundColor = 'rgb(32, 35, 36)';
+        });
+
+       projectButton.addEventListener('click', () => {
+            if (window.projectsModal) {
+                window.projectsModal.show();
+            }
+        });
+
+        projectSection.appendChild(projectButton);
+        
+        // Insert after the task button
+        const taskButton = this.sidebar.querySelector('.task-manager-button');
+        if (taskButton) {
+            const taskSection = taskButton.closest('div');
+            taskSection.insertAdjacentElement('afterend', projectSection);
+        }
+    }
+
     setupCryptoButton() {
         const cryptoSection = document.createElement('div');
         cryptoSection.style.cssText = `
@@ -233,7 +303,7 @@ class RightSidebar {
         cryptoSection.appendChild(cryptoButton);
         
         // Insert after the task button
-        const taskButton = this.sidebar.querySelector('.task-manager-button');
+        const taskButton = this.sidebar.querySelector('.project-manager-button');
         if (taskButton) {
             const taskSection = taskButton.closest('div');
             taskSection.insertAdjacentElement('afterend', cryptoSection);

@@ -5,23 +5,29 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, 0.7);
     z-index: 1000;
-    animation: fadeIn 0.2s ease-out;
-    overflow-y: auto;
-    backdrop-filter: blur(4px);
+    justify-content: center;
+    align-items: center;
 }
+
 .modal-content {
-    position: relative;
-    background: rgba(13, 17, 23, 0.95);
-    margin: 5% auto;
-    padding: 25px;
-    width: 95%;
-    max-width: 1400px;
+    background: rgb(32, 35, 36);
+    border: 1px solid rgb(52, 54, 55);
     border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    animation: slideIn 0.3s ease-out;
+    padding: 25px;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    color: rgb(232, 230, 227);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal h2 {
+    margin: 0 0 20px 0;
+    color: rgb(232, 230, 227);
+    font-size: 1.5em;
+    font-weight: 500;
 }
 
 .close-button {
