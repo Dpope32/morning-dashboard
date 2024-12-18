@@ -7,7 +7,7 @@ class ProjectsModal {
         this.modal.innerHTML = `
             <div class="modal-content">
                 <span class="close-button modal-close">&times;</span>
-                <h2>Project Tasks</h2>
+                <h2>Add Project Task</h2>
                 <div class="modal-body">
                     <div class="input-group">
                         <label class="form-label" for="projectTask">Task Description</label>
@@ -36,16 +36,10 @@ class ProjectsModal {
     }
 
     getProjectCategories() {
-        const defaultCategories = ['Personal Project', 'Work Project', 'Health Goals', 'Development'];
-        let categories;
-        
-        try {
-            categories = window.ENV?.PROJECT_CATEGORIES || defaultCategories;
-        } catch (error) {
-            console.warn('Failed to load project categories, using defaults:', error);
-            categories = defaultCategories;
+        const categories = window.projectTaskStore?.getCategories() || [];
+        if (!categories.length) {
+            return '<option value="">No projects available - create a project first</option>';
         }
-
         return categories
             .map(category => `<option value="${category}">${category}</option>`)
             .join('');
@@ -85,6 +79,10 @@ class ProjectsModal {
     }
 
     show() {
+        // Update categories in case they've changed
+        const categorySelect = this.modal.querySelector('#projectCategory');
+        categorySelect.innerHTML = this.getProjectCategories();
+        
         this.modal.style.display = 'flex';
         // Focus task input
         setTimeout(() => {

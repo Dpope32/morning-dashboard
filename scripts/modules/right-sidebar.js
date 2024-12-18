@@ -226,8 +226,8 @@ class RightSidebar {
         });
 
        projectButton.addEventListener('click', () => {
-            if (window.projectsModal) {
-                window.projectsModal.show();
+            if (window.projectManagerModal) {
+                window.projectManagerModal.show();
             }
         });
 
@@ -441,11 +441,6 @@ class RightSidebar {
         storageMeter.appendChild(storageUsed);
         monitorSection.appendChild(storageMeter);
      
-      // commenting out until i extract this to a separate module
-      // want this to be a button instead? or a complete store modal that can be opened?
-      
-      //  this.sidebar.appendChild(monitorSection);
-
         // Update monitor data
         const updateMonitor = () => {
             if (window.taskStore) {

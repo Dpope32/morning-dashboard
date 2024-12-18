@@ -30,6 +30,64 @@
     transform: translateY(-2px);
 }
 
+.project-category.quick-add-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    max-height: 100px;;
+    background: var(--bg-secondary);
+    border: 2px dashed var(--border-color);
+    box-shadow: none;
+    gap: 5px;
+    padding: 5px;
+}
+
+.project-category.quick-add-card:hover {
+    background: var(--bg-hover);
+    border-color: var(--accent-color);
+}
+
+.quick-add-project {
+    width: 100%;
+    padding: 8px;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: color 0.2s;
+    font-size: 0.9em;
+}
+
+.quick-add-project:hover {
+    color: var(--accent-color);
+}
+
+.quick-add-project svg {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+    stroke-width: 2;
+}
+
+.quick-add-project span {
+    font-weight: 500;
+}
+
+.quick-add-divider {
+    width: 80%;
+    height: 1px;
+    background: var(--border-color);
+    margin: 5px 0;
+
+}
+
+
 .project-header {
     padding: 8px 8px;
     display: flex;
@@ -37,14 +95,14 @@
     align-items: center;
     color: white;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-    font-size: 1em; /* Corrected font-size */
+    font-size: 1em;
     font-weight: bold;
 }
 
 .project-header-content {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 60px;
 }
 
 .project-header h3 {
@@ -156,9 +214,11 @@
     background: #6c757d;
 }
 
+
 .empty-state {
     grid-column: 1 / -1;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 40px;
@@ -182,40 +242,15 @@
     transform: translateY(-1px);
 }
 
-.quick-add-project {
-    position: absolute;
-    right: 20px;
-    top: 20px;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
+.empty-state-button.secondary {
+    background: transparent;
+    border: 2px solid var(--accent-color);
+    color: var(--accent-color);
+}
+
+.empty-state-button.secondary:hover {
     background: var(--accent-color);
-    border: none;
     color: white;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.2s, background-color 0.2s;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    z-index: 100;
 }
 
-.quick-add-project:hover {
-    transform: scale(1.1);
-    background: var(--accent-hover);
-}
-
-.quick-add-project:active {
-    transform: scale(0.95);
-}
-
-.quick-add-project svg {
-    width: 20px;
-    height: 20px;
-}
-
-/* Collapsed state */
-.projects-section.collapsed .projects-grid {
-    display: none;
-}
+/* Rest of the CSS remains the same */

@@ -9,26 +9,16 @@ function updateProjectTasks() {
     const tasks = window.projectTaskStore?.getTasks() || [];
     console.log('[ProjectTasks] Retrieved tasks:', tasks);
 
-    // Add quick add button if it doesn't exist
-    if (!document.querySelector('.quick-add-project')) {
-        console.log('[ProjectTasks] Adding quick add button');
-        const quickAddButton = document.createElement('button');
-        quickAddButton.className = 'quick-add-project';
-        quickAddButton.innerHTML = `
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-        `;
-        quickAddButton.onclick = () => window.projectsModal.show();
-        projectsGrid.parentElement.insertBefore(quickAddButton, projectsGrid);
-    }
-
     // Show empty state if no tasks
     if (!tasks.length) {
         console.log('[ProjectTasks] No tasks found, showing empty state');
         projectsGrid.innerHTML = `
             <div class="empty-state">
-                <button class="empty-state-button" onclick="window.projectsModal.show()">
+                <button class="empty-state-button" onclick="window.addProjectModal.show()">
+                    Create New Project
+                </button>
+                <div style="margin: 10px 0; color: var(--text-secondary);">  </div>
+                <button class="empty-state-button secondary" onclick="window.projectsModal.show()">
                     Add Project Task
                 </button>
             </div>
@@ -51,9 +41,34 @@ function updateProjectTasks() {
     console.log('[ProjectTasks] Tasks grouped by category:', tasksByCategory);
 
     // Create HTML for tasks
-    projectsGrid.innerHTML = Object.entries(tasksByCategory)
+    let gridHTML = '';
+
+    // Add quick add card
+    gridHTML += `
+        <div class="project-category quick-add-card">
+            <button class="quick-add-project" onclick="window.addProjectModal.show()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <span>New Project</span>
+            </button>
+            <div class="quick-add-divider"></div>
+            <button class="quick-add-project" onclick="window.projectsModal.show()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <span>New Task</span>
+            </button>
+        </div>
+    `;
+
+    // Add task categories
+    gridHTML += Object.entries(tasksByCategory)
         .map(([category, tasks]) => {
             const categoryColor = window.projectTaskStore.getCategoryColor(category);
+            // Store the color in projectStore for future use
+            window.projectStore?.setCategoryColor(category, categoryColor);
+            
             console.log(`[ProjectTasks] Creating category element: ${category} with ${tasks.length} tasks`);
             return `
                 <div class="project-category">
@@ -69,6 +84,8 @@ function updateProjectTasks() {
         })
         .join('');
 
+    projectsGrid.innerHTML = gridHTML;
+
     // Add click handlers for task status toggle
     console.log('[ProjectTasks] Adding click handlers');
     projectsGrid.querySelectorAll('.task-item').forEach(taskElement => {
@@ -76,8 +93,27 @@ function updateProjectTasks() {
             const taskId = taskElement.dataset.taskId;
             if (taskId) {
                 console.log('[ProjectTasks] Task clicked:', taskId);
-                window.projectTaskStore.completeTask(taskId);
-                updateProjectTasks(); // Refresh the view
+                const task = window.projectTaskStore.getTasks().find(t => t.id === taskId);
+                if (task) {
+                    if (confirm(`Would you like to complete the task "${task.task}"?`)) {
+                        // Add task to project store before completing it
+                        const project = window.projectStore.addProject({
+                            category: task.category,
+                            name: task.task,
+                            status: 'active'
+                        });
+                        
+                        // Add the task to the project
+                        window.projectStore.addTaskToProject(project.id, {
+                            ...task,
+                            status: 'completed'
+                        });
+                        
+                        // Complete the task in project task store
+                        window.projectTaskStore.completeTask(taskId);
+                        updateProjectTasks(); // Refresh the view
+                    }
+                }
             }
         });
     });

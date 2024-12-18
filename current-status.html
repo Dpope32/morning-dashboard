@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="styles/styles.css">
     <link rel="stylesheet" href="styles/components/modal.css">
     <link rel="stylesheet" href="styles/components/portfolioModal.css">
+    <link rel="stylesheet" href="styles/modules/projectManager.css">
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/3767/3767084.png">
 </head>
 <body class="dark-theme">
@@ -405,22 +406,23 @@
                         </tbody>
                     </table>
                 </div>
-
             </div>
         </div>
     </div>
 
-            </div>
-        </div>
-    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
+    
     <!-- Load environment and data first -->
     <script src="scripts/modules/env.js"></script>
     <script src="scripts/modules/tasksByDay.js"></script>
     
-    <!-- Load stores next -->
+    <!-- Load stores first -->
+    <script src="store/projectStore.js"></script>
+    <script src="scripts/store/todoStore.js"></script>
+    <script src="store/projectTaskStore.js"></script>
     <script src="store/taskStore.js"></script>
-    <script src="scripts/modules/tasks.js"></script>
+    
+    <!-- Load utilities -->
     <script src="scripts/utils/dom.js"></script>
     <script src="scripts/utils/format.js"></script>
     
@@ -446,7 +448,9 @@
     <script src="modals/taskModal.js"></script>
     <script src="modals/cryptoModal.js"></script>
     <script src="modals/stocksModal.js"></script>
+    <script src="modals/addProjectModal.js"></script>
     <script src="modals/projectsModal.js"></script>
+    <script src="modals/projectManagerModal.js"></script>
     
     <!-- Load main script last -->
     <script src="scripts/main.js"></script>

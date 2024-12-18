@@ -3,10 +3,11 @@
     function createProjectTaskStore() {
         const TASKS_KEY = 'projectTasks';
         const COLORS_KEY = 'projectCategoryColors';
+        const CATEGORIES_KEY = 'projectCategories';
         
         // Predefined category colors
         const CATEGORY_COLORS = [
-            '#4169E1', // Royal Blue
+            '#2196F3', // Royal Blue
             '#6C3FB5', // Obsidian Software Purple
             '#2ECC40', // Bright Green
             '#FF851B', // Orange
@@ -16,6 +17,7 @@
         
         let state = {
             tasks: [],
+            categories: ['Personal Project', 'Work Project', 'Health Goals', 'Development'],
             categoryColors: {},
             nextColorIndex: 0
         };
@@ -24,6 +26,8 @@
         try {
             const storedTasks = localStorage.getItem(TASKS_KEY);
             const storedColors = localStorage.getItem(COLORS_KEY);
+            const storedCategories = localStorage.getItem(CATEGORIES_KEY);
+            
             if (storedTasks) {
                 state.tasks = JSON.parse(storedTasks);
                 console.log('[ProjectTaskStore] Loaded tasks:', state.tasks);
@@ -32,9 +36,18 @@
                 state.categoryColors = JSON.parse(storedColors);
                 console.log('[ProjectTaskStore] Loaded category colors:', state.categoryColors);
             }
+            if (storedCategories) {
+                state.categories = JSON.parse(storedCategories);
+                console.log('[ProjectTaskStore] Loaded categories:', state.categories);
+            }
         } catch (e) {
             console.error('[ProjectTaskStore] Error loading store:', e);
-            state = { tasks: [], categoryColors: {}, nextColorIndex: 0 };
+            state = { 
+                tasks: [], 
+                categories: ['Personal Project', 'Work Project', 'Health Goals', 'Development'],
+                categoryColors: {}, 
+                nextColorIndex: 0 
+            };
         }
 
         // Save store state
@@ -42,9 +55,11 @@
             try {
                 localStorage.setItem(TASKS_KEY, JSON.stringify(state.tasks));
                 localStorage.setItem(COLORS_KEY, JSON.stringify(state.categoryColors));
+                localStorage.setItem(CATEGORIES_KEY, JSON.stringify(state.categories));
                 console.log('[ProjectTaskStore] State saved successfully');
                 console.log('[ProjectTaskStore] Current tasks:', state.tasks);
                 console.log('[ProjectTaskStore] Current colors:', state.categoryColors);
+                console.log('[ProjectTaskStore] Current categories:', state.categories);
             } catch (e) {
                 console.error('[ProjectTaskStore] Error saving store:', e);
             }
@@ -137,6 +152,27 @@
                 return newTask;
             },
 
+            addCategory(name, color) {
+                console.log('[ProjectTaskStore] Adding category:', name, color);
+                if (!name || typeof name !== 'string') {
+                    console.error('[ProjectTaskStore] Invalid category name');
+                    return false;
+                }
+
+                name = name.trim();
+                if (!state.categories.includes(name)) {
+                    state.categories.push(name);
+                    state.categoryColors[name] = color;
+                    saveStore();
+                    return true;
+                }
+                return false;
+            },
+
+            getCategories() {
+                return state.categories;
+            },
+
             getCategoryColor,
 
             completeTask(taskId) {
@@ -165,6 +201,7 @@
             debug() {
                 console.log('[ProjectTaskStore] Current state:', {
                     tasks: state.tasks,
+                    categories: state.categories,
                     categoryColors: state.categoryColors,
                     nextColorIndex: state.nextColorIndex
                 });
