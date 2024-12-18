@@ -147,54 +147,34 @@ function createEmptyCell() {
     return cell;
 }
 
-async function getCoordinatesFromZip() {
+function getCoordinates() {
     try {
         const storedEnv = localStorage.getItem('dashboardEnv');
         if (storedEnv) {
             const parsedEnv = JSON.parse(storedEnv);
-            window.ENV.ZIP_CODE = parsedEnv.ZIP_CODE || window.ENV.ZIP_CODE;
+            window.ENV = { ...window.ENV, ...parsedEnv };
         }
 
-        const zipCode = window.ENV?.ZIP_CODE;
-        console.log('Using ZIP code:', zipCode);
-        
-        if (!zipCode) {
-            console.error('No ZIP code found in window.ENV');
-            return { latitude: 0, longitude: 0 };
-        }
-
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
-        const url = `https://nominatim.openstreetmap.org/search?postalcode=${zipCode}&country=USA&format=json`;
-        console.log('Geocoding URL:', url);
-        
-        const response = await fetch(url, {
-            headers: {
-                'User-Agent': 'WeatherDashboard/1.0'
-            }
-        });
-        
-        if (!response.ok) {
-            throw new Error(`Geocoding request failed: ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log('Geocoding response:', data);
-        
-        if (data && data.length > 0) {
-            const coords = {
-                latitude: parseFloat(data[0].lat),
-                longitude: parseFloat(data[0].lon)
+        // Use default coordinates from ENV if available
+        if (window.ENV?.DEFAULT_LAT && window.ENV?.DEFAULT_LON) {
+            return {
+                latitude: parseFloat(window.ENV.DEFAULT_LAT),
+                longitude: parseFloat(window.ENV.DEFAULT_LON)
             };
-            console.log('Found coordinates:', coords);
-            return coords;
-        } else {
-            console.error('No coordinates found for ZIP code:', zipCode);
-            return { latitude: 0, longitude: 0 };
         }
+
+        // Fallback to NYC coordinates if no defaults are set
+        return { 
+            latitude: 40.7128, 
+            longitude: -74.0060 
+        };
     } catch (error) {
         console.error('Error getting coordinates:', error);
-        return { latitude: 0, longitude: 0 };
+        // Fallback to NYC coordinates in case of any error
+        return { 
+            latitude: 40.7128, 
+            longitude: -74.0060 
+        };
     }
 }
 
@@ -203,7 +183,7 @@ async function updateWeather() {
         console.log('Starting weather update...');
         console.log('Current ENV:', window.ENV);
         
-        const coords = await getCoordinatesFromZip();
+        const coords = getCoordinates();
         console.log('Using coordinates for weather:', coords);
         
         const url = `https://api.open-meteo.com/v1/forecast?latitude=${coords.latitude}&longitude=${coords.longitude}&daily=temperature_2m_max,temperature_2m_min&forecast_days=16&temperature_unit=fahrenheit&timezone=auto`;

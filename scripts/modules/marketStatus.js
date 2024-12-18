@@ -2,7 +2,7 @@
 
 async function updateMarketStatus() {
     try {
-        const response = await fetch(`https://finnhub.io/api/v1/stock/market-status?exchange=US&token=${ENV.finnhubKey}`);
+        const response = await fetch(`https://finnhub.io/api/v1/stock/market-status?exchange=US&token=${ENV.FINNHUB_API_KEY}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }

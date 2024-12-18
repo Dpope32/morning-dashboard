@@ -24,7 +24,7 @@ async function updateStockPrices() {
         row.cells[5].style.display = 'none';
 
         try {
-            const response = await fetch(`https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${ENV.finnhubKey}`);
+            const response = await fetch(`https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${ENV.FINNHUB_API_KEY}`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }

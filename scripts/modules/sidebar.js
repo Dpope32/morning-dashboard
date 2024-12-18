@@ -54,7 +54,6 @@ class Sidebar {
         this.todoList.addEventListener('dragend', (e) => {
             if (e.target.classList.contains('todo-item')) {
                 e.target.classList.remove('dragging');
-                this.saveTodos();
             }
         });
 
@@ -119,80 +118,43 @@ class Sidebar {
     }
 
     addTodoItem(text) {
+        const newTodo = window.todoStore.addTodo(text);
+        this.renderTodoItem(newTodo, this.todoList.children.length - 1);
+    }
+
+    renderTodoItem(todo, index) {
         const li = document.createElement('li');
         li.className = 'todo-item';
         li.draggable = true;
         li.innerHTML = `
-            <input type="checkbox" class="todo-checkbox" />
-            <span>${text}</span>
+            <input type="checkbox" class="todo-checkbox" ${todo.checked ? 'checked' : ''} />
+            <span>${todo.text}</span>
             <button class="delete-todo">×</button>
         `;
 
         // Delete button handler
         const deleteBtn = li.querySelector('.delete-todo');
         deleteBtn.addEventListener('click', () => {
+            window.todoStore.removeTodo(index);
             li.remove();
-            this.saveTodos();
         });
 
         // Checkbox handler
         const checkbox = li.querySelector('.todo-checkbox');
         checkbox.addEventListener('change', () => {
+            window.todoStore.toggleTodo(index);
             li.classList.toggle('completed', checkbox.checked);
-            if (checkbox.checked) {
-                li.style.background = 'var(--todo-item-completed)';
-            } else {
-                li.style.background = 'var(--todo-item-bg)';
-            }
-            this.saveTodos();
+            li.style.background = checkbox.checked ? 'var(--todo-item-completed)' : 'var(--todo-item-bg)';
         });
 
         this.todoList.appendChild(li);
-        this.saveTodos();
-    }
-
-    saveTodos() {
-        const todos = Array.from(this.todoList.children).map(li => ({
-            text: li.querySelector('span').textContent,
-            checked: li.querySelector('.todo-checkbox').checked
-        }));
-        localStorage.setItem('todos', JSON.stringify(todos));
     }
 
     loadTodos() {
-        try {
-            const todos = JSON.parse(localStorage.getItem('todos')) || [];
-            todos.forEach(todo => {
-                const li = document.createElement('li');
-                li.className = 'todo-item' + (todo.checked ? ' completed' : '');
-                li.draggable = true;
-                li.style.background = todo.checked ? 'var(--todo-item-completed)' : 'var(--todo-item-bg)';
-                li.innerHTML = `
-                    <input type="checkbox" class="todo-checkbox" ${todo.checked ? 'checked' : ''} />
-                    <span>${todo.text}</span>
-                    <button class="delete-todo">×</button>
-                `;
-
-                // Delete button handler
-                const deleteBtn = li.querySelector('.delete-todo');
-                deleteBtn.addEventListener('click', () => {
-                    li.remove();
-                    this.saveTodos();
-                });
-
-                // Checkbox handler
-                const checkbox = li.querySelector('.todo-checkbox');
-                checkbox.addEventListener('change', () => {
-                    li.classList.toggle('completed', checkbox.checked);
-                    li.style.background = checkbox.checked ? 'var(--todo-item-completed)' : 'var(--todo-item-bg)';
-                    this.saveTodos();
-                });
-
-                this.todoList.appendChild(li);
-            });
-        } catch (error) {
-            console.error('Error loading todos:', error);
-        }
+        const todos = window.todoStore.getTodos();
+        todos.forEach((todo, index) => {
+            this.renderTodoItem(todo, index);
+        });
     }
 }
 

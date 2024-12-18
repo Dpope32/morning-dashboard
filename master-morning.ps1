@@ -12,6 +12,7 @@ param([switch]$Elevated)
     ║     - Claude on left monitor                                                                                                ║
     ║     - Opens Obsidian vault on right monitor                                                                                 ║
     ║  3. Starts Node.js server in the background                                                                                 ║
+    ║  4. Starts Docker Desktop                                                                                                   ║
     ║                                                                                                                             ║                                                   
     ╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
 #>
@@ -313,6 +314,21 @@ if ($bravePath) {
 # Launch Claude on left monitor
 Launch-Application -AppName "claude" -AppPath $env:CLAUDE_PATH -Args @() -PositionParams $leftMonitor
 
+# Function to open a new terminal with admin privileges and run a command
+function Open-NewAdminTerminal {
+    param (
+        [string]$Command
+    )
+    Start-Process powershell -ArgumentList "-Command", $Command -Verb RunAs
+}
+
+# Check if Obsidian is already running
+if (Get-Process -Name "Obsidian" -ErrorAction SilentlyContinue) {
+    Write-Log "Obsidian is already running"
+    # Open a new terminal with admin privileges and run the "dev" command
+    Open-NewAdminTerminal -Command "dev"
+}
+
 # Launch Obsidian with vault on right monitor
 if (-not (Get-Process -Name "Obsidian" -ErrorAction SilentlyContinue)) {
     if (Test-Path $env:OBSIDIAN_PATH) {
@@ -329,6 +345,23 @@ if (-not (Get-Process -Name "Obsidian" -ErrorAction SilentlyContinue)) {
     }
 } else {
     Write-Log "Obsidian is already running"
+}
+
+# Check if Docker is running
+if (-not (Get-Process -Name "Docker Desktop" -ErrorAction SilentlyContinue)) {
+    $dockerPath = "C:\Program Files\Docker\Docker\frontend\Docker Desktop.exe"
+    if (Test-Path $dockerPath) {
+        try {
+            Write-Log "Starting Docker Desktop"
+            Start-Process -FilePath $dockerPath -WorkingDirectory "C:\Program Files\Docker\Docker\frontend"
+        } catch {
+            Write-Log "Failed to start Docker Desktop"
+        }
+    } else {
+        Write-Log "Docker Desktop not found"
+    }
+} else {
+    Write-Log "Docker Desktop is already running"
 }
 
 Write-Log "Setup completed"
