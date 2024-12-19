@@ -73,8 +73,13 @@ function updateProjectTasks() {
             return `
                 <div class="project-category">
                     <div class="project-header" style="background-color: ${categoryColor}">
-                        <h3>${category}</h3>
-                        <span class="task-count">${tasks.length} task${tasks.length === 1 ? '' : 's'}</span>
+                        <div class="project-header-content">
+                            <h3>${category}</h3>
+                            <span class="task-count">${tasks.length} task${tasks.length === 1 ? '' : 's'}</span>
+                        </div>
+                        <button class="add-task-button" onclick="event.stopPropagation(); window.addProjectTaskModal.show('${category}')">
+                            +
+                        </button>
                     </div>
                     <div class="project-tasks">
                         ${tasks.map(task => createProjectTaskElement(task)).join('')}

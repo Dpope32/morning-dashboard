@@ -16,14 +16,18 @@
     grid-template-columns: repeat(3, 1fr); /* Align with tasks grid */
     gap: 20px;
     margin-top: 20px;
+    padding: 0 10px; /* Added padding */
+    background-color: var(--bg-primary);
 }
 
 .project-category {
-    background: var(--bg-secondary);
+    background-color: rgba(0, 0, 0, 0.1);
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease;
+    padding: 10px; /* Added padding */
+    border: 0.1px solid var(--border-color);
 }
 
 .project-category:hover {
@@ -40,8 +44,8 @@
     background: var(--bg-secondary);
     border: 2px dashed var(--border-color);
     box-shadow: none;
-    gap: 5px;
     padding: 5px;
+    width: 50%;
 }
 
 .project-category.quick-add-card:hover {
@@ -96,7 +100,9 @@
     color: white;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     font-size: 1em;
+    background-color:rgba(0, 0, 0, 0.8);
     font-weight: bold;
+border-radius: 12px;
 }
 
 .project-header-content {
@@ -105,9 +111,10 @@
     gap: 60px;
 }
 
+
 .project-header h3 {
     margin: 0;
-    font-size: 1em;
+    font-size: 0.9em;
     font-weight: 600;
     letter-spacing: 0.5px;
 }
@@ -121,6 +128,7 @@
     border-radius: 50%;
     display: flex;
     align-items: center;
+    background: rgba(255, 255, 255, 0.3);
     justify-content: center;
     cursor: pointer;
     transition: background-color 0.2s;
@@ -196,22 +204,34 @@
     font-size: 0.8em;
     padding: 4px 12px;
     border-radius: 12px;
-    color: white;
     font-weight: 500;
     letter-spacing: 0.3px;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    background: none !important; /* Remove background */
+}
+
+.task-chip.priority {
+    color: #666666; /* Default to yellow */
+}
+
+.task-chip.priority.high {
+    color: #dc3545; /* Red for high priority */
+}
+
+.task-chip.priority.low {
+    color: #0d3015; /* Green for low priority */
 }
 
 .task-chip.status {
-    background: var(--bg-tertiary);
+    color: var(--text-secondary);
 }
 
 .task-chip.status.completed {
-    background: #28a745;
+    color: #28a745;
 }
 
 .task-chip.status.skipped {
-    background: #6c757d;
+    color: #6c757d;
 }
 
 
@@ -252,5 +272,3 @@
     background: var(--accent-color);
     color: white;
 }
-
-/* Rest of the CSS remains the same */

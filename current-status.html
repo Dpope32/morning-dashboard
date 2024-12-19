@@ -451,11 +451,27 @@
     <script src="modals/addProjectModal.js"></script>
     <script src="modals/projectsModal.js"></script>
     <script src="modals/projectManagerModal.js"></script>
+    <script src="modals/addProjectTaskModal.js"></script>
     
     <!-- Load main script last -->
     <script src="scripts/main.js"></script>
 
     <script>
+        // Function to add a task to the project
+        function addTaskToProject(event) {
+            event.stopPropagation(); // Prevent triggering the header click event
+            const taskText = prompt("Enter the task description:");
+            if (taskText) {
+                const newTask = {
+                    task: taskText,
+                    category: 'Uncategorized',
+                    improving: 'low' // Default priority
+                };
+                window.projectTaskStore.addTask(newTask);
+                updateProjectTasks(); // Refresh the task list
+            }
+        }
+
         // Handle principal input changes
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.principal-input').forEach(input => {

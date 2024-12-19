@@ -36,6 +36,8 @@ if (Test-Path $moduleFile) {
     exit 1
 }
 
+# Add reference to System.Windows.Forms
+Add-Type -AssemblyName System.Windows.Forms
 
 # Function to kill processes by name
 function Kill-Processes {
@@ -73,7 +75,6 @@ function Load-EnvFile {
         }
     }
 }
-
 
 function Write-Log {
     param([string]$Message)
@@ -146,7 +147,6 @@ foreach ($proc in $processesToKill) {
     Stop-ProcessSafely -ProcessName $proc
 }
 
-
 # Wait a moment for processes to close
 Start-Sleep -Seconds 2
 
@@ -166,6 +166,13 @@ $leftMonitor = @{
 
 # Launch applications with retries
 Write-Log "Launching applications..."
+
+# Ask user if they want to open AWS Dashboard
+$awsDialogResult = [System.Windows.Forms.MessageBox]::Show("Do you want to open AWS Dashboard?", "Open AWS Dashboard", [System.Windows.Forms.MessageBoxButtons]::YesNo)
+
+if ($awsDialogResult -eq [System.Windows.Forms.DialogResult]::Yes) {
+    Start-Process powershell -ArgumentList "-Command", "awsome" -Verb RunAs
+}
 
 $cursorPath = "${env:USERPROFILE}\AppData\Local\Programs\cursor\Cursor.exe"
 
@@ -224,7 +231,6 @@ if (Test-Path $bravePath1) {
     $bravePath = $null
     Write-Log "Browser not found in default locations"
 }
-
 
 $templatePath = Join-Path $scriptDir "current-status.html"
 $templateUri = "file:///" + $templatePath.Replace("\", "/")
@@ -328,11 +334,15 @@ function Open-NewAdminTerminal {
     Start-Process powershell -ArgumentList "-Command", $Command -Verb RunAs
 }
 
-# Check if Obsidian is already running
-if (Get-Process -Name "Obsidian" -ErrorAction SilentlyContinue) {
-    Write-Log "Obsidian is already running"
-    # Open a new terminal with admin privileges and run the "dev" command
-    Open-NewAdminTerminal -Command "dev"
+# Ask user if they want to run the dev command
+$dialogResult = [System.Windows.Forms.MessageBox]::Show("Do you want to run the 'dev' command?", "Run Dev Command", [System.Windows.Forms.MessageBoxButtons]::YesNo)
+
+if ($dialogResult -eq [System.Windows.Forms.DialogResult]::Yes) {
+    if (Get-Process -Name "Obsidian" -ErrorAction SilentlyContinue) {
+        Write-Log "Obsidian is already running"
+        # Open a new terminal with admin privileges and run the "dev" command
+        Open-NewAdminTerminal -Command "dev"
+    }
 }
 
 # Launch Obsidian with vault on right monitor

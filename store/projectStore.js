@@ -31,12 +31,13 @@ class ProjectStore {
     }
 
     initialize() {
-        // Only migrate if we have no projects and projectTaskStore exists
-        if (this.projects.length === 0 && window.projectTaskStore) {
-            console.log('[ProjectStore] Starting migration from projectTaskStore');
+        // Check if any project has tasks
+        const projectsHaveTasks = this.projects.some(project => project.tasks && project.tasks.length > 0);
+        if (!projectsHaveTasks && window.projectTaskStore) {
+            console.log('[ProjectStore] Projects have no tasks, migrating from projectTaskStore');
             this.migrateFromProjectTaskStore();
         } else {
-            console.log('[ProjectStore] No migration needed. Projects:', this.projects.length);
+            console.log('[ProjectStore] Projects have tasks, no migration needed');
         }
         this.initialized = true;
     }
@@ -75,20 +76,30 @@ class ProjectStore {
             // Get color from projectTaskStore directly
             const color = window.projectTaskStore.getCategoryColor(category);
             
-            const project = {
-                id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
-                name: category,
-                category: category,
-                color: color,
-                status: 'active',
-                tasks: tasks.map(task => ({
+            const existingProject = this.projects.find(p => p.category === category);
+            if (existingProject) {
+                // Merge tasks into existing project
+                existingProject.tasks = existingProject.tasks.concat(tasks.map(task => ({
                     ...task,
                     status: task.status || 'pending'
-                }))
-            };
-            
-            console.log('[ProjectStore] Creating project:', project);
-            this.projects.push(project);
+                })));
+                console.log('[ProjectStore] Merged tasks into existing project:', existingProject);
+            } else {
+                // Create new project
+                const project = {
+                    id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+                    name: category,
+                    category: category,
+                    color: color,
+                    status: 'active',
+                    tasks: tasks.map(task => ({
+                        ...task,
+                        status: task.status || 'pending'
+                    }))
+                };
+                console.log('[ProjectStore] Creating new project:', project);
+                this.projects.push(project);
+            }
         });
 
         this.save();
@@ -102,7 +113,7 @@ class ProjectStore {
     getProjects() {
         console.log('[ProjectStore] Getting projects:', this.projects);
         // If not initialized and we have projectTaskStore, try migration
-        if (!this.initialized && window.projectTaskStore && this.projects.length === 0) {
+        if (!this.initialized && window.projectTaskStore) {
             console.log('[ProjectStore] Late initialization triggered');
             this.initialize();
         }
