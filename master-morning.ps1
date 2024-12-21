@@ -126,11 +126,13 @@ $envJsContent | Out-File $envJsPath -Encoding UTF8
 
 Write-Log "Configuration generated"
 
+# Ask user if they want to close Claude
+$closeClaudeDialogResult = [System.Windows.Forms.MessageBox]::Show("Do you want to close the Claude application?", "Close Claude", [System.Windows.Forms.MessageBoxButtons]::YesNo)
+
 # Kill all non-essential processes
 $processesToKill = @(
     "brave",
     "chrome",
-    "claude",
     "Spotify",
     "explorer", 
     "BraveBrowser",
@@ -141,6 +143,10 @@ $processesToKill = @(
     "notepad",
     "slack"
 )
+
+if ($closeClaudeDialogResult -eq [System.Windows.Forms.DialogResult]::Yes) {
+    $processesToKill += "claude"
+}
 
 Write-Log "Closing applications..."
 foreach ($proc in $processesToKill) {

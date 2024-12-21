@@ -11,24 +11,55 @@ function updateProjectTasks() {
 
     // Show empty state if no tasks
     if (!tasks.length) {
-        console.log('[ProjectTasks] No tasks found, showing empty state');
         projectsGrid.innerHTML = `
             <div class="empty-state">
-                <button class="empty-state-button" onclick="window.addProjectModal.show()">
-                    Create New Project
-                </button>
-                <div style="margin: 10px 0; color: var(--text-secondary);">  </div>
-                <button class="empty-state-button secondary" onclick="window.projectsModal.show()">
-                    Add Project Task
-                </button>
+                <h3>No Project Tasks</h3>
+                <p>Get started by creating a new project or adding tasks</p>
+                <div class="projects-quick-actions">
+                    <button class="quick-action-button" onclick="window.addProjectModal.show()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        New Project
+                    </button>
+                    <button class="quick-action-button" onclick="window.projectsModal.show()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        Add Task
+                    </button>
+                </div>
             </div>
         `;
         updateProjectProgress([]);
         return;
     }
 
+    // Add quick actions bar before the grid
+    const quickActionsHTML = `
+        <div class="projects-quick-actions">
+            <button class="quick-action-button" onclick="window.addProjectModal.show()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                New Project
+            </button>
+            <button class="quick-action-button" onclick="window.projectsModal.show()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                Add Task
+            </button>
+        </div>
+    `;
+
+    // Insert quick actions before the grid
+    const quickActionsContainer = document.querySelector('.projects-quick-actions');
+    if (!quickActionsContainer) {
+        projectsGrid.insertAdjacentHTML('beforebegin', quickActionsHTML);
+    }
+
     // Group tasks by category
-    console.log('[ProjectTasks] Grouping tasks by category');
     const tasksByCategory = tasks.reduce((acc, task) => {
         const category = task.category || 'Uncategorized';
         if (!acc[category]) {
@@ -38,41 +69,19 @@ function updateProjectTasks() {
         return acc;
     }, {});
 
-    console.log('[ProjectTasks] Tasks grouped by category:', tasksByCategory);
-
-    // Create HTML for tasks
+    // Create grid HTML
     let gridHTML = '';
-
-    // Add quick add card
-    gridHTML += `
-        <div class="project-category quick-add-card">
-            <button class="quick-add-project" onclick="window.addProjectModal.show()">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-                <span>New Project</span>
-            </button>
-            <div class="quick-add-divider"></div>
-            <button class="quick-add-project" onclick="window.projectsModal.show()">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-                <span>New Task</span>
-            </button>
-        </div>
-    `;
 
     // Add task categories
     gridHTML += Object.entries(tasksByCategory)
         .map(([category, tasks]) => {
             const categoryColor = window.projectTaskStore.getCategoryColor(category);
-            // Store the color in projectStore for future use
-            window.projectStore?.setCategoryColor(category, categoryColor);
+            // Calculate a darker shade for gradient
+            const categoryColorDark = categoryColor.replace(')', ', 0.8)').replace('rgb', 'rgba');
             
-            console.log(`[ProjectTasks] Creating category element: ${category} with ${tasks.length} tasks`);
             return `
-                <div class="project-category">
-                    <div class="project-header" style="background-color: ${categoryColor}">
+                <div class="project-category" style="--category-color: ${categoryColor}; --category-color-dark: ${categoryColorDark}">
+                    <div class="project-header">
                         <div class="project-header-content">
                             <h3>${category}</h3>
                             <span class="task-count">${tasks.length} task${tasks.length === 1 ? '' : 's'}</span>
@@ -90,7 +99,6 @@ function updateProjectTasks() {
         .join('');
 
     projectsGrid.innerHTML = gridHTML;
-
     // Add click handlers for task status toggle
     console.log('[ProjectTasks] Adding click handlers');
     projectsGrid.querySelectorAll('.task-item').forEach(taskElement => {
@@ -129,34 +137,15 @@ function updateProjectTasks() {
 function createProjectTaskElement(task) {
     console.log('[ProjectTasks] Creating task element:', task);
     
-    const priorityColors = {
-        high: '#dc3545',
-        medium: '#ffc107',
-        low: '#28a745'
-    };
-
-    const statusLabels = {
-        pending: 'To Do',
-        completed: 'Done',
-        skipped: 'Skipped'
-    };
-
     const taskText = task.task || 'Unnamed Task';
     const priority = task.improving || 'medium';
-    const status = task.status || 'pending';
-    const category = task.category || 'Uncategorized';
 
     return `
-        <div class="task-item ${category}" data-task-id="${task.id}" data-status="${status}">
+        <div class="task-item" data-task-id="${task.id}">
             <div class="task-content">
-                <div class="task-text">${taskText}</div>
-                <div class="task-metadata">
-                    <span class="task-chip priority" style="background: ${priorityColors[priority]}">
-                        ${priority} Priority
-                    </span>
-                    <span class="task-chip status ${status}">
-                        ${statusLabels[status]}
-                    </span>
+                <span class="task-text">${taskText}</span>
+                <div class="task-info">
+                    <span class="${priority.toLowerCase()}-priority">${priority}</span>
                 </div>
             </div>
         </div>

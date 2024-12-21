@@ -71,9 +71,10 @@ class RightSidebar {
 
         // Create text container
         const textSpan = document.createElement('span');
-        textSpan.textContent = 'WEATHER';
+        textSpan.textContent = 'Weather Forecast';
         textSpan.style.cssText = `
             text-align: center;
+            color: rgb(232, 230, 227);
             margin-left: -24px;
         `;
 
@@ -139,10 +140,11 @@ class RightSidebar {
 
         // Create text container
         const textSpan = document.createElement('span');
-        textSpan.textContent = 'TASKS';
+        textSpan.textContent = 'Task Manager';
         textSpan.style.cssText = `
             text-align: center;
             margin-left: -24px;
+            color: rgb(232, 230, 227);
         `;
 
         taskButton.appendChild(iconSpan);
@@ -208,9 +210,10 @@ class RightSidebar {
 
         // Create text container
         const textSpan = document.createElement('span');
-        textSpan.textContent = 'PROJECTS';
+        textSpan.textContent = 'Project Manager';
          textSpan.style.cssText = `
             text-align: center;
+            color: rgb(232, 230, 227);
             margin-left: -24px;
         `;
 
@@ -277,10 +280,11 @@ class RightSidebar {
 
         // Create text container
         const textSpan = document.createElement('span');
-        textSpan.textContent = 'CRYPTO';
+        textSpan.textContent = 'Update Crypto';
         textSpan.style.cssText = `
             text-align: center;
             margin-left: -24px;
+            color: rgb(232, 230, 227);
         `;
 
         cryptoButton.appendChild(iconSpan);
@@ -346,7 +350,7 @@ class RightSidebar {
 
         // Create text container
         const textSpan = document.createElement('span');
-        textSpan.textContent = 'STOCKS';
+        textSpan.textContent = 'Update Stocks';
         textSpan.style.cssText = `
             text-align: center;
             margin-left: -24px;

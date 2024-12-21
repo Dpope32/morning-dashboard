@@ -127,7 +127,8 @@ body::before {
     width: 95%;
     max-width: 1200px;
     margin: 0 auto;
-    background: var(--sidebar-bg);
+    background: rgba(13, 17, 23, 0.3);
+    border: 1px solid var(--border-color);
 }
 
 /* Status Cards */
