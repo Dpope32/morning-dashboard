@@ -1,7 +1,8 @@
 # Application Hierarchy and Component Relationships
 
 ## Frontend Structure
-```
+
+```tree
 current-status.html             # Main entry point of the application
 ├── scripts/                    # JavaScript modules and utilities
 │   ├── main.js                # Core application logic
@@ -25,6 +26,7 @@ current-status.html             # Main entry point of the application
 │       ├── dom.js            # DOM manipulation utilities
 │       └── format.js         # Data formatting utilities
 │
+
 └── Styling System
     ├── styles/                # Modular CSS organization
     │   ├── styles.css        # Main stylesheet
@@ -43,6 +45,7 @@ current-status.html             # Main entry point of the application
 ```
 
 ## Component Dependencies
+
 1. HTML Layer
    - `current-status.html` serves as the root container
    - Imports and coordinates all JavaScript and CSS resources
@@ -62,14 +65,16 @@ current-status.html             # Main entry point of the application
    - Weather calendar component has dedicated styling
 
 ## Configuration and Examples
-```
+
+```tree
 examples/                       # Example configurations
 ├── .env.example               # Environment variable template
 └── tasksByDay.example.js      # Task configuration example
 ```
 
-## Documentation
-```
+***Documentation***
+
+```tree
 docs/                          # Project documentation
 ├── app-hierarchy.md           # Application structure and relationships
 ├── app-structure.md           # Detailed application architecture
@@ -77,7 +82,8 @@ docs/                          # Project documentation
 ```
 
 ## Asset Management
-```
+
+```tree
 images/                        # Image assets
 └── interesting.jpg           # Image resource
 ```

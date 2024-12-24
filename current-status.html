@@ -1,4 +1,4 @@
-﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -197,6 +197,21 @@
             transition: width 0.3s ease;
         }
 
+        .add-task-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            padding: 4px 12px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.2s ease;
+        }
+
+        .add-task-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
         /* Make principal inputs read-only in dashboard */
         .principal-input {
             background: transparent;
@@ -260,9 +275,12 @@
 
             <div class="vertical-layout">
                 <div class="tasks-section">
-                    <div class="tasks-header" onclick="this.parentElement.classList.toggle('collapsed')">
-                        Today's Tasks
-                        <span id="taskCount">(0/7)</span>
+                    <div class="tasks-header">
+                        <div onclick="this.parentElement.parentElement.classList.toggle('collapsed')">
+                            Today's Tasks
+                            <span id="taskCount">(0/7)</span>
+                        </div>
+                        <button onclick="addOneTimeTask(event)" class="add-task-btn" title="Add One-time Task">+ New Task</button>
                     </div>
                     <div class="tasks-progress">
                         <div class="progress-bar" id="taskProgress" style="width: 0%"></div>
@@ -469,6 +487,42 @@
                 };
                 window.projectTaskStore.addTask(newTask);
                 updateProjectTasks(); // Refresh the task list
+            }
+        }
+
+        // Function to add a one-time task for today
+        function addOneTimeTask(event) {
+            event.stopPropagation(); // Prevent triggering the header click event
+            const taskText = prompt("Enter the task description:");
+            if (taskText) {
+                const today = new Date().toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+                
+                // Create the new task
+                const newTask = {
+                    task: taskText,
+                    category: 'Personal', // Default category
+                    improving: 'medium', // Default priority
+                    oneTime: true, // Mark as one-time task
+                    time: new Date().toLocaleTimeString('en-US', { 
+                        hour: '2-digit', 
+                        minute: '2-digit',
+                        hour12: true 
+                    })
+                };
+
+                // Add task to today's tasks
+                if (!window.tasksByDay[today]) {
+                    window.tasksByDay[today] = { active: [], completed: [] };
+                }
+                window.tasksByDay[today].active.push(newTask);
+
+                // Save to localStorage and update UI
+                try {
+                    localStorage.setItem('tasksByDay', JSON.stringify(window.tasksByDay));
+                } catch (e) {
+                    console.error('Error saving tasks to localStorage:', e);
+                }
+                updateDailyTasks();
             }
         }
 
