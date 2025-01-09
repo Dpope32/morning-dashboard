@@ -129,13 +129,19 @@ Write-Log "Configuration generated"
 # Ask user if they want to close Claude
 $closeClaudeDialogResult = [System.Windows.Forms.MessageBox]::Show("Do you want to close the Claude application?", "Close Claude", [System.Windows.Forms.MessageBoxButtons]::YesNo)
 
-# Kill all non-essential processes
-$processesToKill = @(
+# Ask user if they want to close browser processes
+$closeBrowsersDialogResult = [System.Windows.Forms.MessageBox]::Show("Do you want to close all browser windows?", "Close Browsers", [System.Windows.Forms.MessageBoxButtons]::YesNo)
+
+# Define process groups
+$browserProcesses = @(
     "brave",
     "chrome",
+    "BraveBrowser"
+)
+
+$otherProcesses = @(
     "Spotify",
     "explorer", 
-    "BraveBrowser",
     "ApplicationFrameHost",
     "SystemSettings",
     "TextInputHost",
@@ -144,7 +150,20 @@ $processesToKill = @(
     "slack"
 )
 
+# Initialize kill list with other processes
+$processesToKill = $otherProcesses
+
+# Add browser processes if user agreed
+if ($closeBrowsersDialogResult -eq [System.Windows.Forms.DialogResult]::Yes) {
+    Write-Log "User chose to close browser processes"
+    $processesToKill += $browserProcesses
+} else {
+    Write-Log "Browser processes will be kept running"
+}
+
+# Add Claude if user agreed
 if ($closeClaudeDialogResult -eq [System.Windows.Forms.DialogResult]::Yes) {
+    Write-Log "Adding Claude to processes to close"
     $processesToKill += "claude"
 }
 
@@ -344,11 +363,11 @@ function Open-NewAdminTerminal {
 $dialogResult = [System.Windows.Forms.MessageBox]::Show("Do you want to run the 'dev' command?", "Run Dev Command", [System.Windows.Forms.MessageBoxButtons]::YesNo)
 
 if ($dialogResult -eq [System.Windows.Forms.DialogResult]::Yes) {
-    if (Get-Process -Name "Obsidian" -ErrorAction SilentlyContinue) {
-        Write-Log "Obsidian is already running"
-        # Open a new terminal with admin privileges and run the "dev" command
-        Open-NewAdminTerminal -Command "dev"
-    }
+    Write-Log "Running dev command"
+    # Open a new terminal with admin privileges and run the "dev" command
+    Open-NewAdminTerminal -Command "dev"
+} else {
+    Write-Log "Dev command skipped by user"
 }
 
 # Launch Obsidian with vault on right monitor

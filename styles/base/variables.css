@@ -1,31 +1,109 @@
 /* variables.css */
 
 :root {
+    /* Color System
+    -------------------------------------------------- */
+    /* Base Colors */
+    --color-primary: #4f46e5;
+    --color-primary-dark: #3c35b5;
+    --color-secondary: #7c3aed;
+    --color-secondary-dark: #6029c8;
+    
+    /* Background Colors */
     --background-color: #000000;
     --container-bg: rgba(13, 17, 23, 0.95);
     --card-bg: rgba(0, 0, 0, 1);
-    --header-color: #dbd0c6;
+    --sidebar-bg: rgba(10, 14, 20, 0.75);
+    --input-bg: rgba(13, 17, 23, 0.8);
+    --todo-item-bg: rgba(31, 41, 55, 0.4);
+    --todo-item-hover: rgba(31, 41, 55, 0.6);
+    --todo-item-completed: rgba(16, 185, 129, 0.2);
+    
+    /* Text Colors */
     --text-color: #e2e8f0;
-    --primary-color: #4f46e5;
-    --secondary-color: #7c3aed;
+    --header-color: #dbd0c6;
+    --button-color: #e2e8f0;
+    
+    /* Accent Colors */
     --accent-success: #10b981;
     --accent-success-td: #254d3f9f;
     --accent-error: #ef4444;
     --accent-warning: #f59e0b;
+    
+    /* Border Colors */
     --border-color: #465468;
-    --input-bg: rgba(13, 17, 23, 0.8);
+    --input-border: var(--color-primary);
+    --input-focus-border: var(--color-secondary);
+    --button-border: rgba(79, 70, 229, 0.5);
+
+    /* Spacing System
+    -------------------------------------------------- */
+    --space-xxs: 0.25rem;  /* 4px */
+    --space-xs: 0.5rem;    /* 8px */
+    --space-sm: 0.75rem;   /* 12px */
+    --space-md: 1rem;      /* 16px */
+    --space-lg: 1.5rem;    /* 24px */
+    --space-xl: 2rem;      /* 32px */
+    --space-xxl: 3rem;     /* 48px */
+
+    /* Layout
+    -------------------------------------------------- */
+    --sidebar-width: 300px;
+    --container-max-width: 1200px;
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px;
+
+    /* Typography
+    -------------------------------------------------- */
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --font-size-xs: 0.75rem;   /* 12px */
+    --font-size-sm: 0.875rem;  /* 14px */
+    --font-size-md: 1rem;      /* 16px */
+    --font-size-lg: 1.125rem;  /* 18px */
+    --font-size-xl: 1.25rem;   /* 20px */
+    --font-size-xxl: 1.5rem;   /* 24px */
+
+    /* Effects
+    -------------------------------------------------- */
+    /* Shadows */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+    
+    /* Transitions */
+    --transition-fast: 150ms ease;
+    --transition-normal: 250ms ease;
+    --transition-slow: 350ms ease;
+    
+    /* Z-index
+    -------------------------------------------------- */
+    --z-negative: -1;
+    --z-base: 1;
+    --z-dropdown: 1000;
+    --z-sticky: 1020;
+    --z-fixed: 1030;
+    --z-modal: 1040;
+    --z-popover: 1050;
+    --z-tooltip: 1060;
+
+    /* Interactive Elements
+    -------------------------------------------------- */
+    --table-row-hover: rgba(255, 255, 255, 0.05);
+    --input-focus-shadow: rgba(79, 70, 229, 0.3);
+    --button-bg: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    --button-hover-bg: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
+
+
+    --primary-color: #4f46e5;
+    --secondary-color: #7c3aed;
+
     --input-border: #4f46e5;
     --input-focus-border: #7c3aed;
     --input-focus-shadow: rgba(79, 70, 229, 0.3);
-    --table-row-hover: rgba(255, 255, 255, 0.05);
-    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
     --button-bg: linear-gradient(135deg, #4f46e5, #7c3aed);
     --button-border: rgba(79, 70, 229, 0.5);
     --button-hover-bg: linear-gradient(135deg, #7c3aed, #4f46e5);
     --button-color: #e2e8f0;
-    --sidebar-bg: rgba(10, 14, 20, 0.75);
-    --sidebar-width: 300px;
-    --todo-item-bg: rgba(31, 41, 55, 0.4);
-    --todo-item-hover: rgba(31, 41, 55, 0.6);
-    --todo-item-completed: rgba(16, 185, 129, 0.2);
 }

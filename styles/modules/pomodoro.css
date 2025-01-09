@@ -1,0 +1,106 @@
+.pomodoro-modal .modal-content {
+    background: rgb(32, 35, 36);
+    border: 1px solid rgb(52, 54, 55);
+    border-radius: 8px;
+    color: rgb(232, 230, 227);
+    width: 300px;
+    padding: 20px;
+}
+
+.pomodoro-modal .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.pomodoro-modal .modal-header h2 {
+    margin: 0;
+    font-size: 1.5em;
+    color: rgb(232, 230, 227);
+}
+
+.pomodoro-modal .close-button {
+    background: none;
+    border: none;
+    color: rgb(232, 230, 227);
+    font-size: 1.5em;
+    cursor: pointer;
+    padding: 0;
+}
+
+.pomodoro-modal .timer-display {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.pomodoro-modal .time {
+    font-size: 3em;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.pomodoro-modal .mode {
+    font-size: 1.2em;
+    color: rgb(200, 200, 200);
+}
+
+.pomodoro-modal .timer-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.pomodoro-modal .timer-controls button {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid rgb(52, 54, 55);
+    border-radius: 4px;
+    background: rgb(45, 48, 50);
+    color: rgb(232, 230, 227);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.pomodoro-modal .timer-controls button:hover {
+    background: rgb(55, 58, 60);
+}
+
+.pomodoro-modal .session-info {
+    text-align: center;
+    color: rgb(200, 200, 200);
+    font-size: 0.9em;
+}
+
+/* Pomodoro Button Styles */
+.pomodoro-button {
+    width: 100%;
+    padding: 10px 15px;
+    background: rgb(32, 35, 36);
+    border: 1px solid rgb(52, 54, 55);
+    border-radius: 20px;
+    color: rgb(232, 230, 227);
+    cursor: pointer;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85em;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.pomodoro-button:hover {
+    background: rgb(35, 38, 40);
+}
+
+.pomodoro-button span:first-child {
+    font-size: 1.1em;
+    justify-self: start;
+}
+
+.pomodoro-button span:last-child {
+    text-align: center;
+    margin-left: -24px;
+    color: rgb(232, 230, 227);
+}

@@ -11,6 +11,7 @@ class RightSidebar {
         this.setupProjectManagerButton();
         this.setupCryptoButton();
         this.setupStocksButton();
+        this.setupPomodoroButton();
         this.loadData();
         this.setupTaskStoreMonitor();
     }
@@ -83,6 +84,7 @@ class RightSidebar {
 
         weatherButton.addEventListener('mouseover', () => {
             weatherButton.style.backgroundColor = 'rgb(35, 38, 40)';
+            weatherButton.style.color = 'rgb(232, 230, 227)';
         });
 
         weatherButton.addEventListener('mouseout', () => {
@@ -542,6 +544,75 @@ class RightSidebar {
             cards.forEach(card => {
                 card.style.marginTop = '10px';
             });
+        }
+    }
+    setupPomodoroButton() {
+        const pomodoroSection = document.createElement('div');
+        pomodoroSection.style.cssText = `
+            margin-top: 15px;
+            padding: 0 15px;
+        `;
+
+        const pomodoroButton = document.createElement('button');
+        pomodoroButton.className = 'pomodoro-button';
+        pomodoroButton.style.cssText = `
+            width: 100%;
+            padding: 10px 15px;
+            background: rgb(32, 35, 36);
+            border: 1px solid rgb(52, 54, 55);
+            border-radius: 20px;
+            color: rgb(232, 230, 227);
+            cursor: pointer;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85em;
+            transition: all 0.2s ease;
+            position: relative;
+        `;
+
+        // Create icon container
+        const iconSpan = document.createElement('span');
+        iconSpan.textContent = '⏱️';
+        iconSpan.style.cssText = `
+            font-size: 1.1em;
+            justify-self: start;
+        `;
+
+        // Create text container
+        const textSpan = document.createElement('span');
+        textSpan.textContent = 'Pomodoro Timer';
+        textSpan.style.cssText = `
+            text-align: center;
+            margin-left: -24px;
+            color: rgb(232, 230, 227);
+        `;
+
+        pomodoroButton.appendChild(iconSpan);
+        pomodoroButton.appendChild(textSpan);
+
+        pomodoroButton.addEventListener('mouseover', () => {
+            pomodoroButton.style.backgroundColor = 'rgb(35, 38, 40)';
+        });
+
+        pomodoroButton.addEventListener('mouseout', () => {
+            pomodoroButton.style.backgroundColor = 'rgb(32, 35, 36)';
+        });
+
+        pomodoroButton.addEventListener('click', () => {
+            if (window.pomodoroModal) {
+                window.pomodoroModal.show();
+            }
+        });
+
+        pomodoroSection.appendChild(pomodoroButton);
+        
+        // Insert after the stocks button
+        const stocksButton = this.sidebar.querySelector('.stocks-button');
+        if (stocksButton) {
+            const stocksSection = stocksButton.closest('div');
+            stocksSection.insertAdjacentElement('afterend', pomodoroSection);
         }
     }
 }
