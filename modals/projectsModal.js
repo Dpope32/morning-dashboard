@@ -36,12 +36,12 @@ class ProjectsModal {
     }
 
     getProjectCategories() {
-        const categories = window.projectTaskStore?.getCategories() || [];
-        if (!categories.length) {
+        const projects = window.projectStore?.getProjects() || [];
+        if (!projects.length) {
             return '<option value="">No projects available - create a project first</option>';
         }
-        return categories
-            .map(category => `<option value="${category}">${category}</option>`)
+        return projects
+            .map(project => `<option value="${project.id}">${project.name}</option>`)
             .join('');
     }
 
@@ -109,7 +109,7 @@ class ProjectsModal {
         const prioritySelect = this.modal.querySelector('#projectPriority');
 
         const taskText = taskInput.value.trim();
-        const category = categorySelect.value;
+        const projectId = categorySelect.value;
         const priority = prioritySelect.value;
 
         // Validation
@@ -118,20 +118,22 @@ class ProjectsModal {
             taskInput.style.borderColor = 'rgb(220, 53, 69)';
             isValid = false;
         }
-        if (!category) {
+        if (!projectId) {
             categorySelect.style.borderColor = 'rgb(220, 53, 69)';
             isValid = false;
         }
         if (!isValid) return;
 
-        console.log('[ProjectsModal] Creating task with:', { taskText, category, priority });
+        console.log('[ProjectsModal] Creating task with:', { taskText, projectId, priority });
         
-        // Add task to store
-        window.projectTaskStore.addTask({
+        // Add task to project
+        const newTask = {
             task: taskText,
-            category: category,
-            improving: priority
-        });
+            improving: priority,
+            status: 'pending'
+        };
+        
+        window.projectStore.addTaskToProject(projectId, newTask);
 
         // Update UI
         if (typeof updateProjectTasks === 'function') {

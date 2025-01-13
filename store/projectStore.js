@@ -31,13 +31,9 @@ class ProjectStore {
     }
 
     initialize() {
-        // Check if any project has tasks
-        const projectsHaveTasks = this.projects.some(project => project.tasks && project.tasks.length > 0);
-        if (!projectsHaveTasks && window.projectTaskStore) {
-            console.log('[ProjectStore] Projects have no tasks, migrating from projectTaskStore');
+        if (window.projectTaskStore) {
+            console.log('[ProjectStore] Checking for new tasks to migrate...');
             this.migrateFromProjectTaskStore();
-        } else {
-            console.log('[ProjectStore] Projects have tasks, no migration needed');
         }
         this.initialized = true;
     }
@@ -49,41 +45,45 @@ class ProjectStore {
         }
 
         const tasks = window.projectTaskStore.getTasks() || [];
-        // Access categoryColors directly from projectTaskStore's debug state
-        const storeState = {};
-        window.projectTaskStore.debug();  // This will log the state
-        const colors = window.projectTaskStore?.categoryColors || {};
+        if (!tasks.length) {
+            console.log('[ProjectStore] No tasks to migrate');
+            return;
+        }
         
-        console.log('[ProjectStore] Migration data:', {
-            tasks: tasks,
-            colors: colors
+        console.log('[ProjectStore] Found tasks to migrate:', tasks);
+
+        // Get unique categories from tasks
+        const categories = [...new Set(tasks.map(task => task.category || 'Uncategorized'))];
+        console.log('[ProjectStore] Found categories:', categories);
+
+        // Track migrated tasks to avoid duplicates
+        const migratedTaskIds = new Set();
+        this.projects.forEach(project => {
+            project.tasks.forEach(task => migratedTaskIds.add(task.id));
         });
 
-        // Group tasks by category
-        const tasksByCategory = tasks.reduce((acc, task) => {
-            const category = task.category || 'Uncategorized';
-            if (!acc[category]) {
-                acc[category] = [];
+        // Process each category
+        categories.forEach(category => {
+            const categoryTasks = tasks.filter(task => 
+                (task.category || 'Uncategorized') === category && 
+                !migratedTaskIds.has(task.id)
+            );
+
+            if (!categoryTasks.length) {
+                console.log(`[ProjectStore] No new tasks to migrate for category: ${category}`);
+                return;
             }
-            acc[category].push(task);
-            return acc;
-        }, {});
 
-        console.log('[ProjectStore] Tasks grouped by category:', tasksByCategory);
-
-        // Create projects from categories
-        Object.entries(tasksByCategory).forEach(([category, tasks]) => {
-            // Get color from projectTaskStore directly
             const color = window.projectTaskStore.getCategoryColor(category);
-            
             const existingProject = this.projects.find(p => p.category === category);
+
             if (existingProject) {
-                // Merge tasks into existing project
-                existingProject.tasks = existingProject.tasks.concat(tasks.map(task => ({
+                // Add new tasks to existing project
+                console.log(`[ProjectStore] Adding ${categoryTasks.length} tasks to existing project:`, existingProject.name);
+                existingProject.tasks.push(...categoryTasks.map(task => ({
                     ...task,
                     status: task.status || 'pending'
                 })));
-                console.log('[ProjectStore] Merged tasks into existing project:', existingProject);
             } else {
                 // Create new project
                 const project = {
@@ -92,7 +92,7 @@ class ProjectStore {
                     category: category,
                     color: color,
                     status: 'active',
-                    tasks: tasks.map(task => ({
+                    tasks: categoryTasks.map(task => ({
                         ...task,
                         status: task.status || 'pending'
                     }))
@@ -100,7 +100,20 @@ class ProjectStore {
                 console.log('[ProjectStore] Creating new project:', project);
                 this.projects.push(project);
             }
+
+            // Mark these tasks as migrated
+            categoryTasks.forEach(task => migratedTaskIds.add(task.id));
         });
+
+        // Only clear old tasks that were successfully migrated
+        const remainingTasks = tasks.filter(task => !migratedTaskIds.has(task.id));
+        if (remainingTasks.length > 0) {
+            console.log('[ProjectStore] Some tasks could not be migrated:', remainingTasks);
+            localStorage.setItem('projectTasks', JSON.stringify(remainingTasks));
+        } else {
+            console.log('[ProjectStore] All tasks migrated successfully');
+            localStorage.removeItem('projectTasks');
+        }
 
         this.save();
         console.log('[ProjectStore] Migration complete, final projects:', this.projects);

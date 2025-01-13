@@ -6,8 +6,18 @@ function updateProjectTasks() {
         return;
     }
 
-    const tasks = window.projectTaskStore?.getTasks() || [];
-    console.log('[ProjectTasks] Retrieved tasks:', tasks);
+    const projects = window.projectStore?.getProjects() || [];
+    console.log('[ProjectTasks] Retrieved projects:', projects);
+
+    // Get all tasks from all projects
+    const tasks = projects.reduce((acc, project) => {
+        return acc.concat(project.tasks.map(task => ({
+            ...task,
+            category: project.category // Ensure task has category from project
+        })));
+    }, []);
+
+    console.log('[ProjectTasks] Extracted tasks:', tasks);
 
     // Show empty state if no tasks
     if (!tasks.length) {
@@ -59,13 +69,16 @@ function updateProjectTasks() {
         projectsGrid.insertAdjacentHTML('beforebegin', quickActionsHTML);
     }
 
-    // Group tasks by category
-    const tasksByCategory = tasks.reduce((acc, task) => {
-        const category = task.category || 'Uncategorized';
-        if (!acc[category]) {
-            acc[category] = [];
+    // Group active tasks by project category
+    const tasksByCategory = projects.reduce((acc, project) => {
+        // Only include pending tasks
+        const pendingTasks = project.tasks.filter(task => task.status === 'pending');
+        if (pendingTasks.length > 0) {
+            if (!acc[project.category]) {
+                acc[project.category] = [];
+            }
+            acc[project.category].push(...pendingTasks);
         }
-        acc[category].push(task);
         return acc;
     }, {});
 
@@ -75,7 +88,8 @@ function updateProjectTasks() {
     // Add task categories
     gridHTML += Object.entries(tasksByCategory)
         .map(([category, tasks]) => {
-            const categoryColor = window.projectTaskStore.getCategoryColor(category);
+            const project = projects.find(p => p.category === category);
+            const categoryColor = project?.color || '#666';
             // Calculate a darker shade for gradient
             const categoryColorDark = categoryColor.replace(')', ', 0.8)').replace('rgb', 'rgba');
             
@@ -106,25 +120,24 @@ function updateProjectTasks() {
             const taskId = taskElement.dataset.taskId;
             if (taskId) {
                 console.log('[ProjectTasks] Task clicked:', taskId);
-                const task = window.projectTaskStore.getTasks().find(t => t.id === taskId);
-                if (task) {
-                    if (confirm(`Would you like to complete the task "${task.task}"?`)) {
-                        // Add task to project store before completing it
-                        const project = window.projectStore.addProject({
-                            category: task.category,
-                            name: task.task,
-                            status: 'active'
-                        });
+                // Find the project and task
+                const project = projects.find(p => p.tasks.some(t => t.id === taskId));
+                if (project) {
+                    const task = project.tasks.find(t => t.id === taskId);
+                    if (task && confirm(`Would you like to complete the task "${task.task}"?`)) {
+                        // Update task status to completed
+                        window.projectStore.updateTaskStatus(project.id, taskId, 'completed');
                         
-                        // Add the task to the project
-                        window.projectStore.addTaskToProject(project.id, {
-                            ...task,
-                            status: 'completed'
-                        });
+                        // Update both views
+                        updateProjectTasks(); // Refresh the main view
                         
-                        // Complete the task in project task store
-                        window.projectTaskStore.completeTask(taskId);
-                        updateProjectTasks(); // Refresh the view
+                        // Update project manager if it's open
+                        if (window.projectManagerModal && 
+                            window.projectManagerModal.modal.style.display === 'block') {
+                            window.projectManagerModal.updateProjectBoard(
+                                window.projectManagerModal.modal.querySelector('.project-board')
+                            );
+                        }
                     }
                 }
             }
@@ -186,5 +199,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Debug store state
-    window.projectTaskStore.debug();
+    window.projectStore.debug();
 });

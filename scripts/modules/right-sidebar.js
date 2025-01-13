@@ -72,7 +72,7 @@ class RightSidebar {
 
         // Create text container
         const textSpan = document.createElement('span');
-        textSpan.textContent = 'Weather Forecast';
+        textSpan.textContent = 'Weather';
         textSpan.style.cssText = `
             text-align: center;
             color: rgb(232, 230, 227);
@@ -142,7 +142,7 @@ class RightSidebar {
 
         // Create text container
         const textSpan = document.createElement('span');
-        textSpan.textContent = 'Task Manager';
+        textSpan.textContent = 'Task';
         textSpan.style.cssText = `
             text-align: center;
             margin-left: -24px;
@@ -212,7 +212,7 @@ class RightSidebar {
 
         // Create text container
         const textSpan = document.createElement('span');
-        textSpan.textContent = 'Project Manager';
+        textSpan.textContent = 'Projects';
          textSpan.style.cssText = `
             text-align: center;
             color: rgb(232, 230, 227);
@@ -282,7 +282,7 @@ class RightSidebar {
 
         // Create text container
         const textSpan = document.createElement('span');
-        textSpan.textContent = 'Update Crypto';
+        textSpan.textContent = 'Crypto';
         textSpan.style.cssText = `
             text-align: center;
             margin-left: -24px;
@@ -352,7 +352,7 @@ class RightSidebar {
 
         // Create text container
         const textSpan = document.createElement('span');
-        textSpan.textContent = 'Update Stocks';
+        textSpan.textContent = 'Stocks';
         textSpan.style.cssText = `
             text-align: center;
             margin-left: -24px;
@@ -582,7 +582,7 @@ class RightSidebar {
 
         // Create text container
         const textSpan = document.createElement('span');
-        textSpan.textContent = 'Pomodoro Timer';
+        textSpan.textContent = 'Pomodoro';
         textSpan.style.cssText = `
             text-align: center;
             margin-left: -24px;

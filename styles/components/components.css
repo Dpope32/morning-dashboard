@@ -43,12 +43,13 @@ body::before {
 
 /* Headers */
 .welcome-header {
-    font-size: 36px;
+    font-size: 28px;
     font-weight: bold;
     background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    padding-left: 12px;
     text-shadow: 0 0 20px rgba(79, 70, 229, 0.3);
 }
 
@@ -89,13 +90,11 @@ body::before {
 /* Clock */
 .clock {
     font-family: 'Courier New', monospace;
-    font-size: 32px;
     font-weight: bold;
     padding: 12px 24px;
     border-radius: 12px;
     background: rgba(79, 70, 229, 0.0);
     border: 1px solid var(--border-color);
-    color: var(--secondary-color);
     text-shadow: 0 0 15px rgba(79, 70, 229, 0.4);
     letter-spacing: 2px;
     transition: all 0.3s ease;
@@ -103,6 +102,11 @@ body::before {
     align-items: center;
     box-shadow: 0 0 20px rgba(79, 70, 229, 0.2);
     white-space: nowrap;
+    justify-self: center;
+    font-size: 1.4em;
+    color: var(--text-primary);
+    opacity: 0.9;
+    font-variant-numeric: tabular-nums;
 }
 
 /* Sidebar */

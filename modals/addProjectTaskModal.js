@@ -148,22 +148,37 @@ class AddProjectTaskModal {
         e.preventDefault();
         const taskDescription = document.getElementById('taskDescription').value;
         if (taskDescription && this.projectId) {
-            const newTask = {
-                task: taskDescription,
-                category: this.projectId, // Use projectId as category
-                improving: 'low' // Default priority
-            };
-            window.projectTaskStore.addTask(newTask);
-            if (typeof updateProjectTasks === 'function') {
-                updateProjectTasks();
+            // Find project to get its category
+            const project = window.projectStore.getProjects().find(p => p.id === this.projectId);
+            if (project) {
+                const newTask = {
+                    task: taskDescription,
+                    improving: 'low', // Default priority
+                    status: 'pending'
+                };
+                window.projectStore.addTaskToProject(this.projectId, newTask);
+                if (typeof updateProjectTasks === 'function') {
+                    updateProjectTasks();
+                }
+                this.hide();
+            } else {
+                console.error('Project not found:', this.projectId);
             }
-            this.hide();
         }
     }
 
     show(projectId) {
-        this.projectId = projectId;
-        this.modal.style.display = 'block';
+        const project = window.projectStore.getProjects().find(p => p.id === projectId);
+        if (project) {
+            this.projectId = projectId;
+            const title = this.modal.querySelector('h2');
+            if (title) {
+                title.textContent = `Add Task to ${project.name}`;
+            }
+            this.modal.style.display = 'block';
+        } else {
+            console.error('Project not found:', projectId);
+        }
     }
 
     hide() {

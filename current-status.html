@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -43,7 +43,87 @@
             margin-left: -24px;
         }
         
-        /* New styles for vertical layout and compact tasks */
+        /* Professional header styles */
+        .header-section {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 20px;
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .header-metrics {
+            justify-self: end;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(110px, auto));
+            grid-template-rows: repeat(2, auto);
+            gap: 10px 16px;
+            align-items: center;
+            padding: 12px 16px;
+            margin-right: 12px;
+            background: rgba(79, 70, 229, 0.0);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-metric {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85em;
+            white-space: nowrap;
+            padding: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .header-metric:hover {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 4px;
+        }
+
+        .header-metric-value {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 500;
+            min-width: 55px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .header-metric-value .success {
+            color: #4ade80;
+            text-shadow: 0 0 10px rgba(74, 222, 128, 0.2);
+        }
+
+        .header-metric-value .warning {
+            color: #fbbf24;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.2);
+        }
+
+        .header-metric-value .error {
+            color: #f87171;
+            text-shadow: 0 0 10px rgba(248, 113, 113, 0.2);
+        }
+
+        .header-metric-value .loading {
+            color: #9ca3af;
+            text-shadow: 0 0 10px rgba(156, 163, 175, 0.1);
+        }
+
+        .header-metric-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+            opacity: 0.8;
+            font-size: 0.95em;
+        }
+        
+        /* Vertical layout and compact tasks */
         .vertical-layout {
             display: flex;
             flex-direction: column;
@@ -235,39 +315,38 @@
         <div class="button-group">
             <!-- Weather and Task buttons will be inserted here by right-sidebar.js -->
         </div>
-        
-        <div class="metrics-container">
-            <div class="metric">
-                <span>Cursor</span>
-                <div class="metric-value">
-                    <span class="success">Ready</span>
-                </div>
-            </div>
-            <div class="metric">
-                <span>Market</span>
-                <div class="metric-value" id="marketStatus">
-                    <span class="loading">Loading...</span>
-                </div>
-            </div>
-            <div class="metric">
-                <span>Network</span>
-                <div class="metric-value" id="networkStatus">
-                    <span class="loading">Loading...</span>
-                </div>
-            </div>
-            <div class="metric">
-                <span>Ping</span>
-                <div class="metric-value" id="pingStatus">
-                    <span class="loading">Loading...</span>
-                </div>
-            </div>
-        </div>
     </div>
 
     <div class="main-content">
         <div class="header-section">
             <div class="welcome-header" id="greeting">Loading...</div>
             <div class="clock" id="clock">00:00</div>
+            <div class="header-metrics">
+                <div class="header-metric">
+                    <span class="header-metric-label">Status</span>
+                    <div class="header-metric-value">
+                        <span class="success">Active</span>
+                    </div>
+                </div>
+                <div class="header-metric">
+                    <span class="header-metric-label">Market</span>
+                    <div class="header-metric-value" id="marketStatus">
+                        <span class="loading">Loading...</span>
+                    </div>
+                </div>
+                <div class="header-metric">
+                    <span class="header-metric-label">Ping</span>
+                    <div class="header-metric-value" id="pingStatus">
+                        <span class="loading">Loading...</span>
+                    </div>
+                </div>
+                <div class="header-metric">
+                    <span class="header-metric-label">Memory</span>
+                    <div class="header-metric-value" id="memoryStatus">
+                        <span class="success">32%</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="container">
@@ -302,6 +381,7 @@
                         <!-- Project tasks will be dynamically inserted here -->
                     </div>
                 </div>
+
                 <div class="status-card">
                     <div class="tasks-header"><h3>Stocks</h3></div>
                     <table class="portfolio-table">
@@ -372,7 +452,6 @@
                                 </td>
                                 <td>Loading...</td>
                             </tr>
-                        
                             <tr class="total-row">
                                 <td>Total Portfolio Value</td>
                                 <td></td>
@@ -437,7 +516,6 @@
     <!-- Load stores first -->
     <script src="store/projectStore.js"></script>
     <script src="scripts/store/todoStore.js"></script>
-    <script src="store/projectTaskStore.js"></script>
     <script src="store/taskStore.js"></script>
     <script src="store/pomodoroStore.js"></script>
     
@@ -454,6 +532,7 @@
     <script src="scripts/modules/stockPrices.js"></script>
     <script src="scripts/modules/dateGreeting.js"></script>
     <script src="scripts/modules/taskProgress.js"></script>
+    <script src="scripts/modules/memoryStatus.js"></script>
     
     <!-- Load task-related modules -->
     <script src="scripts/modules/tasks.js"></script>
@@ -479,32 +558,42 @@
     <script>
         // Function to add a task to the project
         function addTaskToProject(event) {
-            event.stopPropagation(); // Prevent triggering the header click event
+            event.stopPropagation();
             const taskText = prompt("Enter the task description:");
             if (taskText) {
+                let project = window.projectStore.getProjects()[0];
+                if (!project) {
+                    project = window.projectStore.addProject({
+                        name: 'Uncategorized',
+                        category: 'Uncategorized',
+                        color: '#666666',
+                        status: 'active',
+                        tasks: []
+                    });
+                }
+                
                 const newTask = {
                     task: taskText,
-                    category: 'Uncategorized',
-                    improving: 'low' // Default priority
+                    improving: 'low',
+                    status: 'pending'
                 };
-                window.projectTaskStore.addTask(newTask);
-                updateProjectTasks(); // Refresh the task list
+                window.projectStore.addTaskToProject(project.id, newTask);
+                updateProjectTasks();
             }
         }
 
         // Function to add a one-time task for today
         function addOneTimeTask(event) {
-            event.stopPropagation(); // Prevent triggering the header click event
+            event.stopPropagation();
             const taskText = prompt("Enter the task description:");
             if (taskText) {
                 const today = new Date().toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
                 
-                // Create the new task
                 const newTask = {
                     task: taskText,
-                    category: 'Personal', // Default category
-                    improving: 'medium', // Default priority
-                    oneTime: true, // Mark as one-time task
+                    category: 'Personal',
+                    improving: 'medium',
+                    oneTime: true,
                     time: new Date().toLocaleTimeString('en-US', { 
                         hour: '2-digit', 
                         minute: '2-digit',
@@ -512,13 +601,11 @@
                     })
                 };
 
-                // Add task to today's tasks
                 if (!window.tasksByDay[today]) {
                     window.tasksByDay[today] = { active: [], completed: [] };
                 }
                 window.tasksByDay[today].active.push(newTask);
 
-                // Save to localStorage and update UI
                 try {
                     localStorage.setItem('tasksByDay', JSON.stringify(window.tasksByDay));
                 } catch (e) {
@@ -534,7 +621,6 @@
                 const type = input.dataset.type;
                 const symbol = input.dataset.symbol;
                 
-                // Set initial value from ENV or default to 1
                 input.value = type === 'crypto' 
                     ? (window.ENV.cryptoPrincipals[symbol] || 1)
                     : (window.ENV.stockPrincipals[symbol] || 1);

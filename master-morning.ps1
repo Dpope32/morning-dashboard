@@ -220,7 +220,7 @@ function Launch-Application {
                 $cursorProc = Start-Process $AppPath -WorkingDirectory $workingDir -ArgumentList $Args -PassThru
                 Start-Sleep -Seconds 3
                 
-                # Verify Cursor is running
+                # Verify ris running
                 $isRunning = Get-Process -Name "cursor" -ErrorAction SilentlyContinue
                 if ($isRunning -and $PositionParams) {
                     Set-WindowPosition -ProcessName $AppName @PositionParams

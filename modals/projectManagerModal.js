@@ -495,12 +495,32 @@ class ProjectManagerModal {
         e.preventDefault();
         try {
             const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+            
+            // First verify the task belongs to this project
+            const project = window.projectStore.getProjects().find(p => p.id === projectId);
+            if (!project) {
+                console.error('Project not found:', projectId);
+                this.showMessage('Error: Project not found', 'error');
+                return;
+            }
+
+            // Verify task exists in this project
+            const task = project.tasks.find(t => t.id === data.taskId);
+            if (!task) {
+                console.error('Task not found in project:', data.taskId);
+                this.showMessage('Error: Task does not belong to this project', 'error');
+                return;
+            }
+
+            // Only update if task belongs to this project
             if (data.taskId && data.projectId === projectId) {
-                window.projectStore.updateTaskStatus(projectId, data.taskId, newStatus);
-                this.updateProjectBoard(this.modal.querySelector('.project-board'));
-                
-                // Show success message
-                this.showMessage('Task status updated successfully!', 'success');
+                const result = window.projectStore.updateTaskStatus(projectId, data.taskId, newStatus);
+                if (result) {
+                    this.updateProjectBoard(this.modal.querySelector('.project-board'));
+                    this.showMessage('Task status updated successfully!', 'success');
+                } else {
+                    this.showMessage('Failed to update task status', 'error');
+                }
             }
         } catch (err) {
             console.error('Error handling drop:', err);

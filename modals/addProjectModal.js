@@ -168,10 +168,8 @@ class AddProjectModal {
 
         console.log('[AddProjectModal] Creating project:', { projectName, projectColor });
         
-        // Add project to both stores
-        window.projectTaskStore.addCategory(projectName, projectColor);
-        
-        window.projectStore.addProject({
+        // Add project to store
+        const newProject = window.projectStore.addProject({
             name: projectName,
             category: projectName,
             color: projectColor,
@@ -179,20 +177,24 @@ class AddProjectModal {
             tasks: []
         });
 
-        // Show success message
-        this.showMessage(`Project "${projectName}" created successfully!`);
+        if (newProject) {
+            // Show success message
+            this.showMessage(`Project "${projectName}" created successfully!`);
 
-        // Update UI
-        if (typeof updateProjectTasks === 'function') {
-            updateProjectTasks();
-        }
+            // Update UI
+            if (typeof updateProjectTasks === 'function') {
+                updateProjectTasks();
+            }
 
-        // If project manager modal is open, update it
-        if (window.projectManagerModal && 
-            window.projectManagerModal.modal.style.display === 'block') {
-            window.projectManagerModal.updateProjectBoard(
-                window.projectManagerModal.modal.querySelector('.project-board')
-            );
+            // If project manager modal is open, update it
+            if (window.projectManagerModal && 
+                window.projectManagerModal.modal.style.display === 'block') {
+                window.projectManagerModal.updateProjectBoard(
+                    window.projectManagerModal.modal.querySelector('.project-board')
+                );
+            }
+        } else {
+            this.showMessage(`Failed to create project "${projectName}"`, 'error');
         }
 
         this.hide();
