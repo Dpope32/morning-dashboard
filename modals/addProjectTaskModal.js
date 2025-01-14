@@ -167,17 +167,33 @@ class AddProjectTaskModal {
         }
     }
 
-    show(projectId) {
-        const project = window.projectStore.getProjects().find(p => p.id === projectId);
+    show(projectIdOrCategory) {
+        let project;
+        // Check if we received a category name instead of project ID
+        if (typeof projectIdOrCategory === 'string') {
+            project = window.projectStore.getProjects().find(p => 
+                p.id === projectIdOrCategory || p.category === projectIdOrCategory
+            );
+            
+            // If no project exists for this category, create one
+            if (!project && projectIdOrCategory) {
+                project = window.projectStore.addProject({
+                    name: projectIdOrCategory,
+                    category: projectIdOrCategory,
+                    tasks: []
+                });
+            }
+        }
+        
         if (project) {
-            this.projectId = projectId;
+            this.projectId = project.id;
             const title = this.modal.querySelector('h2');
             if (title) {
                 title.textContent = `Add Task to ${project.name}`;
             }
             this.modal.style.display = 'block';
         } else {
-            console.error('Project not found:', projectId);
+            console.error('Project not found:', projectIdOrCategory);
         }
     }
 

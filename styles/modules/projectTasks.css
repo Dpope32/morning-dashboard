@@ -61,7 +61,7 @@
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 20px;
     padding: 10px;
-    align-items: start; /* This ensures columns start at the top */
+    align-items: start;
 }
 
 .project-category {
@@ -71,7 +71,7 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease;
     border: 1px solid var(--border-color);
-    height: fit-content; /* Allow natural height */
+    height: fit-content;
 }
 
 .project-category:hover {
@@ -171,7 +171,6 @@
     gap: 8px;
 }
 
-
 .high-priority {
     color: #dc3545;
 }
@@ -211,4 +210,55 @@
     background: var(--bg-secondary);
     border-radius: 12px;
     text-align: center;
+}
+
+@media (max-width: 768px) {
+    .projects-section {
+        padding: 10px;
+    }
+    .projects-header {
+        font-size: 1.5em;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .projects-quick-actions {
+        flex-direction: column;
+    }
+    .quick-action-button {
+        width: 100%;
+        justify-content: center;
+    }
+    .projects-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+        padding: 5px;
+    }
+    .project-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .project-header-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .add-task-button {
+        width: 24px;
+        height: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .projects-header {
+        font-size: 1.2em;
+    }
+    .quick-action-button {
+        padding: 6px 12px;
+        font-size: 0.85em;
+    }
+    .task-text {
+        font-size: 0.75em;
+    }
+    .task-info {
+        font-size: 0.75em;
+    }
 }

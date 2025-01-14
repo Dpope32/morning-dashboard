@@ -33,3 +33,37 @@
     border-radius: 4px;
     font-size: 0.9em;
 }
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .metric {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 8px 0;
+    }
+    .metric span {
+        margin-right: 0;
+        margin-bottom: 5px;
+    }
+    .metric-value {
+        min-width: auto;
+        width: 100%;
+        text-align: left;
+    }
+    #marketStatus .warning {
+        font-size: 0.85em;
+    }
+}
+
+@media (max-width: 480px) {
+    .metric {
+        padding: 6px 0;
+    }
+    .metric-value {
+        padding: 6px 10px;
+        font-size: 0.85em;
+    }
+    #marketStatus .warning {
+        font-size: 0.8em;
+    }
+}

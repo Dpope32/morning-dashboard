@@ -301,7 +301,126 @@
             text-align: right;
             pointer-events: none;
         }
+
+        @media (max-width: 768px) {
+            .button-group {
+                padding: 0 10px;
+            }
+            .button-group button {
+                font-size: 0.75em;
+                padding: 8px 12px;
+                margin-top: 8px;
+                gap: 6px;
+            }
+            .header-section {
+                grid-template-columns: 1fr;
+                gap: 16px;
+                padding: 12px;
+            }
+            .header-metrics {
+                grid-template-columns: repeat(2, minmax(100px, auto));
+                grid-template-rows: auto auto;
+                padding: 8px;
+                margin-right: 0;
+            }
+            .header-metric {
+                font-size: 0.8em;
+            }
+            .vertical-layout {
+                gap: 20px;
+                margin-top: 15px;
+            }
+            .tasks-section {
+                padding: 10px;
+            }
+            .tasks-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .tasks-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+            .task-item {
+                padding: 6px;
+            }
+            .task-text {
+                font-size: 0.85em;
+            }
+            .task-time {
+                font-size: 0.7em;
+            }
+            .task-chip {
+                font-size: 0.65em;
+            }
+            .add-task-btn {
+                font-size: 0.8em;
+                padding: 2px 8px;
+            }
+            .principal-input {
+                width: 80px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .button-group {
+                padding: 0 5px;
+            }
+            .button-group button {
+                font-size: 0.7em;
+                padding: 6px 10px;
+                margin-top: 6px;
+            }
+            .header-section {
+                grid-template-columns: 1fr;
+                gap: 12px;
+                padding: 12px;
+            }
+            .header-metrics {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto;
+                padding: 6px;
+            }
+            .header-metric {
+                font-size: 0.75em;
+            }
+            .vertical-layout {
+                gap: 15px;
+                margin-top: 10px;
+            }
+            .tasks-section {
+                padding: 8px;
+            }
+            .tasks-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .tasks-grid {
+                grid-template-columns: 1fr;
+                gap: 6px;
+            }
+            .task-item {
+                padding: 4px;
+            }
+            .task-text {
+                font-size: 0.75em;
+            }
+            .task-time {
+                font-size: 0.65em;
+            }
+            .task-chip {
+                font-size: 0.6em;
+            }
+            .add-task-btn {
+                font-size: 0.75em;
+                padding: 2px 6px;
+            }
+            .principal-input {
+                width: 60px;
+            }
+        }
     </style>
+
 </head>
 <body class="dark-theme">
     <div class="sidebar" id="sidebar">
@@ -514,6 +633,7 @@
     <script src="scripts/modules/tasksByDay.js"></script>
     
     <!-- Load stores first -->
+    <script src="store/projectData.js"></script>
     <script src="store/projectStore.js"></script>
     <script src="scripts/store/todoStore.js"></script>
     <script src="store/taskStore.js"></script>

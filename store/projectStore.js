@@ -1,28 +1,42 @@
+// src/dashboard/store/projectStore.js
+console.log('[ProjectStore] Starting initialization');
+console.log('[ProjectStore] DEFAULT_PROJECTS available?', !!window.DEFAULT_PROJECTS);
+
 class ProjectStore {
     constructor() {
         console.log('[ProjectStore] Initializing...');
+        console.log('[ProjectStore-Debug] DEFAULT_PROJECTS at start:', window.DEFAULT_PROJECTS);
+
         this.projects = [];
         this.categoryColors = {};
         this.initialized = false;
         
-        // Load saved data
+        // Load saved data OR use defaults
         try {
             const savedProjects = localStorage.getItem('projects');
             const savedColors = localStorage.getItem('projectCategoryColors');
             
             if (savedProjects) {
                 this.projects = JSON.parse(savedProjects);
-                console.log('[ProjectStore] Loaded saved projects:', this.projects);
+            } else if (window.DEFAULT_PROJECTS) {
+                console.log('[ProjectStore-Debug] Found DEFAULT_PROJECTS:', window.DEFAULT_PROJECTS);
+                this.projects = [...window.DEFAULT_PROJECTS]; // Create a copy
+                console.log('[ProjectStore-Debug] Set this.projects to:', this.projects);
+                this.save();
             }
+            console.log('[ProjectStore] Loaded projects:', this.projects);
             
             if (savedColors) {
                 this.categoryColors = JSON.parse(savedColors);
-                console.log('[ProjectStore] Loaded saved colors:', this.categoryColors);
             }
         } catch (err) {
             console.error('[ProjectStore] Error loading saved data:', err);
+            // Fallback to defaults on error
+            if (window.DEFAULT_PROJECTS) {
+                this.projects = window.DEFAULT_PROJECTS;
+                this.save();
+            }
         }
-
         // We'll initialize after DOM is loaded to ensure projectTaskStore is ready
         document.addEventListener('DOMContentLoaded', () => {
             console.log('[ProjectStore] DOM loaded, checking for migration...');
@@ -222,8 +236,10 @@ class ProjectStore {
 
     save() {
         try {
+            console.log('[ProjectStore-Debug] Saving projects:', this.projects);
             localStorage.setItem('projects', JSON.stringify(this.projects));
-            console.log('[ProjectStore] Saved projects to localStorage');
+            const saved = localStorage.getItem('projects');
+            console.log('[ProjectStore-Debug] Verification - read back:', JSON.parse(saved));
         } catch (err) {
             console.error('[ProjectStore] Error saving projects:', err);
         }

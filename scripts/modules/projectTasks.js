@@ -1,3 +1,5 @@
+
+// Your existing updateProjectTasks function
 function updateProjectTasks() {
     console.log('[ProjectTasks] Starting update');
     const projectsGrid = document.querySelector('.projects-grid');
@@ -182,22 +184,21 @@ function updateProjectProgress(tasks) {
     }
 }
 
-// Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     console.log('[ProjectTasks] DOM loaded, initializing');
     
-    // Initial update
-    updateProjectTasks();
+    // Make sure projectStore is initialized first
+    if (window.projectStore) {
+        updateProjectTasks();
 
-    // Add click handler for projects header to toggle collapse
-    const projectsSection = document.querySelector('.projects-section');
-    const projectsHeader = document.querySelector('.projects-header');
-    
-    projectsHeader?.addEventListener('click', () => {
-        console.log('[ProjectTasks] Projects header clicked, toggling collapse');
-        projectsSection?.classList.toggle('collapsed');
-    });
-
-    // Debug store state
-    window.projectStore.debug();
+        const projectsSection = document.querySelector('.projects-section');
+        const projectsHeader = document.querySelector('.projects-header');
+        
+        projectsHeader?.addEventListener('click', () => {
+            console.log('[ProjectTasks] Projects header clicked, toggling collapse');
+            projectsSection?.classList.toggle('collapsed');
+        });
+    } else {
+        console.error('[ProjectTasks] ProjectStore not initialized!');
+    }
 });

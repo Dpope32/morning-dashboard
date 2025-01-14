@@ -1,7 +1,8 @@
 class RightSidebar {
     constructor() {
         this.sidebar = document.getElementById('rightSidebar');
-        this.isOpen = true;
+        this.isOpen = false;
+        this.closeSidebar();
         this.setupCloseButton();
         this.setupToggleButton();
         this.setupEventListeners();
@@ -492,24 +493,21 @@ class RightSidebar {
         toggleBtn.className = 'right-sidebar-toggle';
         document.body.appendChild(toggleBtn);
         
-        toggleBtn.style.display = 'none';
-        
         toggleBtn.addEventListener('click', () => {
             this.toggleSidebar();
         });
 
         this.toggleBtn = toggleBtn;
+        this.toggleBtn.style.display = 'flex';
     }
 
     closeSidebar() {
         this.sidebar.style.transform = 'translateX(100%)';
-        this.toggleBtn.style.display = 'flex';
         this.isOpen = false;
     }
 
     openSidebar() {
         this.sidebar.style.transform = 'translateX(0)';
-        this.toggleBtn.style.display = 'none';
         this.isOpen = true;
     }
 
@@ -523,15 +521,11 @@ class RightSidebar {
 
     setupEventListeners() {
         const mediaQuery = window.matchMedia('(max-width: 1200px)');
-        const handleMediaChange = (e) => {
+        mediaQuery.addListener((e) => {
             if (e.matches) {
                 this.closeSidebar();
-            } else {
-                this.openSidebar();
             }
-        };
-        mediaQuery.addListener(handleMediaChange);
-        handleMediaChange(mediaQuery);
+        });
 
         this.adjustLayoutSpacing();
     }

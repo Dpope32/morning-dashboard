@@ -202,7 +202,7 @@ body::before {
     border: 1px solid var(--primary-color);
     border-radius: 18px;
     background: rgba(79, 70, 229, 0.05);
-    color:var(--primary-color);
+    color: var(--primary-color);
     cursor: pointer;
     transition: all 0.3s ease;
     font-size: 0.95em;
@@ -222,4 +222,44 @@ body::before {
 .button-group button:active {
     transform: translateY(0);
     background: rgba(79, 70, 229, 0.3);
+}
+
+/* Responsive Styles */
+@media (max-width: 1200px) {
+    .main-content {
+        padding: 15px;
+    }
+    .header-section, .container {
+        width: 100%;
+        max-width: 100%;
+        padding: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-section {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px;
+    }
+    .sidebar {
+        width: 60px;
+        padding: 20px;
+    }
+    .clock {
+        font-size: 1.2em;
+        padding: 10px 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .button-group {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    }
+    .welcome-header {
+        font-size: 24px;
+    }
+    .header {
+        font-size: 22px;
+    }
 }

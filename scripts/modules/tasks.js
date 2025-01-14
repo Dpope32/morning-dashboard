@@ -1,4 +1,5 @@
 // TasksByDay functionality with completion tracking
+
 function updateDailyTasks() {
     const today = new Date().toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
     const tasksContainer = document.querySelector('.tasks-grid');

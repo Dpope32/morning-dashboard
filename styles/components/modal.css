@@ -23,7 +23,6 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     animation: slideIn 0.3s ease-out;
 }
-
 .close-button {
     position: absolute;
     right: 20px;
@@ -42,29 +41,24 @@
     align-items: center;
     justify-content: center;
 }
-
 .close-button:hover {
     opacity: 1;
 }
-
 .modal-body {
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
-
 .input-group {
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
-
 .form-label {
     color: rgb(232, 230, 227);
     font-size: 0.9em;
     font-weight: 500;
 }
-
 .form-input,
 .form-select {
     padding: 12px;
@@ -75,19 +69,16 @@
     font-size: 0.9em;
     transition: all 0.2s ease;
 }
-
 .form-input:hover,
 .form-select:hover {
     border-color: rgb(72, 74, 75);
 }
-
 .form-input:focus,
 .form-select:focus {
     outline: none;
     border-color: rgb(82, 84, 85);
     box-shadow: 0 0 0 2px rgba(82, 84, 85, 0.3);
 }
-
 .form-select {
     cursor: pointer;
     appearance: none;
@@ -97,7 +88,6 @@
     background-position: right 10px center;
     background-size: 16px;
 }
-
 .modal-button {
     margin-top: 10px;
     padding: 12px;
@@ -110,27 +100,22 @@
     transition: all 0.2s ease;
     font-weight: 500;
 }
-
 .modal-button:hover {
     background: rgb(62, 64, 65);
     transform: translateY(-1px);
 }
-
 .modal-button:active {
     transform: translateY(0);
 }
-
 /* Validation styles */
 .form-input.error,
 .form-select.error {
     border-color: rgb(220, 53, 69);
 }
-
 .form-input.error:focus,
 .form-select.error:focus {
     box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.3);
 }
-
 /* Animation */
 @keyframes modalFadeIn {
     from {
@@ -142,7 +127,43 @@
         transform: translateY(0);
     }
 }
-
 .modal-content {
     animation: modalFadeIn 0.3s ease-out;
+}
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .modal-content {
+        padding: 15px;
+        margin: 10% auto;
+    }
+    .close-button {
+        top: 10px;
+        right: 10px;
+        font-size: 20px;
+    }
+    .form-input,
+    .form-select {
+        padding: 10px;
+        font-size: 0.85em;
+    }
+    .modal-button {
+        padding: 10px;
+        font-size: 0.85em;
+    }
+}
+@media (max-width: 480px) {
+    .modal-content {
+        padding: 10px;
+        margin: 15% auto;
+    }
+    .form-label {
+        font-size: 0.8em;
+    }
+    .form-input,
+    .form-select {
+        font-size: 0.8em;
+    }
+    .modal-button {
+        font-size: 0.8em;
+    }
 }

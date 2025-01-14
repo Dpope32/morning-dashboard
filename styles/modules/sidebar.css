@@ -204,7 +204,7 @@
     align-items: center;
     justify-content: center;
     z-index: 1001;
-    display: none;
+    display: flex;
     font-size: 20px;
     transition: all 0.3s ease;
 }
@@ -223,7 +223,7 @@
     align-items: center;
     justify-content: center;
     z-index: 1001;
-    display: none;
+    display: flex;
     font-size: 20px;
     transition: all 0.3s ease;
 }
@@ -241,8 +241,29 @@
     .right-sidebar {
         transform: translateX(100%);
     }
+}
 
-    .sidebar-toggle, .right-sidebar-toggle {
-        display: flex;
+@media (max-width: 768px) {
+    .sidebar {
+        width: 80%;
+        padding: 20px;
+    }
+    .right-sidebar {
+        width: 80%;
+        padding: 15px;
+    }
+    .right-sidebar .button-group {
+        margin-top: 30px;
+    }
+}
+
+@media (max-width: 480px) {
+    .sidebar,
+    .right-sidebar {
+        width: 100%;
+        padding: 10px;
+    }
+    .right-sidebar h3 {
+        font-size: 1.2em;
     }
 }
